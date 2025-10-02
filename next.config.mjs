@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+<<<<<<< HEAD
   // Deixei as configurações que o instalador criou, são boas práticas.
   typescript: {
     // !! WARN !!
@@ -16,3 +17,17 @@ const nextConfig = {
 };
 
 export default nextConfig;
+=======
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  images: {
+    unoptimized: true,
+  },
+}
+
+export default nextConfig
+>>>>>>> 467167d16c036d8f22d227e03222fb740babf1bc
