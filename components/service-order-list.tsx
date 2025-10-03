@@ -1,8 +1,5 @@
 "use client"
 
-// ADICIONADO: Import do Supabase
-import { supabase } from '@/lib/supabase/client'; 
-
 import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -11,30 +8,27 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Eye, Trash2 } from "lucide-react"
 import Image from "next/image"
 
-// NOTE: A interface agora reflete as colunas planas que o Supabase retorna
 interface SavedServiceOrder {
-  id: string // UUID
-  osnumber: string // MINÚSCULO
-  // Dados do cliente
-  cliente_nome: string 
-  cliente_endereco: string
-  cliente_telefone: string
-  cliente_email: string
-  cliente_documento: string
-  
-  // Nomes de coluna minúsculos no banco
-  servicetype: string
+  id: string
+  osNumber: string
+  client: {
+    name: string
+    address: string
+    phone: string
+    email: string
+    document: string
+  }
+  serviceType: string
   description: string
-  scheduleddate: string // MINÚSCULO
+  scheduledDate: string
   observations: string
   status: "agendado" | "em-andamento" | "concluido" | "cancelado"
-  created_at: string
-  user_id: string
+  createdAt: string
 }
 
 interface ServiceOrderListProps {
   onBack: () => void
-  onViewServiceOrder: (serviceOrder: SavedServiceOrder) => void // CORREÇÃO: RECEBE O OBJETO INTEIRO
+  onViewServiceOrder: (serviceOrder: SavedServiceOrder) => void
 }
 
 const statusLabels = {
@@ -62,74 +56,29 @@ const serviceTypeLabels: { [key: string]: string } = {
 }
 
 export function ServiceOrderList({ onBack, onViewServiceOrder }: ServiceOrderListProps) {
-  // Ajustamos o tipo para 'any[]' para lidar com a tipagem da lista do Supabase
-  const [serviceOrders, setServiceOrders] = useState<any[]>([]) 
-  const [isLoading, setIsLoading] = useState(true);
+  const [serviceOrders, setServiceOrders] = useState<SavedServiceOrder[]>([])
 
-  // FUNÇÃO PARA LER OS DADOS DO SUPABASE
-  const fetchServiceOrders = async () => {
-    setIsLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-        setServiceOrders([]);
-        setIsLoading(false);
-        return;
-    }
-    
-    // O select busca todas as colunas que salvamos, e o RLS garante que o usuário só veja as suas.
-    const { data, error } = await supabase
-        .from('ordens_servico')
-        .select('*')
-        .order('created_at', { ascending: false }); // Ordena pela data de criação
-
-    if (error) {
-        console.error("Erro ao buscar dados:", error);
-        alert("Falha ao carregar as Ordens de Serviço.");
-        setServiceOrders([]);
-    } else {
-        setServiceOrders(data); 
-    }
-    setIsLoading(false);
-  };
-
-  // Carrega os dados na primeira vez (Substitui a leitura do localStorage)
   useEffect(() => {
-    fetchServiceOrders();
-  }, []); 
+    const savedOrders = JSON.parse(localStorage.getItem("warp-service-orders") || "[]")
+    setServiceOrders(
+      savedOrders.sort(
+        (a: SavedServiceOrder, b: SavedServiceOrder) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      ),
+    )
+  }, [])
 
-  // FUNÇÃO PARA ATUALIZAR O STATUS (Substitui o update do localStorage)
-  const updateServiceOrderStatus = async (orderId: string, newStatus: SavedServiceOrder["status"]) => {
-    // 1. Atualiza a coluna 'status' no Supabase para o ID da Ordem
-    const { error } = await supabase
-        .from('ordens_servico')
-        .update({ status: newStatus })
-        .eq('id', orderId); // O '.eq' garante que apenas a OS correta seja atualizada
-
-    if (error) {
-        console.error("Erro ao atualizar status:", error);
-        alert("Falha ao atualizar o status no banco.");
-    } else {
-        fetchServiceOrders(); // Recarrega a lista para mostrar a mudança
-    }
+  const updateServiceOrderStatus = (orderId: string, newStatus: SavedServiceOrder["status"]) => {
+    const updatedOrders = serviceOrders.map((order) => (order.id === orderId ? { ...order, status: newStatus } : order))
+    setServiceOrders(updatedOrders)
+    localStorage.setItem("warp-service-orders", JSON.stringify(updatedOrders))
   }
 
-  // FUNÇÃO PARA EXCLUIR OS (Substitui o delete do localStorage)
-  const deleteServiceOrder = async (orderId: string) => {
+  const deleteServiceOrder = (orderId: string) => {
     if (confirm("Tem certeza que deseja excluir esta ordem de serviço?")) {
-        // 1. Executa o comando DELETE no Supabase
-        const { error } = await supabase
-            .from('ordens_servico')
-            .delete()
-            .eq('id', orderId);
-
-        if (error) {
-            console.error("Erro ao excluir:", error);
-            // Este erro é quase sempre causado por RLS (permissão)
-            alert("Falha ao excluir a Ordem de Serviço. Verifique as permissões de exclusão no Supabase.");
-        } else {
-            fetchServiceOrders(); // Recarrega a lista para mostrar a mudança
-        }
+      const updatedOrders = serviceOrders.filter((order) => order.id !== orderId)
+      setServiceOrders(updatedOrders)
+      localStorage.setItem("warp-service-orders", JSON.stringify(updatedOrders))
     }
   }
 
@@ -159,9 +108,7 @@ export function ServiceOrderList({ onBack, onViewServiceOrder }: ServiceOrderLis
         <p className="text-muted-foreground">Visualize e gerencie todas as ordens de serviço geradas</p>
       </div>
 
-      {isLoading ? (
-          <Card><CardContent className="text-center py-12 text-blue-600">Carregando Ordens de Serviço do Banco de Dados...</CardContent></Card>
-      ) : serviceOrders.length === 0 ? (
+      {serviceOrders.length === 0 ? (
         <Card>
           <CardContent className="text-center py-12">
             <p className="text-muted-foreground text-lg">Nenhuma ordem de serviço encontrada</p>
@@ -177,36 +124,27 @@ export function ServiceOrderList({ onBack, onViewServiceOrder }: ServiceOrderLis
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    {/* Exibe o osnumber ou fallback de indisponível */}
-                    <h3 className="text-lg font-semibold text-red-600">{order.osnumber || 'Nº Indisponível'}</h3> 
+                    <h3 className="text-lg font-semibold text-red-600">{order.osNumber}</h3>
                     <p className="text-sm text-muted-foreground">
-                      {/* Formata created_at com fallback seguro */}
-                      Criado em {(order.created_at && new Date(order.created_at).toLocaleDateString("pt-BR")) || 'Data Indisponível'}
+                      Criado em {new Date(order.createdAt).toLocaleDateString("pt-BR")}
                     </p>
                   </div>
-                  <Badge className={statusColors[order.status as keyof typeof statusColors]}>
-                    {statusLabels[order.status as keyof typeof statusLabels]}
-                  </Badge>
+                  <Badge className={statusColors[order.status]}>{statusLabels[order.status]}</Badge>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                   <div>
                     <p className="text-sm font-medium text-gray-600">Cliente</p>
-                    {/* Lendo diretamente da coluna plana: cliente_nome */}
-                    <p className="text-sm">{order.cliente_nome || 'N/A'}</p> 
+                    <p className="text-sm">{order.client.name}</p>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-600">Tipo de Serviço</p>
-                    {/* Corrigido acesso com tipagem para 'servicetype' minúsculo */}
-                    <p className="text-sm"> {serviceTypeLabels[order.servicetype as keyof typeof serviceTypeLabels] || order.servicetype} </p>
+                    <p className="text-sm">{serviceTypeLabels[order.serviceType] || order.serviceType}</p>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-600">Agendado para</p>
                     <p className="text-sm">
-                      {/* CORREÇÃO FINAL: Tratamento robusto para data agendada */}
-                      {order.scheduleddate && order.scheduleddate.length > 5
-                        ? new Date(order.scheduleddate.replace('T', ' ')).toLocaleString("pt-BR") 
-                        : "Não agendado"}
+                      {order.scheduledDate ? new Date(order.scheduledDate).toLocaleString("pt-BR") : "Não agendado"}
                     </p>
                   </div>
                 </div>
@@ -234,7 +172,7 @@ export function ServiceOrderList({ onBack, onViewServiceOrder }: ServiceOrderLis
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => onViewServiceOrder(order as SavedServiceOrder)} // CORREÇÃO: PASSA OBJETO INTEIRO
+                      onClick={() => onViewServiceOrder(order)}
                       className="gap-2 border-red-200 text-red-600 hover:bg-red-50"
                     >
                       <Eye className="h-4 w-4" />

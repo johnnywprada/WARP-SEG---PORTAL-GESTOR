@@ -1,84 +1,123 @@
-// components/data-export.tsx
-
 "use client"
 
 import { useState } from "react"
-import { supabase } from "@/lib/supabase/client" // Importamos o cliente Supabase
-import { PageHeader } from "./PageHeader" // Importamos o nosso cabeçalho padrão
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Download, FileText, Table } from "lucide-react"
 
-// Adicionamos as props de navegação para o PageHeader
 interface DataExportProps {
-  onBackToMenu: () => void
-  onLogout: () => void
+  onBack: () => void
 }
 
-export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
+export function DataExport({ onBack }: DataExportProps) {
   const [isExporting, setIsExporting] = useState(false)
 
-  // Função adaptada para buscar dados do Supabase
-  const exportToHTML = async () => {
+  const exportToPDF = async () => {
     setIsExporting(true)
+
     try {
-      // 1. BUSCAR DADOS DO SUPABASE
-      const { data: budgets, error: budgetError } = await supabase.from("orcamentos").select("*")
-      const { data: serviceOrders, error: osError } = await supabase.from("ordens_servico").select("*")
+      const budgets = JSON.parse(localStorage.getItem("warp-budgets") || "[]")
+      const serviceOrders = JSON.parse(localStorage.getItem("warp-service-orders") || "[]")
 
-      if (budgetError || osError) {
-        throw new Error(budgetError?.message || osError?.message)
-      }
-
-      // 2. O RESTANTE DA LÓGICA DE GERAR O HTML É PRATICAMENTE IDÊNTICA
+      // Criar conteúdo HTML para PDF
       const htmlContent = `
         <!DOCTYPE html>
         <html>
         <head>
           <meta charset="utf-8">
-          <title>Relatório - WARP</title>
-          <style> body { font-family: Arial, sans-serif; } h1, h2 { color: #dc2626; } table { width: 100%; border-collapse: collapse; } th, td { border: 1px solid #ddd; padding: 8px; text-align: left; } th { background-color: #f2f2f2; } </style>
+          <title>Relatório Completo - WARP Segurança Eletrônica</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #dc2626; padding-bottom: 20px; }
+            .section { margin-bottom: 30px; }
+            .section h2 { color: #dc2626; border-bottom: 1px solid #dc2626; padding-bottom: 5px; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #dc2626; color: white; }
+            .status { padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+            .status.em-aberto { background-color: #fef3c7; color: #92400e; }
+            .status.instalando { background-color: #dbeafe; color: #1e40af; }
+            .status.concluido { background-color: #d1fae5; color: #065f46; }
+            .status.cancelado { background-color: #fee2e2; color: #991b1b; }
+            .status.agendado { background-color: #e0e7ff; color: #3730a3; }
+            .status.em-andamento { background-color: #fef3c7; color: #92400e; }
+          </style>
         </head>
         <body>
-          <h1>Relatório Completo - WARP Segurança Eletrônica</h1>
-          <p>Data: ${new Date().toLocaleDateString("pt-BR")}</p>
+          <div class="header">
+            <h1>WARP SEGURANÇA ELETRÔNICA</h1>
+            <p>Relatório Completo do Sistema de Gestão</p>
+            <p>Data: ${new Date().toLocaleDateString("pt-BR")}</p>
+          </div>
           
-          <h2>Orçamentos (${budgets?.length || 0} registros)</h2>
-          <table>
-            <thead><tr><th>Número</th><th>Cliente</th><th>Contato</th><th>Total</th><th>Status</th><th>Data</th></tr></thead>
-            <tbody>
-              ${budgets?.map((b: any) => `
+          <div class="section">
+            <h2>Orçamentos (${budgets.length} registros)</h2>
+            <table>
+              <thead>
                 <tr>
-                  <td>${b.budgetNumber}</td>
-                  <td>${b.client.name}</td>
-                  <td>${b.client.phone}</td>
-                  <td>R$ ${b.totalValue.toFixed(2)}</td>
-                  <td>${b.status}</td>
-                  <td>${new Date(b.createdAt).toLocaleDateString("pt-BR")}</td>
-                </tr>`).join("") || '<tr><td colspan="6">Nenhum orçamento encontrado.</td></tr>'}
-            </tbody>
-          </table>
-
-          <h2>Ordens de Serviço (${serviceOrders?.length || 0} registros)</h2>
-          <table>
-            <thead><tr><th>Número</th><th>Cliente</th><th>Contato</th><th>Tipo</th><th>Status</th><th>Data</th></tr></thead>
-            <tbody>
-              ${serviceOrders?.map((os: any) => `
+                  <th>Número</th>
+                  <th>Cliente</th>
+                  <th>Contato</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Data</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${budgets
+                  .map(
+                    (budget: any) => `
+                  <tr>
+                    <td>${budget.budgetNumber || budget.number}</td>
+                    <td>${budget.client?.name || budget.clientName}</td>
+                    <td>${budget.client?.phone || budget.clientPhone}</td>
+                    <td>R$ ${budget.totalValue?.toFixed(2) || budget.total?.toFixed(2) || "0,00"}</td>
+                    <td><span class="status ${budget.status}">${budget.status}</span></td>
+                    <td>${new Date(budget.createdAt).toLocaleDateString("pt-BR")}</td>
+                  </tr>
+                `,
+                  )
+                  .join("")}
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="section">
+            <h2>Ordens de Serviço (${serviceOrders.length} registros)</h2>
+            <table>
+              <thead>
                 <tr>
-                  <td>${os.osnumber}</td>
-                  <td>${os.cliente_nome}</td>
-                  <td>${os.cliente_telefone}</td>
-                  <td>${os.servicetype}</td>
-                  <td>${os.status}</td>
-                  <td>${new Date(os.created_at).toLocaleDateString("pt-BR")}</td>
-                </tr>`).join("") || '<tr><td colspan="6">Nenhuma ordem de serviço encontrada.</td></tr>'}
-            </tbody>
-          </table>
+                  <th>Número</th>
+                  <th>Cliente</th>
+                  <th>Contato</th>
+                  <th>Tipo de Serviço</th>
+                  <th>Status</th>
+                  <th>Data</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${serviceOrders
+                  .map(
+                    (os: any) => `
+                  <tr>
+                    <td>${os.osNumber || os.number}</td>
+                    <td>${os.client?.name || os.clientName}</td>
+                    <td>${os.client?.phone || os.clientPhone}</td>
+                    <td>${os.serviceType}</td>
+                    <td><span class="status ${os.status}">${os.status}</span></td>
+                    <td>${new Date(os.createdAt).toLocaleDateString("pt-BR")}</td>
+                  </tr>
+                `,
+                  )
+                  .join("")}
+              </tbody>
+            </table>
+          </div>
         </body>
         </html>
       `
-      
-      // 3. LÓGICA DE DOWNLOAD (IDÊNTICA)
+
+      // Criar e baixar PDF
       const blob = new Blob([htmlContent], { type: "text/html" })
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
@@ -88,41 +127,53 @@ export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
       a.click()
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
-
-    } catch (error: any) {
-      console.error("Erro ao exportar HTML:", error)
-      alert("Erro ao exportar dados: " + error.message)
+    } catch (error) {
+      console.error("Erro ao exportar PDF:", error)
+      alert("Erro ao exportar dados. Tente novamente.")
     }
+
     setIsExporting(false)
   }
 
-  // Função adaptada para buscar dados do Supabase
-  const exportToCSV = async () => {
+  const exportToCSV = () => {
     setIsExporting(true)
+
     try {
-      // 1. BUSCAR DADOS DO SUPABASE
-      const { data: budgets, error: budgetError } = await supabase.from("orcamentos").select("*")
-      const { data: serviceOrders, error: osError } = await supabase.from("ordens_servico").select("*")
+      const budgets = JSON.parse(localStorage.getItem("warp-budgets") || "[]")
+      const serviceOrders = JSON.parse(localStorage.getItem("warp-service-orders") || "[]")
 
-      if (budgetError || osError) {
-        throw new Error(budgetError?.message || osError?.message)
-      }
+      // CSV dos Orçamentos
+      const budgetHeaders = ["Tipo", "Número", "Cliente", "Email", "Telefone", "Endereço", "Total", "Status", "Data"]
+      const budgetRows = budgets.map((budget: any) => [
+        "Orçamento",
+        budget.budgetNumber || budget.number,
+        budget.client?.name || budget.clientName,
+        budget.client?.email || budget.clientEmail,
+        budget.client?.phone || budget.clientPhone,
+        budget.client?.address || budget.clientAddress,
+        budget.totalValue?.toFixed(2) || budget.total?.toFixed(2) || "0,00",
+        budget.status,
+        new Date(budget.createdAt).toLocaleDateString("pt-BR"),
+      ])
 
-      // 2. O RESTANTE DA LÓGICA DE GERAR O CSV É PRATICAMENTE IDÊNTICA
-      const headers = ["Tipo", "Número", "Cliente", "Email", "Telefone", "Total", "Status", "Data"]
-      
-      const budgetRows = budgets?.map((b: any) => [
-        "Orçamento", b.budgetNumber, b.client.name, b.client.email, b.client.phone, b.totalValue.toFixed(2), b.status, new Date(b.createdAt).toLocaleDateString("pt-BR"),
-      ]) || []
+      // CSV das Ordens de Serviço
+      const osRows = serviceOrders.map((os: any) => [
+        "Ordem de Serviço",
+        os.osNumber || os.number,
+        os.client?.name || os.clientName,
+        os.client?.email || os.clientEmail,
+        os.client?.phone || os.clientPhone,
+        os.client?.address || os.clientAddress,
+        "-",
+        os.status,
+        new Date(os.createdAt).toLocaleDateString("pt-BR"),
+      ])
 
-      const osRows = serviceOrders?.map((os: any) => [
-        "Ordem de Serviço", os.osnumber, os.cliente_nome, os.cliente_email, os.cliente_telefone, "-", os.status, new Date(os.created_at).toLocaleDateString("pt-BR"),
-      ]) || []
+      // Combinar todos os dados
+      const allRows = [budgetHeaders, ...budgetRows, ...osRows]
+      const csvContent = allRows.map((row) => row.map((field) => `"${field}"`).join(",")).join("\n")
 
-      const allRows = [headers, ...budgetRows, ...osRows]
-      const csvContent = allRows.map((row) => row.map((field) => `"${String(field || '').replace(/"/g, '""')}"`).join(",")).join("\n")
-
-      // 3. LÓGICA DE DOWNLOAD (IDÊNTICA)
+      // Baixar CSV
       const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" })
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
@@ -132,53 +183,86 @@ export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
       a.click()
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
-
-    } catch (error: any) {
+    } catch (error) {
       console.error("Erro ao exportar CSV:", error)
-      alert("Erro ao exportar dados: " + error.message)
+      alert("Erro ao exportar dados. Tente novamente.")
     }
+
     setIsExporting(false)
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <PageHeader
-        title="Exportação de Dados"
-        onBackToMenu={onBackToMenu}
-        onLogout={onLogout}
-      />
-      <div className="container mx-auto p-6 max-w-4xl">
-        <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-red-600 mb-2">Relatórios Completos</h2>
-            <p className="text-muted-foreground">Exporte todos os dados do sistema em diferentes formatos</p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-6">
+          <Button onClick={onBack} variant="outline" className="mb-4 bg-transparent">
+            ← Voltar ao Menu
+          </Button>
+
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-slate-800 mb-2">Exportação de Dados</h1>
+            <p className="text-slate-600">Exporte todos os dados do sistema em diferentes formatos</p>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="shadow-lg border-red-100">
+          <Card className="shadow-lg">
             <CardHeader className="text-center">
-              <div className="mx-auto bg-red-100 p-3 rounded-full w-fit mb-4"><FileText className="h-8 w-8 text-red-600" /></div>
-              <CardTitle className="text-xl">Exportar para HTML</CardTitle>
-              <CardDescription>Gera um relatório visual completo para impressão ou visualização no navegador.</CardDescription>
+              <div className="flex justify-center mb-4">
+                <div className="bg-red-50 p-3 rounded-full">
+                  <FileText className="h-8 w-8 text-red-600" />
+                </div>
+              </div>
+              <CardTitle className="text-xl text-slate-800">Exportar para HTML</CardTitle>
+              <CardDescription>
+                Gera um relatório completo em formato HTML com todos os orçamentos e ordens de serviço
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button onClick={exportToHTML} disabled={isExporting} className="w-full bg-red-600 hover:bg-red-700">
-                <Download className="h-4 w-4 mr-2" /> {isExporting ? "Exportando..." : "Baixar Relatório HTML"}
+              <Button
+                onClick={exportToPDF}
+                disabled={isExporting}
+                className="w-full bg-red-600 hover:bg-red-700 text-white"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                {isExporting ? "Exportando..." : "Baixar Relatório HTML"}
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="shadow-lg border-green-100">
+          <Card className="shadow-lg">
             <CardHeader className="text-center">
-              <div className="mx-auto bg-green-100 p-3 rounded-full w-fit mb-4"><Table className="h-8 w-8 text-green-600" /></div>
-              <CardTitle className="text-xl">Exportar para CSV</CardTitle>
-              <CardDescription>Gera uma planilha para análise no Excel, Google Sheets ou outros programas.</CardDescription>
+              <div className="flex justify-center mb-4">
+                <div className="bg-green-50 p-3 rounded-full">
+                  <Table className="h-8 w-8 text-green-600" />
+                </div>
+              </div>
+              <CardTitle className="text-xl text-slate-800">Exportar para CSV</CardTitle>
+              <CardDescription>
+                Gera uma planilha CSV com todos os dados para análise no Excel ou Google Sheets
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button onClick={exportToCSV} disabled={isExporting} className="w-full bg-green-600 hover:bg-green-700">
-                <Download className="h-4 w-4 mr-2" /> {isExporting ? "Exportando..." : "Baixar Planilha CSV"}
+              <Button
+                onClick={exportToCSV}
+                disabled={isExporting}
+                className="w-full bg-green-600 hover:bg-green-700 text-white"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                {isExporting ? "Exportando..." : "Baixar Planilha CSV"}
               </Button>
             </CardContent>
           </Card>
+        </div>
+
+        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <h3 className="font-semibold text-blue-800 mb-2">Informações sobre a Exportação:</h3>
+          <ul className="text-sm text-blue-700 space-y-1">
+            <li>• O arquivo HTML pode ser aberto em qualquer navegador e impresso</li>
+            <li>• O arquivo CSV pode ser aberto no Excel, Google Sheets ou outros programas de planilha</li>
+            <li>• Os dados incluem todos os orçamentos e ordens de serviço salvos no sistema</li>
+            <li>• A exportação é feita localmente, seus dados não são enviados para nenhum servidor</li>
+          </ul>
         </div>
       </div>
     </div>

@@ -1,7 +1,5 @@
-// ADICIONE O IMPORT DO SUPABASE NO TOPO (se ainda não estiver lá)
 "use client"
 
-import { supabase } from '@/lib/supabase/client';
 import type React from "react"
 
 import { useState } from "react"
@@ -17,46 +15,35 @@ interface LoginFormProps {
 }
 
 export function LoginForm({ onLogin }: LoginFormProps) {
-  // Mude 'username' para 'email' (Padrão do Supabase)
-  const [email, setEmail] = useState("") 
+  const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
-  // FUNÇÕES ANTIGAS REMOVIDAS:
-  // getValidPassword e VALID_CREDENTIALS são removidas, pois o Supabase as gerencia.
-  
+  // Credenciais simples - em produção, usar autenticação mais robusta
+  const getValidPassword = () => {
+    return localStorage.getItem("warp_password") || "warp2024@seg"
+  }
+
+  const VALID_CREDENTIALS = {
+    username: "warpseg",
+    password: getValidPassword(),
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError("")
 
-    // Validação básica dos campos
-    if (!email || !password) {
-        setError("Preencha todos os campos.");
-        setIsLoading(false);
-        return;
-    }
+    // Simular delay de autenticação
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    // --- NOVA LÓGICA DE AUTENTICAÇÃO SUPABASE ---
-
-    // 1. Tenta fazer login com e-mail e senha
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
-    });
-    
-    // 2. Verifica o resultado
-    if (signInError) {
-      // O Supabase retorna um erro se as credenciais estiverem incorretas
-      setError("Usuário ou senha incorretos"); 
-      
-      // O Supabase gerencia a sessão, então não precisamos do localStorage.setItem
-      
+    if (username === VALID_CREDENTIALS.username && password === getValidPassword()) {
+      localStorage.setItem("warp_auth", "authenticated")
+      onLogin()
     } else {
-      // Login BEM-SUCEDIDO! O Supabase salva a sessão automaticamente (token)
-      onLogin(); 
+      setError("Usuário ou senha incorretos")
     }
 
     setIsLoading(false)
@@ -91,15 +78,15 @@ export function LoginForm({ onLogin }: LoginFormProps) {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-slate-700 font-medium">
-                Email de Usuário
+              <Label htmlFor="username" className="text-slate-700 font-medium">
+                Usuário
               </Label>
               <Input
-                id="email"
-                type="email" // Mude o tipo para email
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Digite seu email de usuário"
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Digite seu usuário"
                 required
                 className="border-slate-300 focus:border-red-500 focus:ring-red-500"
               />

@@ -1,7 +1,5 @@
-// ADICIONE O IMPORT DO SUPABASE NO TOPO
 "use client"
 
-import { supabase } from '@/lib/supabase/client'; 
 import type React from "react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -26,84 +24,61 @@ export function ChangePassword({ onBack }: ChangePasswordProps) {
   const [success, setSuccess] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  // FUNÇÃO ANTIGA REMOVIDA:
-  // A função getCurrentPassword() não é mais necessária, pois o Supabase gerencia a senha atual.
-  
+  // Obter senha atual do localStorage ou usar padrão
+  const getCurrentPassword = () => {
+    return localStorage.getItem("warp_password") || "warp2024@seg"
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
-    setSuccess(false);
+    e.preventDefault()
+    setIsLoading(true)
+    setError("")
+    setSuccess(false)
 
-    // 1. Validação de campos e regras básicas (Validações de UI)
+    // Validações
+    if (currentPassword !== getCurrentPassword()) {
+      setError("Senha atual incorreta")
+      setIsLoading(false)
+      return
+    }
+
     if (newPassword.length < 6) {
-        setError("A nova senha deve ter pelo menos 6 caracteres");
-        setIsLoading(false);
-        return;
+      setError("A nova senha deve ter pelo menos 6 caracteres")
+      setIsLoading(false)
+      return
     }
+
     if (newPassword !== confirmPassword) {
-        setError("A confirmação da nova senha não confere");
-        setIsLoading(false);
-        return;
+      setError("A confirmação da nova senha não confere")
+      setIsLoading(false)
+      return
     }
+
     if (newPassword === currentPassword) {
-        setError("A nova senha deve ser diferente da atual");
-        setIsLoading(false);
-        return;
+      setError("A nova senha deve ser diferente da atual")
+      setIsLoading(false)
+      return
     }
-    
-    // --- LÓGICA SUPABASE PARA ALTERAR SENHA ---
 
-    // 2. Tenta obter as informações do usuário logado (Supabase Session)
-    const { data: { user } } = await supabase.auth.getUser();
+    // Simular delay
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    if (!user || !user.email) {
-        setError("Sessão expirada. Por favor, faça o login novamente para alterar a senha.");
-        setIsLoading(false);
-        return;
-    }
-    
-    // 3. Valida a SENHA ATUAL: Tenta fazer login com a senha antiga.
-    // Isso garante que apenas o usuário logado possa alterar a senha.
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: user.email,
-        password: currentPassword,
-    });
+    // Salvar nova senha
+    localStorage.setItem("warp_password", newPassword)
+    setSuccess(true)
 
-    if (signInError) {
-        // A senha atual está incorreta
-        setError("Senha atual incorreta. (Verificação falhou)");
-        setIsLoading(false);
-        return;
-    }
-    
-    // 4. Altera a Senha: Se a senha atual for válida, faz a atualização no Supabase.
-    const { error: updateError } = await supabase.auth.updateUser({
-        password: newPassword
-    });
+    // Limpar campos
+    setCurrentPassword("")
+    setNewPassword("")
+    setConfirmPassword("")
 
-    if (updateError) {
-        // Erro do Supabase, como nova senha ser igual à antiga.
-        setError(`Erro ao atualizar: ${updateError.message}`);
-    } else {
-        // 5. Sucesso!
-        setSuccess(true);
-        
-        // Limpar campos
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
+    setIsLoading(false)
 
-        // Voltar automaticamente após 2 segundos
-        setTimeout(() => {
-          onBack(); 
-        }, 2000);
-    }
-    
-    // --- FIM DA LÓGICA SUPABASE ---
-
-    setIsLoading(false);
-  };
+    // Voltar automaticamente após 2 segundos
+    setTimeout(() => {
+      onBack()
+    }, 2000)
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">

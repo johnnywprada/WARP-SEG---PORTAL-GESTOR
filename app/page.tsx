@@ -6,15 +6,13 @@ import { BudgetList } from "@/components/budget-list"
 import { SavedBudgetPreview } from "@/components/saved-budget-preview"
 import { ServiceOrderGenerator } from "@/components/service-order-generator"
 import { ServiceOrderList } from "@/components/service-order-list"
-import { ServiceOrderPreview } from "@/components/service-order-preview"
+import { SavedServiceOrderPreview } from "@/components/saved-service-order-preview"
 import { DataExport } from "@/components/data-export"
 import { LoginForm } from "@/components/login-form"
 import { ChangePassword } from "@/components/change-password"
 import { Button } from "@/components/ui/button"
 import { LogOut, List, FileText, Wrench, Download, KeyRound } from "lucide-react"
-import { supabase } from '@/lib/supabase/client';
 
-// --- INTERFACES ---
 interface SavedBudget {
   id: string
   budgetNumber: string
@@ -24,7 +22,14 @@ interface SavedBudget {
     phone: string
     email: string
   }
-  products: Array<any>
+  products: Array<{
+    id: string
+    description: string
+    quantity: number
+    unit: string
+    unitPrice: number
+    total: number
+  }>
   paymentMethod: string
   observations: string
   validUntil: string
@@ -35,18 +40,20 @@ interface SavedBudget {
 
 interface SavedServiceOrder {
   id: string
-  osnumber: string
-  cliente_nome: string
-  cliente_endereco: string
-  cliente_telefone: string
-  cliente_email: string
-  cliente_documento: string
-  servicetype: string
+  osNumber: string
+  client: {
+    name: string
+    address: string
+    phone: string
+    email: string
+    document: string
+  }
+  serviceType: string
   description: string
-  scheduleddate: string
+  scheduledDate: string
   observations: string
   status: "agendado" | "em-andamento" | "concluido" | "cancelado"
-  created_at: string
+  createdAt: string
 }
 
 type ViewMode =
@@ -68,40 +75,73 @@ export default function Home() {
   const [selectedServiceOrder, setSelectedServiceOrder] = useState<SavedServiceOrder | null>(null)
 
   useEffect(() => {
-    async function checkAuth() {
-      const { data } = await supabase.auth.getSession();
-      setIsAuthenticated(!!data.session);
-      setIsLoading(false);
-    }
-    checkAuth();
+    const authStatus = localStorage.getItem("warp_auth")
+    setIsAuthenticated(authStatus === "authenticated")
+    setIsLoading(false)
   }, [])
 
   const handleLogin = () => {
     setIsAuthenticated(true)
   }
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    localStorage.removeItem("warp_auth")
     setIsAuthenticated(false)
     setCurrentView("menu")
     setSelectedBudget(null)
     setSelectedServiceOrder(null)
   }
 
-  // --- FUNÇÕES DE NAVEGAÇÃO ---
-  const handleViewBudgetGenerator = () => { setCurrentView("budget-generator") }
-  const handleViewBudgetList = () => { setCurrentView("budget-list") }
-  const handleViewBudget = (budget: SavedBudget) => { setSelectedBudget(budget); setCurrentView("budget-preview") }
-  const handleBackToBudgetList = () => { setCurrentView("budget-list"); setSelectedBudget(null) }
-  const handleViewOSGenerator = () => { setCurrentView("os-generator") }
-  const handleViewOSList = () => { setCurrentView("os-list") }
-  const handleViewServiceOrder = (serviceOrder: SavedServiceOrder) => { setSelectedServiceOrder(serviceOrder); setCurrentView("os-preview") }
-  const handleBackToOSList = () => { setCurrentView("os-list"); setSelectedServiceOrder(null) }
-  const handleBackToMenu = () => { setCurrentView("menu"); setSelectedBudget(null); setSelectedServiceOrder(null) }
-  const handleViewDataExport = () => { setCurrentView("data-export") }
-  const handleViewChangePassword = () => { setCurrentView("change-password") }
+  const handleViewBudgetGenerator = () => {
+    setCurrentView("budget-generator")
+  }
 
-  // --- RENDERIZAÇÃO ---
+  const handleViewBudgetList = () => {
+    setCurrentView("budget-list")
+  }
+
+  const handleViewBudget = (budget: SavedBudget) => {
+    setSelectedBudget(budget)
+    setCurrentView("budget-preview")
+  }
+
+  const handleBackToBudgetList = () => {
+    setCurrentView("budget-list")
+    setSelectedBudget(null)
+  }
+
+  const handleViewOSGenerator = () => {
+    setCurrentView("os-generator")
+  }
+
+  const handleViewOSList = () => {
+    setCurrentView("os-list")
+  }
+
+  const handleViewServiceOrder = (serviceOrder: SavedServiceOrder) => {
+    setSelectedServiceOrder(serviceOrder)
+    setCurrentView("os-preview")
+  }
+
+  const handleBackToOSList = () => {
+    setCurrentView("os-list")
+    setSelectedServiceOrder(null)
+  }
+
+  const handleBackToMenu = () => {
+    setCurrentView("menu")
+    setSelectedBudget(null)
+    setSelectedServiceOrder(null)
+  }
+
+  const handleViewDataExport = () => {
+    setCurrentView("data-export")
+  }
+
+  const handleViewChangePassword = () => {
+    setCurrentView("change-password")
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -126,11 +166,44 @@ export default function Home() {
   }
 
   if (currentView === "budget-generator") {
-    return <BudgetGenerator
-      onBackToMenu={handleBackToMenu}
-      onViewBudgetList={handleViewBudgetList}
-      onLogout={handleLogout}
-    />
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="bg-white border-b border-slate-200 px-4 py-3">
+          <div className="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 className="text-lg font-semibold text-slate-800">Sistema de Orçamentos - WARP Segurança Eletrônica</h1>
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={handleBackToMenu}
+                variant="outline"
+                size="sm"
+                className="text-red-600 border-red-200 hover:bg-red-50 bg-transparent"
+              >
+                Voltar ao Menu
+              </Button>
+              <Button
+                onClick={handleViewBudgetList}
+                variant="outline"
+                size="sm"
+                className="text-red-600 border-red-200 hover:bg-red-50 bg-transparent"
+              >
+                <List className="h-4 w-4 mr-2" />
+                Ver Orçamentos
+              </Button>
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                size="sm"
+                className="text-red-600 border-red-200 hover:bg-red-50 bg-transparent"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Sair
+              </Button>
+            </div>
+          </div>
+        </div>
+        <BudgetGenerator />
+      </div>
+    )
   }
 
   if (currentView === "os-list") {
@@ -138,22 +211,54 @@ export default function Home() {
   }
 
   if (currentView === "os-preview" && selectedServiceOrder) {
-    return <ServiceOrderPreview serviceOrderData={selectedServiceOrder} onBack={handleBackToOSList} />
+    return <SavedServiceOrderPreview serviceOrder={selectedServiceOrder} onBack={handleBackToOSList} />
   }
 
   if (currentView === "os-generator") {
-    return <ServiceOrderGenerator
-      onBackToMenu={handleBackToMenu}
-      onViewOSList={handleViewOSList}
-      onLogout={handleLogout}
-    />
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="bg-white border-b border-slate-200 px-4 py-3">
+          <div className="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 className="text-lg font-semibold text-slate-800">
+              Sistema de Ordem de Serviço - WARP Segurança Eletrônica
+            </h1>
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={handleBackToMenu}
+                variant="outline"
+                size="sm"
+                className="text-red-600 border-red-200 hover:bg-red-50 bg-transparent"
+              >
+                Voltar ao Menu
+              </Button>
+              <Button
+                onClick={handleViewOSList}
+                variant="outline"
+                size="sm"
+                className="text-red-600 border-red-200 hover:bg-red-50 bg-transparent"
+              >
+                <List className="h-4 w-4 mr-2" />
+                Ver Ordens de Serviço
+              </Button>
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                size="sm"
+                className="text-red-600 border-red-200 hover:bg-red-50 bg-transparent"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Sair
+              </Button>
+            </div>
+          </div>
+        </div>
+        <ServiceOrderGenerator />
+      </div>
+    )
   }
 
   if (currentView === "data-export") {
-    return <DataExport
-      onBackToMenu={handleBackToMenu}
-      onLogout={handleLogout}
-    />
+    return <DataExport onBack={handleBackToMenu} />
   }
 
   if (currentView === "change-password") {
@@ -166,11 +271,23 @@ export default function Home() {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <h1 className="text-lg font-semibold text-slate-800">Sistema de Gestão - WARP Segurança Eletrônica</h1>
           <div className="flex items-center gap-3">
-            <Button onClick={handleViewChangePassword} variant="outline" size="sm" className="text-red-600 border-red-200 hover:bg-red-50 bg-transparent">
-              <KeyRound className="h-4 w-4 mr-2" /> Alterar Senha
+            <Button
+              onClick={handleViewChangePassword}
+              variant="outline"
+              size="sm"
+              className="text-red-600 border-red-200 hover:bg-red-50 bg-transparent"
+            >
+              <KeyRound className="h-4 w-4 mr-2" />
+              Alterar Senha
             </Button>
-            <Button onClick={handleLogout} variant="outline" size="sm" className="text-red-600 border-red-200 hover:bg-red-50 bg-transparent">
-              <LogOut className="h-4 w-4 mr-2" /> Sair
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              size="sm"
+              className="text-red-600 border-red-200 hover:bg-red-50 bg-transparent"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Sair
             </Button>
           </div>
         </div>
@@ -182,31 +299,52 @@ export default function Home() {
           <p className="text-muted-foreground">Escolha o módulo que deseja utilizar</p>
         </div>
 
-        {/* CÓDIGO DO GRID COMPLETO ABAIXO */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Módulo de Orçamentos */}
           <div className="bg-white border border-red-100 rounded-lg p-6 shadow-sm">
             <div className="text-center mb-6">
-              <div className="bg-red-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center"><FileText className="h-8 w-8 text-red-600" /></div>
+              <div className="bg-red-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <FileText className="h-8 w-8 text-red-600" />
+              </div>
               <h3 className="text-xl font-semibold text-red-600 mb-2">Orçamentos</h3>
               <p className="text-sm text-muted-foreground">Gere e gerencie orçamentos para seus clientes</p>
             </div>
             <div className="space-y-3">
-              <Button onClick={handleViewBudgetGenerator} className="w-full bg-red-600 hover:bg-red-700">Criar Novo Orçamento</Button>
-              <Button onClick={handleViewBudgetList} variant="outline" className="w-full border-red-200 text-red-600 hover:bg-red-50 bg-transparent"><List className="h-4 w-4 mr-2" /> Gerenciar Orçamentos</Button>
+              <Button onClick={handleViewBudgetGenerator} className="w-full bg-red-600 hover:bg-red-700">
+                Criar Novo Orçamento
+              </Button>
+              <Button
+                onClick={handleViewBudgetList}
+                variant="outline"
+                className="w-full border-red-200 text-red-600 hover:bg-red-50 bg-transparent"
+              >
+                <List className="h-4 w-4 mr-2" />
+                Gerenciar Orçamentos
+              </Button>
             </div>
           </div>
 
           {/* Módulo de Ordem de Serviço */}
           <div className="bg-white border border-red-100 rounded-lg p-6 shadow-sm">
             <div className="text-center mb-6">
-              <div className="bg-red-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center"><Wrench className="h-8 w-8 text-red-600" /></div>
+              <div className="bg-red-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Wrench className="h-8 w-8 text-red-600" />
+              </div>
               <h3 className="text-xl font-semibold text-red-600 mb-2">Ordens de Serviço</h3>
               <p className="text-sm text-muted-foreground">Crie e controle ordens de serviço técnico</p>
             </div>
             <div className="space-y-3">
-              <Button onClick={handleViewOSGenerator} className="w-full bg-red-600 hover:bg-red-700">Criar Nova OS</Button>
-              <Button onClick={handleViewOSList} variant="outline" className="w-full border-red-200 text-red-600 hover:bg-red-50 bg-transparent"><List className="h-4 w-4 mr-2" /> Gerenciar Ordens de Serviço</Button>
+              <Button onClick={handleViewOSGenerator} className="w-full bg-red-600 hover:bg-red-700">
+                Criar Nova OS
+              </Button>
+              <Button
+                onClick={handleViewOSList}
+                variant="outline"
+                className="w-full border-red-200 text-red-600 hover:bg-red-50 bg-transparent"
+              >
+                <List className="h-4 w-4 mr-2" />
+                Gerenciar Ordens de Serviço
+              </Button>
             </div>
           </div>
 

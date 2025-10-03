@@ -7,7 +7,6 @@ import { Separator } from "@/components/ui/separator"
 import { ArrowLeft, Printer } from "lucide-react"
 import Image from "next/image"
 
-// CORREÇÃO 1: A interface agora reflete o nome da coluna do Supabase
 interface SavedBudget {
   id: string
   budgetNumber: string
@@ -30,7 +29,7 @@ interface SavedBudget {
   validUntil: string
   totalValue: number
   status: "em-aberto" | "instalando" | "concluido" | "cancelado"
-  created_at: string // <-- MUDANÇA AQUI
+  createdAt: string
 }
 
 interface SavedBudgetPreviewProps {
@@ -59,6 +58,7 @@ export function SavedBudgetPreview({ budget, onBack }: SavedBudgetPreviewProps) 
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Botões de controle - ocultos na impressão */}
       <div className="print:hidden bg-white border-b p-4">
         <div className="container mx-auto max-w-4xl flex justify-between items-center">
           <Button
@@ -76,9 +76,11 @@ export function SavedBudgetPreview({ budget, onBack }: SavedBudgetPreviewProps) 
         </div>
       </div>
 
+      {/* Conteúdo do orçamento */}
       <div className="container mx-auto max-w-4xl p-4 print:p-0">
         <Card className="print:shadow-none print:border-0">
           <CardContent className="p-4 print:p-6">
+            {/* Cabeçalho */}
             <div className="flex items-center justify-between mb-4 print:mb-3">
               <div className="flex items-center gap-4">
                 <Image
@@ -98,6 +100,7 @@ export function SavedBudgetPreview({ budget, onBack }: SavedBudgetPreviewProps) 
 
             <Separator className="mb-4 print:mb-3" />
 
+            {/* Informações da empresa */}
             <div className="bg-red-50 p-3 rounded-lg mb-4 print:mb-3 print:p-2">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs print:text-xs">
                 <div>
@@ -105,28 +108,42 @@ export function SavedBudgetPreview({ budget, onBack }: SavedBudgetPreviewProps) 
                   <p>CNPJ: 35.550.155/0001-86</p>
                 </div>
                 <div>
-                  <p>Rua barros cassal, 35</p>
-                  <p>Jardim Bom Clima - Guarulhos, SP - 07196-270</p>
+                  <p>Rua Pedro Fernandes Biscaino, 226</p>
+                  <p>Jardim Diogo - Guarulhos, SP - 01735-030</p>
                 </div>
               </div>
             </div>
 
+            {/* Dados do cliente */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 print:mb-3">
               <div>
                 <h3 className="font-semibold text-red-600 mb-2 print:text-sm">DADOS DO CLIENTE</h3>
                 <div className="space-y-1 text-sm print:text-xs">
-                  <p><span className="font-medium">Nome:</span> {budget.client.name}</p>
-                  {budget.client.phone && (<p><span className="font-medium">Telefone:</span> {budget.client.phone}</p>)}
-                  {budget.client.email && (<p><span className="font-medium">E-mail:</span> {budget.client.email}</p>)}
-                  {budget.client.address && (<p><span className="font-medium">Endereço:</span> {budget.client.address}</p>)}
+                  <p>
+                    <span className="font-medium">Nome:</span> {budget.client.name}
+                  </p>
+                  {budget.client.phone && (
+                    <p>
+                      <span className="font-medium">Telefone:</span> {budget.client.phone}
+                    </p>
+                  )}
+                  {budget.client.email && (
+                    <p>
+                      <span className="font-medium">E-mail:</span> {budget.client.email}
+                    </p>
+                  )}
+                  {budget.client.address && (
+                    <p>
+                      <span className="font-medium">Endereço:</span> {budget.client.address}
+                    </p>
+                  )}
                 </div>
               </div>
               <div>
                 <h3 className="font-semibold text-red-600 mb-2 print:text-sm">INFORMAÇÕES DO ORÇAMENTO</h3>
                 <div className="space-y-1 text-sm print:text-xs">
                   <p>
-                    {/* CORREÇÃO 2: Usar o nome correto da coluna do Supabase */}
-                    <span className="font-medium">Data:</span> {new Date(budget.created_at).toLocaleDateString("pt-BR")}
+                    <span className="font-medium">Data:</span> {new Date(budget.createdAt).toLocaleDateString("pt-BR")}
                   </p>
                   {budget.validUntil && (
                     <p>
@@ -135,14 +152,17 @@ export function SavedBudgetPreview({ budget, onBack }: SavedBudgetPreviewProps) 
                     </p>
                   )}
                   {budget.paymentMethod && (
-                    <p><span className="font-medium">Pagamento:</span> {budget.paymentMethod}</p>
+                    <p>
+                      <span className="font-medium">Pagamento:</span> {budget.paymentMethod}
+                    </p>
                   )}
                 </div>
               </div>
             </div>
 
             <Separator className="mb-4 print:mb-3" />
-            
+
+            {/* Tabela de produtos */}
             <div className="mb-4 print:mb-3">
               <h3 className="font-semibold text-red-600 mb-2 print:text-sm">PRODUTOS/SERVIÇOS</h3>
               <div className="overflow-x-auto">
@@ -173,7 +193,9 @@ export function SavedBudgetPreview({ budget, onBack }: SavedBudgetPreviewProps) 
                   </tbody>
                   <tfoot>
                     <tr className="bg-red-600 text-white font-bold">
-                      <td colSpan={4} className="border border-red-200 p-2 text-right print:p-1">TOTAL GERAL:</td>
+                      <td colSpan={4} className="border border-red-200 p-2 text-right print:p-1">
+                        TOTAL GERAL:
+                      </td>
                       <td className="border border-red-200 p-2 text-right print:p-1">
                         R$ {budget.totalValue.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                       </td>
@@ -183,6 +205,7 @@ export function SavedBudgetPreview({ budget, onBack }: SavedBudgetPreviewProps) 
               </div>
             </div>
 
+            {/* Observações */}
             {budget.observations && (
               <div className="mb-4 print:mb-3">
                 <h3 className="font-semibold text-red-600 mb-2 print:text-sm">OBSERVAÇÕES</h3>
@@ -191,17 +214,45 @@ export function SavedBudgetPreview({ budget, onBack }: SavedBudgetPreviewProps) 
             )}
 
             <Separator className="mb-4 print:mb-3" />
-            
+
+            {/* Avisos e assinatura */}
             <div className="space-y-3 print:space-y-2">
               <div className="bg-red-50 border border-red-200 p-3 rounded print:p-2">
                 <p className="text-xs font-semibold text-red-700 mb-1">IMPORTANTE:</p>
                 <p className="text-xs text-red-600">
-                  Este orçamento é válido somente mediante assinatura e/ou carimbo oficial da WARP SEGURANÇA ELETRÔNICA.
+                  Este orçamento é válido somente mediante assinatura e carimbo oficial da WARP SEGURANÇA ELETRÔNICA.
                   Orçamentos não assinados não possuem validade comercial.
                 </p>
               </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 print:gap-2">
+                <div className="border border-gray-300 p-3 rounded print:p-2">
+                  <p className="text-xs font-medium mb-2">ASSINATURA E CARIMBO:</p>
+                  <div className="h-12 print:h-8"></div>
+                  <div className="border-t border-gray-300 pt-1">
+                    <p className="text-xs text-center">WARP SEGURANÇA ELETRÔNICA</p>
+                  </div>
+                </div>
+                <div className="border border-gray-300 p-3 rounded print:p-2">
+                  <p className="text-xs font-medium mb-2">ACEITE DO CLIENTE:</p>
+                  <div className="h-12 print:h-8"></div>
+                  <div className="border-t border-gray-300 pt-1">
+                    <p className="text-xs text-center">CLIENTE</p>
+                  </div>
+                </div>
+              </div>
             </div>
-            
+
+            {/* Mascote no rodapé */}
+            <div className="flex justify-center mt-4 print:mt-2">
+              <Image
+                src="/images/warp-mascot.png"
+                alt="Mascote WARP"
+                width={60}
+                height={60}
+                className="h-12 w-auto opacity-50 print:h-8"
+              />
+            </div>
           </CardContent>
         </Card>
       </div>
