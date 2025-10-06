@@ -142,7 +142,7 @@ export function SavedBudgetPreview({ budget, onBack }: SavedBudgetPreviewProps) 
             </div>
 
             <Separator className="mb-4 print:mb-3" />
-            
+
             <div className="mb-4 print:mb-3">
               <h3 className="font-semibold text-red-600 mb-2 print:text-sm">PRODUTOS/SERVIÇOS</h3>
               <div className="overflow-x-auto">
@@ -191,17 +191,56 @@ export function SavedBudgetPreview({ budget, onBack }: SavedBudgetPreviewProps) 
             )}
 
             <Separator className="mb-4 print:mb-3" />
-            
+
             <div className="space-y-3 print:space-y-2">
               <div className="bg-red-50 border border-red-200 p-3 rounded print:p-2">
                 <p className="text-xs font-semibold text-red-700 mb-1">IMPORTANTE:</p>
-                <p className="text-xs text-red-600">
-                  Este orçamento é válido somente mediante assinatura e/ou carimbo oficial da WARP SEGURANÇA ELETRÔNICA.
-                  Orçamentos não assinados não possuem validade comercial.
+                <p className="text-xs text-red-600">Este orçamento é válido somente mediante assinatura e carimbo oficial da WARP SEGURANÇA ELETRÔNICA. Orçamentos não assinados não possuem validade comercial.</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 print:gap-2">
+                <div className="border border-gray-300 p-3 rounded print:p-2">
+                  <p className="text-xs font-medium mb-2">ASSINATURA E CARIMBO:</p>
+                  <div className="h-12 print:h-8"></div>
+                  <div className="border-t border-gray-300 pt-1">
+                    <p className="text-xs text-center">WARP SEGURANÇA ELETRÔNICA</p>
+                  </div>
+                </div>
+
+                <div className="border border-gray-300 p-3 rounded print:p-2">
+                  <p className="text-xs font-medium mb-2">ACEITE DO CLIENTE:</p>
+                  <div className="h-12 print:h-8"></div>
+                  <div className="border-t border-gray-300 pt-1">
+                    <p className="text-xs text-center">CLIENTE</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 items-center mt-8 print:mt-4">
+              <div></div>
+
+              <div className="flex justify-center">
+                <Image
+                  alt="Mascote WARP"
+                  width={60}
+                  height={60}
+                  className="h-12 w-auto opacity-50 print:h-8"
+                  src="/images/warp-mascot.png"
+                />
+              </div>
+
+              <div className="flex justify-end">
+                <p className="text-sm font-medium text-gray-600 print:text-black">
+                  DATA: ______ / ______ / ______
                 </p>
               </div>
             </div>
-            
+
+            {/* ====================================================================== */}
+            {/* FIM DO NOVO BLOCO DE ASSINATURA                                        */}
+            {/* ====================================================================== */}
+
           </CardContent>
         </Card>
       </div>

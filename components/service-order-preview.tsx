@@ -6,7 +6,7 @@ import { ArrowLeft, Printer, Download } from "lucide-react"
 import Image from "next/image"
 
 // MODELO DE DADOS PLANO FINAL
-interface ServiceOrderData {
+export interface ServiceOrderData {
     cliente_nome: string
     cliente_endereco: string
     cliente_telefone: string
@@ -15,11 +15,11 @@ interface ServiceOrderData {
 
     servicetype: string
     description: string
-    scheduleddate: string 
+    scheduleddate: string
     observations: string
-    
-    osnumber: string 
-    created_at: string 
+
+    osnumber: string
+    created_at: string
 }
 
 interface ServiceOrderPreviewProps {
@@ -43,19 +43,19 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
     }
 
     // --- VARIÁVEIS DE EXIBIÇÃO ---
-    const osNumber = serviceOrderData.osnumber || 'N/A' 
-    
+    const osNumber = serviceOrderData.osnumber || 'N/A'
+
     const created_at_date = new Date(serviceOrderData.created_at);
-    const currentDate = !isNaN(created_at_date.getTime()) 
-        ? created_at_date.toLocaleDateString("pt-BR") 
+    const currentDate = !isNaN(created_at_date.getTime())
+        ? created_at_date.toLocaleDateString("pt-BR")
         : "Data indisponível";
-    
+
     const scheduledDateTime = serviceOrderData.scheduleddate && serviceOrderData.scheduleddate.length > 5
         ? new Date(serviceOrderData.scheduleddate.replace('T', ' ')).toLocaleString("pt-BR")
         : "Não agendado"
 
     // --- Verificação de Falha de RLS ---
-    if (!serviceOrderData || serviceOrderData.osnumber === 'N/A') { 
+    if (!serviceOrderData || serviceOrderData.osnumber === 'N/A') {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center p-8">
                 <p className="text-xl text-red-600 mb-4">Ordem de Serviço não encontrada ou acesso negado.</p>
@@ -63,7 +63,7 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
             </div>
         );
     }
-    
+
     return (
         <div className="min-h-screen bg-background">
             <div className="no-print sticky top-0 bg-background border-b p-4 flex justify-between items-center print:hidden">
@@ -236,62 +236,56 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
                             </div>
                         </div>
 
-                        <div className="mb-2 bg-red-50 border-2 border-red-300 rounded p-2">
-                            <div className="flex items-start gap-2">
-                                <div className="bg-red-600 text-white rounded-full p-0.5 mt-0.5">
-                                    <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                            clipRule="evenodd"
-                                        />
-                                    </svg>
+                        {/* ====================================================================== */}
+                        {/* INÍCIO DO NOVO BLOCO DE ASSINATURA (SUBSTITUIÇÃO)                     */}
+                        {/* ====================================================================== */}
+
+                        <div className="space-y-3 print:space-y-2">
+                            <div className="bg-red-50 border border-red-200 p-3 rounded print:p-2">
+                                <p className="text-xs font-semibold text-red-700 mb-1">IMPORTANTE:</p>
+                                <p className="text-xs text-red-600">Esta Ordem de Serviço é válida somente mediante assinatura do cliente e da WARP SEGURANÇA ELETRÔNICA. Documentos não assinados não possuem validade comercial.</p>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 print:gap-2">
+                                <div className="border border-gray-300 p-3 rounded print:p-2">
+                                    <p className="text-xs font-medium mb-2">ASSINATURA (TÉCNICO RESPONSÁVEL):</p>
+                                    <div className="h-12 print:h-8"></div>
+                                    <div className="border-t border-gray-300 pt-1">
+                                        <p className="text-xs text-center">WARP SEGURANÇA ELETRÔNICA</p>
+                                    </div>
                                 </div>
-                                <div className="text-xs">
-                                    <p className="font-bold text-red-800 mb-0.5">IMPORTANTE - VALIDADE DA ORDEM DE SERVIÇO:</p>
-                                    <p className="text-red-700 leading-tight">
-                                        <strong>
-                                            Esta ordem de serviço somente será válida mediante assinatura e carimbo oficial da WARP SEGURANÇA
-                                            ELETRÔNICA.
-                                        </strong>
-                                        Ordens de serviço não assinadas ou emitidas por terceiros não autorizados não possuem validade.
-                                    </p>
+
+                                <div className="border border-gray-300 p-3 rounded print:p-2">
+                                    <p className="text-xs font-medium mb-2">ACEITE E ASSINATURA DO CLIENTE:</p>
+                                    <div className="h-12 print:h-8"></div>
+                                    <div className="border-t border-gray-300 pt-1">
+                                        <p className="text-xs text-center">CLIENTE</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="border-t border-red-200 pt-2">
-                            <div className="flex items-end justify-between">
-                                <div className="text-xs text-gray-600 flex-1">
-                                    <div className="grid grid-cols-2 gap-8 mt-4">
-                                        <div className="text-center">
-                                            <div className="w-48 h-8 border-b border-gray-400 mb-1"></div>
-                                            <div className="w-48 border-b border-gray-400 mb-1"></div>
-                                            <p className="text-xs text-gray-500">Assinatura e Carimbo WARP SEG</p>
-                                        </div>
-                                        <div className="text-center">
-                                            <div className="w-48 h-8 border-b border-gray-400 mb-1"></div>
-                                            <div className="w-48 border-b border-gray-400 mb-1"></div>
-                                            <p className="text-xs text-gray-500">Assinatura do Cliente</p>
-                                        </div>
-                                    </div>
-                                    <div className="text-center mt-4">
-                                        <div className="w-24 border-b border-gray-400 mb-1 mx-auto"></div>
-                                        <p className="text-xs text-gray-500">Data: ___/___/___</p>
-                                    </div>
-                                </div>
+                        <div className="grid grid-cols-3 items-center mt-8 print:mt-4">
+                            <div></div>
+                            <div className="flex justify-center">
                                 <Image
-                                    src="/images/warp-mascot.png"
                                     alt="Mascote WARP"
-                                    width={32}
-                                    height={32}
-                                    className="h-6 w-auto opacity-80 ml-3"
+                                    width={60}
+                                    height={60}
+                                    className="h-12 w-auto opacity-50 print:h-8"
+                                    src="/images/warp-mascot.png"
                                 />
                             </div>
-                            <div className="text-center text-red-600 font-semibold text-xs mt-1">
-                                WARP SEGURANÇA ELETRÔNICA - Protegendo o que é importante para você
+                            <div className="flex justify-end">
+                                <p className="text-sm font-medium text-gray-600 print:text-black">
+                                    DATA: ______ / ______ / ______
+                                </p>
                             </div>
                         </div>
+
+                        {/* ====================================================================== */}
+                        {/* FIM DO NOVO BLOCO DE ASSINATURA                                        */}
+                        {/* ====================================================================== */}
                     </CardContent>
                 </Card>
             </div>

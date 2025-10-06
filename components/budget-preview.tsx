@@ -67,13 +67,58 @@ export function BudgetPreview({ budgetData, onBack }: BudgetPreviewProps) {
             <div className="mb-3"><h2 className="text-base font-semibold mb-1 text-red-600 border-b border-red-200 pb-0.5">DADOS DO CLIENTE</h2><div className="bg-gray-50 border border-gray-200 p-1.5 rounded text-xs space-y-0.5"><p><strong>Nome/Razão Social:</strong> {budgetData.client.name}</p>{budgetData.client.address && (<p><strong>Endereço:</strong> {budgetData.client.address}</p>)}<div className="flex gap-4">{budgetData.client.phone && (<span><strong>Tel:</strong> {budgetData.client.phone}</span>)}{budgetData.client.email && (<span><strong>E-mail:</strong> {budgetData.client.email}</span>)}</div></div></div>
             <div className="mb-3"><h2 className="text-base font-semibold mb-1 text-red-600 border-b border-red-200 pb-0.5">PRODUTOS/SERVIÇOS</h2><div className="border border-red-200 rounded overflow-hidden"><table className="w-full text-xs"><thead className="bg-red-600 text-white"><tr><th className="text-left p-1.5 font-semibold">Item</th><th className="text-left p-1.5 font-semibold">Descrição</th><th className="text-center p-1.5 font-semibold">Qtd</th><th className="text-center p-1.5 font-semibold">Un.</th><th className="text-right p-1.5 font-semibold">Valor Unit.</th><th className="text-right p-1.5 font-semibold">Total</th></tr></thead><tbody>{budgetData.products.map((product, index) => (<tr key={product.id} className="border-b border-red-100"><td className="p-1.5 font-medium">{index + 1}</td><td className="p-1.5">{product.description}</td><td className="p-1.5 text-center">{product.quantity}</td><td className="p-1.5 text-center">{product.unit}</td><td className="p-1.5 text-right">R$ {product.unitPrice.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td><td className="p-1.5 text-right font-semibold">R$ {product.total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td></tr>))}</tbody><tfoot className="bg-red-100"><tr><td colSpan={5} className="p-1.5 text-right font-bold">TOTAL GERAL:</td><td className="p-1.5 text-right font-bold text-base text-red-600">R$ {getTotalBudget().toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td></tr></tfoot></table></div></div>
             <div className="mb-3"><h2 className="text-base font-semibold mb-1 text-red-600 border-b border-red-200 pb-0.5">CONDIÇÕES COMERCIAIS</h2><div className="space-y-1 text-xs">{budgetData.paymentMethod && (<p><strong>Forma de Pagamento:</strong> {budgetData.paymentMethod}</p>)}{budgetData.observations && (<div><p><strong>Observações:</strong></p><p className="mt-0.5 text-xs leading-tight bg-gray-50 p-1.5 rounded border">{budgetData.observations}</p></div>)}</div></div>
-            <div className="border-t border-red-200 pt-2"><div className="text-center text-red-600 font-semibold text-xs mt-1">WARP SEGURANÇA ELETRÔNICA - Protegendo o que é importante para você</div></div>
+            <div className="space-y-3 print:space-y-2">
+                <div className="bg-red-50 border border-red-200 p-3 rounded print:p-2">
+                    <p className="text-xs font-semibold text-red-700 mb-1">IMPORTANTE:</p>
+                    <p className="text-xs text-red-600">Este orçamento é válido somente mediante assinatura e carimbo oficial da WARP SEGURANÇA ELETRÔNICA. Orçamentos não assinados não possuem validade comercial.</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 print:gap-2">
+                    <div className="border border-gray-300 p-3 rounded print:p-2">
+                        <p className="text-xs font-medium mb-2">ASSINATURA E CARIMBO:</p>
+                        <div className="h-12 print:h-8"></div>
+                        <div className="border-t border-gray-300 pt-1">
+                            <p className="text-xs text-center">WARP SEGURANÇA ELETRÔNICA</p>
+                        </div>
+                    </div>
+                    
+                    <div className="border border-gray-300 p-3 rounded print:p-2">
+                        <p className="text-xs font-medium mb-2">ACEITE DO CLIENTE:</p>
+                        <div className="h-12 print:h-8"></div>
+                        <div className="border-t border-gray-300 pt-1">
+                            <p className="text-xs text-center">CLIENTE</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-3 items-center mt-8 print:mt-4">
+                <div></div>
+
+                <div className="flex justify-center">
+                    <Image
+                        alt="Mascote WARP"
+                        width={60}
+                        height={60}
+                        className="h-12 w-auto opacity-50 print:h-8"
+                        src="/images/warp-mascot.png" 
+                    />
+                </div>
+
+                <div className="flex justify-end">
+                    <p className="text-sm font-medium text-gray-600 print:text-black">
+                        DATA: ______ / ______ / ______
+                    </p>
+                </div>
+            </div>
+
+            {/* ====================================================================== */}
+            {/* FIM DO NOVO BLOCO DE ASSINATURA                                        */}
+            {/* ====================================================================== */}
+
           </CardContent>
         </Card>
       </div>
-
-      {/* O BLOCO <style jsx global> FOI REMOVIDO DAQUI PARA O TESTE */}
-
     </div>
   )
 }

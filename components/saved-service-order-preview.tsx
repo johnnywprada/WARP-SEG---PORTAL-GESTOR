@@ -2,8 +2,10 @@
 
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
-import { ServiceOrderPreview } from "./service-order-preview"
+// AQUI ESTÁ A MUDANÇA: Importamos o COMPONENTE e também o TIPO
+import { ServiceOrderPreview, type ServiceOrderData } from "./service-order-preview"
 
+// Interface dos dados que vêm do banco (a origem)
 interface SavedServiceOrder {
   id: string
   osNumber: string
@@ -22,18 +24,32 @@ interface SavedServiceOrder {
   createdAt: string
 }
 
+// A interface ServiceOrderData foi REMOVIDA daqui
+
 interface SavedServiceOrderPreviewProps {
   serviceOrder: SavedServiceOrder
   onBack: () => void
 }
 
 export function SavedServiceOrderPreview({ serviceOrder, onBack }: SavedServiceOrderPreviewProps) {
-  const serviceOrderData = {
-    client: serviceOrder.client,
-    serviceType: serviceOrder.serviceType,
+
+  const mappedData: ServiceOrderData = {
+    // Dados do cliente (já estavam corretos)
+    cliente_nome: serviceOrder.client.name,
+    cliente_endereco: serviceOrder.client.address,
+    cliente_telefone: serviceOrder.client.phone,
+    cliente_email: serviceOrder.client.email,
+    cliente_documento: serviceOrder.client.document,
+
+    // CORRIGINDO os nomes para bater com a interface
+    servicetype: serviceOrder.serviceType,
     description: serviceOrder.description,
-    scheduledDate: serviceOrder.scheduledDate,
+    scheduleddate: serviceOrder.scheduledDate,
     observations: serviceOrder.observations,
+
+    // ADICIONANDO os campos que estavam faltando
+    osnumber: serviceOrder.osNumber,
+    created_at: serviceOrder.createdAt,
   }
 
   return (
@@ -51,7 +67,8 @@ export function SavedServiceOrderPreview({ serviceOrder, onBack }: SavedServiceO
           OS: {serviceOrder.osNumber} | Status: {serviceOrder.status}
         </div>
       </div>
-      <ServiceOrderPreview serviceOrderData={serviceOrderData} onBack={onBack} />
+
+      <ServiceOrderPreview serviceOrderData={mappedData} onBack={onBack} />
     </div>
   )
 }
