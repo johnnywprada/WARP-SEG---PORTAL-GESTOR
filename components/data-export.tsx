@@ -3,13 +3,12 @@
 "use client"
 
 import { useState } from "react"
-import { supabase } from "@/lib/supabase/client" // Importamos o cliente Supabase
-import { PageHeader } from "./PageHeader" // Importamos o nosso cabeçalho padrão
+import { supabase } from "@/lib/supabase/client"
+import { PageHeader } from "./PageHeader"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Download, FileText, Table } from "lucide-react"
 
-// Adicionamos as props de navegação para o PageHeader
 interface DataExportProps {
   onBackToMenu: () => void
   onLogout: () => void
@@ -18,11 +17,9 @@ interface DataExportProps {
 export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
   const [isExporting, setIsExporting] = useState(false)
 
-  // Função adaptada para buscar dados do Supabase
   const exportToHTML = async () => {
     setIsExporting(true)
     try {
-      // 1. BUSCAR DADOS DO SUPABASE
       const { data: budgets, error: budgetError } = await supabase.from("orcamentos").select("*")
       const { data: serviceOrders, error: osError } = await supabase.from("ordens_servico").select("*")
 
@@ -30,7 +27,14 @@ export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
         throw new Error(budgetError?.message || osError?.message)
       }
 
-      // 2. O RESTANTE DA LÓGICA DE GERAR O HTML É PRATICAMENTE IDÊNTICA
+      // Função segura para formatar datas, evitando o erro "Invalid Date"
+      const formatDate = (dateString: string | null | undefined) => {
+        if (!dateString) return "N/A";
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return "Data Inválida";
+        return date.toLocaleDateString("pt-BR");
+      };
+
       const htmlContent = `
         <!DOCTYPE html>
         <html>
@@ -54,7 +58,7 @@ export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
                   <td>${b.client.phone}</td>
                   <td>R$ ${b.totalValue.toFixed(2)}</td>
                   <td>${b.status}</td>
-                  <td>${new Date(b.createdAt).toLocaleDateString("pt-BR")}</td>
+                  <td>${formatDate(b.created_at)}</td>
                 </tr>`).join("") || '<tr><td colspan="6">Nenhum orçamento encontrado.</td></tr>'}
             </tbody>
           </table>
@@ -70,7 +74,7 @@ export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
                   <td>${os.cliente_telefone}</td>
                   <td>${os.servicetype}</td>
                   <td>${os.status}</td>
-                  <td>${new Date(os.created_at).toLocaleDateString("pt-BR")}</td>
+                  <td>${formatDate(os.created_at)}</td>
                 </tr>`).join("") || '<tr><td colspan="6">Nenhuma ordem de serviço encontrada.</td></tr>'}
             </tbody>
           </table>
@@ -78,7 +82,6 @@ export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
         </html>
       `
       
-      // 3. LÓGICA DE DOWNLOAD (IDÊNTICA)
       const blob = new Blob([htmlContent], { type: "text/html" })
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
@@ -96,33 +99,38 @@ export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
     setIsExporting(false)
   }
 
-  // Função adaptada para buscar dados do Supabase
   const exportToCSV = async () => {
     setIsExporting(true)
     try {
-      // 1. BUSCAR DADOS DO SUPABASE
       const { data: budgets, error: budgetError } = await supabase.from("orcamentos").select("*")
       const { data: serviceOrders, error: osError } = await supabase.from("ordens_servico").select("*")
 
       if (budgetError || osError) {
         throw new Error(budgetError?.message || osError?.message)
       }
+      
+      const formatDate = (dateString: string | null | undefined) => {
+        if (!dateString) return "N/A";
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return "Data Inválida";
+        return date.toLocaleDateString("pt-BR");
+      };
 
-      // 2. O RESTANTE DA LÓGICA DE GERAR O CSV É PRATICAMENTE IDÊNTICA
       const headers = ["Tipo", "Número", "Cliente", "Email", "Telefone", "Total", "Status", "Data"]
       
       const budgetRows = budgets?.map((b: any) => [
-        "Orçamento", b.budgetNumber, b.client.name, b.client.email, b.client.phone, b.totalValue.toFixed(2), b.status, new Date(b.createdAt).toLocaleDateString("pt-BR"),
+        "Orçamento", b.budgetNumber, b.client.name, b.client.email, b.client.phone, b.totalValue.toFixed(2), b.status, 
+        // AQUI ESTÁ A CORREÇÃO 2
+        formatDate(b.created_at),
       ]) || []
 
       const osRows = serviceOrders?.map((os: any) => [
-        "Ordem de Serviço", os.osnumber, os.cliente_nome, os.cliente_email, os.cliente_telefone, "-", os.status, new Date(os.created_at).toLocaleDateString("pt-BR"),
+        "Ordem de Serviço", os.osnumber, os.cliente_nome, os.cliente_email, os.cliente_telefone, "-", os.status, formatDate(os.created_at),
       ]) || []
 
       const allRows = [headers, ...budgetRows, ...osRows]
       const csvContent = allRows.map((row) => row.map((field) => `"${String(field || '').replace(/"/g, '""')}"`).join(",")).join("\n")
 
-      // 3. LÓGICA DE DOWNLOAD (IDÊNTICA)
       const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" })
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
