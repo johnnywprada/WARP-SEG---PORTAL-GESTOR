@@ -5,9 +5,11 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from "@/components/ui/badge";
+import { Input } from '@/components/ui/input'; // Import do Input
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Eye, Trash2 } from "lucide-react";
+import { ArrowLeft, Eye, Trash2, PlusCircle, Search, FilePlus  } from "lucide-react";
 import Image from "next/image";
+
 
 interface SavedBudget {
   id: string;
@@ -21,14 +23,15 @@ interface SavedBudget {
   status: "em-aberto" | "instalando" | "concluido" | "cancelado";
   created_at: string; // Supabase usa created_at
 }
-interface BudgetListProps { onBack: () => void; onViewBudget: (budget: any) => void; }
+interface BudgetListProps { onBack: () => void; onViewBudget: (budget: any) => void; onAddBudget: () => void; }
 
 const statusLabels = { "em-aberto": "Em Aberto", instalando: "Instalando", concluido: "Concluído", cancelado: "Cancelado" };
 const statusColors = { "em-aberto": "bg-yellow-100 text-yellow-800 border-yellow-200", instalando: "bg-blue-100 text-blue-800 border-blue-200", concluido: "bg-green-100 text-green-800 border-green-200", cancelado: "bg-red-100 text-red-800 border-red-200" };
 
-export function BudgetList({ onBack, onViewBudget }: BudgetListProps) {
+export function BudgetList({ onBack, onViewBudget, onAddBudget  }: BudgetListProps) {
   const [budgets, setBudgets] = useState<SavedBudget[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchBudgets = async () => {
@@ -71,20 +74,46 @@ export function BudgetList({ onBack, onViewBudget }: BudgetListProps) {
     }
   };
 
+  // <-- NOVA LÓgica: Filtra a lista de orçamentos
+  const filteredBudgets = budgets.filter(budget =>
+    budget.client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    budget.budgetNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (statusLabels[budget.status] && statusLabels[budget.status].toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
   return (
     <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-8">
-        <div className="flex items-center gap-4 mb-6">
-          <Button variant="outline" onClick={onBack} className="gap-2 border-red-200 text-red-600 hover:bg-red-50 bg-transparent">
-            <ArrowLeft className="h-4 w-4" /> Voltar
+  {/* Novo Cabeçalho com Logo no Centro */}
+  <div className="flex items-center justify-between mb-6">
+    <Button variant="outline" onClick={onBack} className="gap-2 text-red-600 border-red-200 hover:bg-red-50">
+      <ArrowLeft className="h-4 w-4" />
+      Voltar ao Menu
+    </Button>
+    <Image src="/images/warp-logo.png" alt="WARP" width={150} height={45} className="h-10 w-auto" />
+    <Button onClick={onAddBudget} className="gap-2 bg-red-600 hover:bg-red-700">
+            {/* ÍCONE ALTERADO AQUI */}
+            <FilePlus className="h-4 w-4" />
+            Criar Novo Orçamento
           </Button>
-          <div className="flex items-center gap-6">
-            <Image src="/images/warp-logo.png" alt="WARP Segurança Eletrônica" width={200} height={60} className="h-12 w-auto" />
-          </div>
         </div>
-        <h1 className="text-3xl font-bold text-red-600 mb-2">Controle de Orçamentos</h1>
-        <p className="text-muted-foreground">Visualize e gerencie todos os orçamentos gerados</p>
-      </div>
+
+       
+  <h1 className="text-3xl font-bold text-red-600 mb-2 text-center">Controle de Orçamentos</h1>
+  <p className="text-muted-foreground text-center">Visualize e gerencie todos os orçamentos gerados</p>
+</div>
+
+ {/* --- NOVO CAMPO DE BUSCA --- */}
+        <div className="mb-6 relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input 
+                type="text"
+                placeholder="Buscar por cliente, nº do orçamento ou status..."
+                className="pl-10"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+            />
+        </div>
 
       {isLoading ? (
         <Card>
@@ -101,11 +130,15 @@ export function BudgetList({ onBack, onViewBudget }: BudgetListProps) {
         </Card>
       ) : (
         <div className="space-y-4">
-          {budgets.map((budget) => (
-            <Card key={budget.id} className="border-red-100">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
+            {filteredBudgets.length === 0 && (
+              <Card><CardContent className="text-center py-12 text-muted-foreground">Nenhum orçamento encontrado para a busca "{searchTerm}"</CardContent></Card>
+            )}
+
+            {filteredBudgets.map((budget) => (
+              <Card key={budget.id} className="border-red-100">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
                     <h3 className="text-lg font-semibold text-red-600">{budget.budgetNumber}</h3>
                     <p className="text-sm text-muted-foreground">
                       Criado em {new Date(budget.created_at).toLocaleDateString("pt-BR")}

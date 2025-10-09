@@ -242,7 +242,7 @@ export function ChangePassword({ onBack }: ChangePasswordProps) {
                 <Button
                   type="button"
                   variant="outline"
-                  className="flex-1 bg-transparent"
+                  className="flex-1 gap-2 text-red-600 border-red-200 hover:bg-red-50"
                   onClick={onBack}
                   disabled={isLoading}
                 >

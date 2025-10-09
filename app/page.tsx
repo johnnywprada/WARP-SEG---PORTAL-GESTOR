@@ -56,14 +56,14 @@ export default function Home() {
   if (!isAuthenticated) { return <LoginForm onLogin={handleLogin} /> }
 
   if (currentView === "budget-generator") { return <BudgetGenerator onBackToMenu={handleBackToMenu} onViewBudgetList={handleViewBudgetList} onLogout={handleLogout} /> }
-  if (currentView === "budget-list") { return <BudgetList onBack={handleBackToMenu} onViewBudget={handleViewBudget} /> }
+  if (currentView === "budget-list") { return <BudgetList onBack={handleBackToMenu} onViewBudget={handleViewBudget} onAddBudget={handleViewBudgetGenerator} /> }
   if (currentView === "budget-preview" && selectedBudget) { return <SavedBudgetPreview budget={selectedBudget} onBack={handleBackToBudgetList} /> }
   if (currentView === "os-generator") { return <ServiceOrderGenerator onBackToMenu={handleBackToMenu} onViewOSList={handleViewOSList} onLogout={handleLogout} /> }
-  if (currentView === "os-list") { return <ServiceOrderList onBack={handleBackToMenu} onViewServiceOrder={handleViewServiceOrder} /> }
+  if (currentView === "os-list") { return <ServiceOrderList onBack={handleBackToMenu} onViewServiceOrder={handleViewServiceOrder} onAddServiceOrder={handleViewOSGenerator} /> }
   if (currentView === "os-preview" && selectedServiceOrder) { return <ServiceOrderPreview serviceOrderData={selectedServiceOrder as any} onBack={handleBackToOSList} /> }
   if (currentView === "data-export") { return <DataExport onBackToMenu={handleBackToMenu} onLogout={handleLogout} /> }
   if (currentView === "change-password") { return <ChangePassword onBack={handleBackToMenu} /> }
-  if (currentView === "client-list") { return <ClientList onBack={handleBackToMenu} onViewClient={handleViewClient} onAddClient={handleViewClientForm} /> }
+  if (currentView === "client-list") { return <ClientList onBack={handleBackToMenu} onViewClient={handleViewClient} onAddClient={handleViewClientForm} onLogout={handleLogout} /> }
   
   if (currentView === "client-form") { 
     return <ClientForm 
@@ -112,7 +112,7 @@ export default function Home() {
               <p className="text-sm text-muted-foreground">Crie e controle ordens de serviço técnico</p>
             </div>
             <div className="space-y-3">
-              <Button onClick={handleViewOSGenerator} className="w-full bg-red-600 hover:bg-red-700">Criar Nova OS</Button>
+              <Button onClick={handleViewOSGenerator} className="w-full bg-red-600 hover:bg-red-700">Criar Nova O.S.</Button>
               <Button onClick={handleViewOSList} variant="outline" className="w-full border-red-200 text-red-600 hover:bg-red-50 bg-transparent"><List className="h-4 w-4 mr-2" /> Gerenciar Ordens de Serviço</Button>
             </div>
           </div>

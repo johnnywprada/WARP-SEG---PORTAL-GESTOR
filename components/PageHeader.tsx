@@ -19,10 +19,14 @@ export function PageHeader({ title, onBackToMenu, onLogout, onViewList, viewList
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <h1 className="text-lg font-semibold text-slate-800">{title}</h1>
         <div className="flex items-center gap-3">
-          <Button onClick={onBackToMenu} variant="outline" size="sm" className="text-red-600 border-red-200 hover:bg-red-50 bg-transparent">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Voltar ao Menu
-          </Button>
+          <Button 
+  onClick={onBackToMenu} 
+  variant="outline" 
+  size="sm" 
+  className="gap-2 text-red-600 border-red-200 hover:bg-red-50"
+>
+  <ArrowLeft className="h-4 w-4" /> Voltar ao Menu
+</Button>
           {onViewList && viewListText && (
             <Button onClick={onViewList} variant="outline" size="sm" className="text-red-600 border-red-200 hover:bg-red-50 bg-transparent">
               <List className="h-4 w-4 mr-2" />

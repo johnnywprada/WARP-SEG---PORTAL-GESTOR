@@ -127,6 +127,35 @@
 
 /* Added print styles for professional budget printing */
 @media print {
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100%;
+    height: auto;
+    background: white !important;
+}
+
+.container {
+    max-width: none !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.print-page {
+    margin: 0 !important;
+    padding: 1.5cm !important; /* Adiciona uma margem interna para respiro */
+    border: none !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    box-sizing: border-box;
+}
+
+@page {
+    size: A4 portrait; /* Define a página como A4 em modo retrato */
+    margin: 0; /* Zera as margens da impressora */
+}
   .no-print {
     display: none !important;
   }

@@ -15,8 +15,13 @@ interface ServiceOrderPreviewProps {
 
 export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPreviewProps) {
     const handlePrint = () => {
-        window.print()
-    }
+    const originalTitle = document.title;
+    document.title = `WARP ${serviceOrderData.osnumber}`; // Usa o número da OS
+    window.print();
+    setTimeout(() => {
+        document.title = originalTitle;
+    }, 500);
+}
 
     // --- VARIÁVEIS DE EXIBIÇÃO ---
     const osNumber = serviceOrderData.osnumber || 'N/A'
@@ -41,16 +46,16 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
     return (
         <div className="min-h-screen bg-background">
             <div className="no-print sticky top-0 bg-background border-b p-4 flex justify-between items-center print:hidden">
-                <Button variant="outline" onClick={onBack} className="gap-2 bg-transparent border-red-200 text-red-600 hover:bg-red-50">
-                    <ArrowLeft className="h-4 w-4" /> Voltar à Lista
-                </Button>
-                <div className="flex gap-2">
-                    <Button variant="outline" onClick={handlePrint} className="gap-2 bg-transparent border-red-200 text-red-600 hover:bg-red-50">
-                        <Printer className="h-4 w-4" /> Imprimir OS
-                    </Button>
-                    <Button onClick={handlePrint} className="gap-2 bg-red-600 hover:bg-red-700">
-                        <Download className="h-4 w-4" /> Salvar PDF
-                    </Button>
+                {/* BOTÃO DE VOLTAR NA ESQUERDA */}
+        <Button variant="outline" onClick={onBack} className="gap-2 text-red-600 border-red-200 hover:bg-red-50">
+          <ArrowLeft className="h-4 w-4" /> Voltar à Lista
+        </Button>
+
+        {/* BOTÃO ÚNICO NA DIREITA */}
+        <div className="flex gap-2">
+          <Button onClick={handlePrint} className="gap-2 bg-red-600 hover:bg-red-700">
+            <Printer className="h-4 w-4" /> Imprimir / Salvar PDF
+          </Button>
                 </div>
             </div>
 

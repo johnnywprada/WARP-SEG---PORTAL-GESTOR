@@ -46,18 +46,30 @@ const statusColors = { "em-aberto": "bg-yellow-100 text-yellow-800 border-yellow
 
 export function SavedBudgetPreview({ budget, onBack }: SavedBudgetPreviewProps) {
   const handlePrint = () => {
-    window.print()
-  }
+    // Salva o título original da página
+    const originalTitle = document.title;
+    // Define o novo título para o arquivo
+    document.title = `ORÇAMENTO ${budget.budgetNumber}`;
+    // Chama a impressão
+    window.print();
+    // Restaura o título original depois que a janela de impressão é fechada
+    setTimeout(() => {
+        document.title = originalTitle;
+    }, 500);
+}
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="print:hidden bg-white border-b p-4">
         <div className="container mx-auto max-w-4xl flex justify-between items-center">
-          <Button variant="outline" onClick={onBack} className="gap-2 border-red-200 text-red-600 hover:bg-red-50 bg-transparent">
+           {/* BOTÃO DE VOLTAR NA ESQUERDA */}
+          <Button variant="outline" onClick={onBack} className="gap-2 text-red-600 border-red-200 hover:bg-red-50">
             <ArrowLeft className="h-4 w-4" /> Voltar à Lista
           </Button>
+
+          {/* BOTÃO ÚNICO NA DIREITA */}
           <Button onClick={handlePrint} className="gap-2 bg-red-600 hover:bg-red-700">
-            <Printer className="h-4 w-4" /> Imprimir
+            <Printer className="h-4 w-4" /> Imprimir / Salvar PDF
           </Button>
         </div>
       </div>
