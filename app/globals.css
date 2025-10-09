@@ -146,3 +146,22 @@
     padding-bottom: 10px;
   }
 }
+@media print {
+  /* Esconde elementos que não devem aparecer na impressão */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Força o navegador a imprimir cores de fundo e texto */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Define a cor de fundo do cabeçalho/rodapé da tabela para vermelho-claro */
+  .table-print-header,
+  .table-print-footer {
+    background-color: #fee2e2 !important; /* Cor exata do red-100 */
+  }
+}

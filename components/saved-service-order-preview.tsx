@@ -2,29 +2,8 @@
 
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
-// AQUI ESTÁ A MUDANÇA: Importamos o COMPONENTE e também o TIPO
-import { ServiceOrderPreview, type ServiceOrderData } from "./service-order-preview"
-
-// Interface dos dados que vêm do banco (a origem)
-interface SavedServiceOrder {
-  id: string
-  osNumber: string
-  client: {
-    name: string
-    address: string
-    phone: string
-    email: string
-    document: string
-  }
-  serviceType: string
-  description: string
-  scheduledDate: string
-  observations: string
-  status: "agendado" | "em-andamento" | "concluido" | "cancelado"
-  createdAt: string
-}
-
-// A interface ServiceOrderData foi REMOVIDA daqui
+import { ServiceOrderPreview } from "./service-order-preview"
+import { type SavedServiceOrder, type ServiceOrderData } from "@/lib/types" // Usa os tipos centrais
 
 interface SavedServiceOrderPreviewProps {
   serviceOrder: SavedServiceOrder
@@ -32,25 +11,22 @@ interface SavedServiceOrderPreviewProps {
 }
 
 export function SavedServiceOrderPreview({ serviceOrder, onBack }: SavedServiceOrderPreviewProps) {
-
-  const mappedData: ServiceOrderData = {
-    // Dados do cliente (já estavam corretos)
-    cliente_nome: serviceOrder.client.name,
-    cliente_endereco: serviceOrder.client.address,
-    cliente_telefone: serviceOrder.client.phone,
-    cliente_email: serviceOrder.client.email,
-    cliente_documento: serviceOrder.client.document,
-
-    // CORRIGINDO os nomes para bater com a interface
-    servicetype: serviceOrder.serviceType,
+  // Mapeia os dados do formato 'SavedServiceOrder' para o formato 'ServiceOrderData' esperado pelo preview
+  const ServiceOrderDataForPreview: ServiceOrderData = {
+    cliente_nome: serviceOrder.cliente_nome,
+    cliente_endereco: serviceOrder.cliente_endereco,
+    cliente_telefone: serviceOrder.cliente_telefone,
+    cliente_email: serviceOrder.cliente_email,
+    cliente_documento: serviceOrder.cliente_documento,
+    servicetype: serviceOrder.servicetype,
     description: serviceOrder.description,
-    scheduleddate: serviceOrder.scheduledDate,
+    scheduleddate: serviceOrder.scheduleddate,
     observations: serviceOrder.observations,
-
-    // ADICIONANDO os campos que estavam faltando
-    osnumber: serviceOrder.osNumber,
-    created_at: serviceOrder.createdAt,
-  }
+    osnumber: serviceOrder.osnumber,
+    created_at: serviceOrder.created_at,
+    status: serviceOrder.status,
+    relatorio_tecnico: serviceOrder.relatorio_tecnico
+  };
 
   return (
     <div>
@@ -64,11 +40,10 @@ export function SavedServiceOrderPreview({ serviceOrder, onBack }: SavedServiceO
           Voltar à Lista
         </Button>
         <div className="text-sm text-muted-foreground">
-          OS: {serviceOrder.osNumber} | Status: {serviceOrder.status}
+          OS: {serviceOrder.osnumber} | Status: {serviceOrder.status}
         </div>
       </div>
-
-      <ServiceOrderPreview serviceOrderData={mappedData} onBack={onBack} />
+      <ServiceOrderPreview serviceOrderData={ServiceOrderDataForPreview} onBack={onBack} />
     </div>
   )
 }
