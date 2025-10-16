@@ -13,14 +13,28 @@ import { ChangePassword } from "@/components/change-password"
 import { ClientList } from "@/components/client-list"
 import { ClientForm } from "@/components/client-form"
 import { ClientDetail } from "@/components/client-detail"
+import { QuotationList } from "@/components/quotation-list"
+import { type Quotation } from "@/lib/types"
+import { QuotationForm, type QuotationData } from "@/components/quotation-form"
+import { QuotationDetail } from "@/components/quotation-detail";
 import { Button } from "@/components/ui/button"
-import { LogOut, List, FileText, Wrench, Download, KeyRound, User } from "lucide-react"
+import { LogOut, List, FileText, Wrench, Download, KeyRound, User, Calculator } from "lucide-react"
 import { supabase } from '@/lib/supabase/client'
 import { type SavedBudget, type SavedServiceOrder, type SavedClient } from "@/lib/types"
 
+// --- ADIÇÃO: Interface para Cotações ---
+// interface Quotation {
+//   id: string;
+//   nome_cotacao: string;
+//   status: string;
+//   created_at: string;
+//   updated_at: string;
+//   porcentagem_lucro: number;
+// }
+
 type ViewMode =
   | "menu" | "budget-generator" | "budget-list" | "budget-preview" | "os-generator" | "os-list" | "os-preview" | "data-export" | "change-password"
-  | "client-list" | "client-form" | "client-detail";
+  | "client-list" | "client-form" | "client-detail"| "quotation-list" | "quotation-form" | "quotation-detail";
 
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -29,11 +43,13 @@ export default function Home() {
   const [selectedBudget, setSelectedBudget] = useState<SavedBudget | null>(null)
   const [selectedServiceOrder, setSelectedServiceOrder] = useState<SavedServiceOrder | null>(null)
   const [selectedClient, setSelectedClient] = useState<SavedClient | null>(null)
-
+  const [selectedQuotation, setSelectedQuotation] = useState<Quotation | null>(null)
+  const [quotationToConvert, setQuotationToConvert] = useState<QuotationData | null>(null);
+  
   useEffect(() => { async function checkAuth() { const { data } = await supabase.auth.getSession(); setIsAuthenticated(!!data.session); setIsLoading(false); } checkAuth(); }, [])
 
   const handleLogin = () => { setIsAuthenticated(true) }
-  const handleLogout = async () => { await supabase.auth.signOut(); setIsAuthenticated(false); setCurrentView("menu"); setSelectedBudget(null); setSelectedServiceOrder(null); setSelectedClient(null); }
+  const handleLogout = async () => { await supabase.auth.signOut(); setIsAuthenticated(false); setCurrentView("menu"); setSelectedBudget(null); setSelectedServiceOrder(null); setSelectedClient(null); setSelectedQuotation(null); }
 
   const handleViewBudgetGenerator = () => { setCurrentView("budget-generator") }
   const handleViewBudgetList = () => { setCurrentView("budget-list") }
@@ -43,7 +59,7 @@ export default function Home() {
   const handleViewOSList = () => { setCurrentView("os-list") }
   const handleViewServiceOrder = (serviceOrder: SavedServiceOrder) => { setSelectedServiceOrder(serviceOrder); setCurrentView("os-preview") }
   const handleBackToOSList = () => { setCurrentView("os-list"); setSelectedServiceOrder(null) }
-  const handleBackToMenu = () => { setCurrentView("menu"); setSelectedBudget(null); setSelectedServiceOrder(null); setSelectedClient(null); }
+  const handleBackToMenu = () => { setCurrentView("menu"); setSelectedBudget(null); setSelectedServiceOrder(null); setSelectedClient(null); setSelectedQuotation(null); }
   const handleViewDataExport = () => { setCurrentView("data-export") }
   const handleViewChangePassword = () => { setCurrentView("change-password") }
   const handleViewClientList = () => { setCurrentView("client-list") }
@@ -51,11 +67,16 @@ export default function Home() {
   const handleViewClient = (client: SavedClient) => { setSelectedClient(client); setCurrentView("client-detail") }
   const handleBackToClientList = () => { setCurrentView("client-list"); setSelectedClient(null) }
   const handleViewClientEdit = () => { if (selectedClient) { setCurrentView("client-form"); } };
+  const handleViewQuotationList = () => { setCurrentView("quotation-list") }
+  const handleViewQuotationForm = () => { setSelectedQuotation(null); setCurrentView("quotation-form") }
+  const handleViewQuotationEdit = (quotation: Quotation) => { setSelectedQuotation(quotation); setCurrentView("quotation-form"); }
+  const handleViewQuotationDetail = (quotation: Quotation) => { setSelectedQuotation(quotation); setCurrentView("quotation-detail"); }
+  const handleConvertToBudget = (quotation: QuotationData) => { setQuotationToConvert(quotation); setCurrentView('budget-generator'); }
 
   if (isLoading) { return <div className="min-h-screen bg-background flex items-center justify-center"><div className="text-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto"></div><p className="mt-2 text-slate-600">Carregando...</p></div></div> }
   if (!isAuthenticated) { return <LoginForm onLogin={handleLogin} /> }
 
-  if (currentView === "budget-generator") { return <BudgetGenerator onBackToMenu={handleBackToMenu} onViewBudgetList={handleViewBudgetList} onLogout={handleLogout} /> }
+  if (currentView === "budget-generator") { return <BudgetGenerator onBackToMenu={handleBackToMenu} onViewBudgetList={handleViewBudgetList} onLogout={handleLogout} dataFromQuotation={quotationToConvert} /> }
   if (currentView === "budget-list") { return <BudgetList onBack={handleBackToMenu} onViewBudget={handleViewBudget} onAddBudget={handleViewBudgetGenerator} /> }
   if (currentView === "budget-preview" && selectedBudget) { return <SavedBudgetPreview budget={selectedBudget} onBack={handleBackToBudgetList} /> }
   if (currentView === "os-generator") { return <ServiceOrderGenerator onBackToMenu={handleBackToMenu} onViewOSList={handleViewOSList} onLogout={handleLogout} /> }
@@ -64,19 +85,12 @@ export default function Home() {
   if (currentView === "data-export") { return <DataExport onBackToMenu={handleBackToMenu} onLogout={handleLogout} /> }
   if (currentView === "change-password") { return <ChangePassword onBack={handleBackToMenu} /> }
   if (currentView === "client-list") { return <ClientList onBack={handleBackToMenu} onViewClient={handleViewClient} onAddClient={handleViewClientForm} onLogout={handleLogout} /> }
-  
-  if (currentView === "client-form") { 
-    return <ClientForm 
-      onBack={selectedClient ? () => handleViewClient(selectedClient) : handleBackToClientList} 
-      clientToEdit={selectedClient}
-      onBackToMenu={handleBackToMenu}
-      onViewList={handleViewClientList}
-      onLogout={handleLogout}
-    /> 
-  }
-  
+  if (currentView === "quotation-list") { return <QuotationList onBack={handleBackToMenu} onLogout={handleLogout} onAddQuotation={handleViewQuotationForm} onEditQuotation={handleViewQuotationEdit} onViewQuotation={handleViewQuotationDetail} /> }
+  if (currentView === "quotation-form") { return <QuotationForm onBack={handleViewQuotationList} onLogout={handleLogout} quotationToEdit={selectedQuotation} onConvertToBudget={handleConvertToBudget} onViewQuotationList={handleViewQuotationList} /> }
+  if (currentView === "client-form") { return <ClientForm onBack={selectedClient ? () => handleViewClient(selectedClient) : handleBackToClientList} clientToEdit={selectedClient} onBackToMenu={handleBackToMenu} onViewList={handleViewClientList} onLogout={handleLogout} />  }
   if (currentView === "client-detail" && selectedClient) { return <ClientDetail client={selectedClient} onBack={handleBackToClientList} onEdit={handleViewClientEdit} /> }
-
+  if (currentView === "quotation-detail" && selectedQuotation) { return <QuotationDetail quotation={selectedQuotation} onBack={handleViewQuotationList} onEdit={() => handleViewQuotationEdit(selectedQuotation)} onLogout={handleLogout} /> }  
+  
   return (
     <div className="min-h-screen bg-background">
       <div className="bg-white border-b border-slate-200 px-4 py-3">
@@ -125,6 +139,18 @@ export default function Home() {
             <div className="space-y-3">
               <Button onClick={handleViewClientForm} className="w-full bg-red-600 hover:bg-red-700">Cadastrar Novo Cliente</Button>
               <Button onClick={handleViewClientList} variant="outline" className="w-full border-red-200 text-red-600 hover:bg-red-50 bg-transparent"><List className="h-4 w-4 mr-2" /> Gerenciar Clientes</Button>
+            </div>
+          </div>
+          {/* --- ADIÇÃO: NOVO CARD DE COTAÇÕES --- */}
+          <div className="bg-white border border-red-100 rounded-lg p-6 shadow-sm">
+            <div className="text-center mb-6">
+              <div className="bg-red-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center"><Calculator className="h-8 w-8 text-red-600" /></div>
+              <h3 className="text-xl font-semibold text-red-600 mb-2">Cotações</h3>
+              <p className="text-sm text-muted-foreground">Calcule custos e margens para seus orçamentos</p>
+            </div>
+            <div className="space-y-3">
+              <Button onClick={handleViewQuotationForm} className="w-full bg-red-600 hover:bg-red-700">Criar Nova Cotação</Button>
+              <Button onClick={handleViewQuotationList} variant="outline" className="w-full border-red-200 text-red-600 hover:bg-red-50 bg-transparent"><List className="h-4 w-4 mr-2" /> Gerenciar Cotações</Button>
             </div>
           </div>
           <div className="bg-white border border-red-100 rounded-lg p-6 shadow-sm">

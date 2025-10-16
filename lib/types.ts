@@ -60,3 +60,29 @@ export interface SavedServiceOrder {
     status: "agendado" | "em-andamento" | "concluido" | "cancelado";
     relatorio_tecnico: string | null;
 }
+
+export interface QuotationItem {
+  descricao: string;
+  fornecedor: string;
+  quantidade: number;
+  custo_unitario: number;
+}
+
+export interface Quotation {
+  id: string;
+  nome_cotacao: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  porcentagem_lucro: number;
+  itens_cotados: QuotationItem[];
+}
+
+export interface QuotationDetailProps {
+  quotation: Quotation;
+  onBack: () => void;
+  onEdit: () => void;
+  onLogout: () => void;
+  onViewQuotationList: () => void;
+
+}

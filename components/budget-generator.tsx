@@ -23,13 +23,25 @@ interface ClientData { name: string; address: string; phone: string; email: stri
 interface BudgetData { client: ClientData; products: Product[]; paymentMethod: string; observations: string; validUntil: string; budgetNumber: string; }
 interface Client { id: string; nome: string; endereco: string | null; telefone: string | null; email: string | null; }
 
+// --- NOVAS INTERFACES PARA A CONVERSÃO ---
+interface QuotationItemForConversion {
+  descricao: string;
+  quantidade: number;
+  custo_unitario: number;
+}
+interface QuotationDataForConversion {
+  porcentagem_lucro: number;
+  itens_cotados: QuotationItemForConversion[];
+}
+
 interface BudgetGeneratorProps {
   onBackToMenu: () => void;
   onViewBudgetList: () => void;
   onLogout: () => void;
+  dataFromQuotation?: QuotationDataForConversion | null;
 }
 
-export function BudgetGenerator({ onBackToMenu, onViewBudgetList, onLogout }: BudgetGeneratorProps) {
+export function BudgetGenerator({ onBackToMenu, onViewBudgetList, onLogout, dataFromQuotation }: BudgetGeneratorProps) {
   const [showPreview, setShowPreview] = useState(false);
   const [budgetData, setBudgetData] = useState<BudgetData>({ client: { name: "", address: "", phone: "", email: "" }, products: [{ id: "1", description: "", quantity: 1, unit: "UN", unitPrice: 0, total: 0 }], paymentMethod: "", observations: "", validUntil: "", budgetNumber: `WARP-${Date.now().toString().slice(-6)}` });
   const [clients, setClients] = useState<Client[]>([]);
@@ -40,38 +52,37 @@ export function BudgetGenerator({ onBackToMenu, onViewBudgetList, onLogout }: Bu
   const [isGenerating, setIsGenerating] = useState(false);
 
   const fetchClients = async () => { const { data, error } = await supabase.from('clientes').select('id, nome, endereco, telefone, email').order('nome', { ascending: true }); if (error) { console.error("Erro ao buscar clientes:", error); } else { setClients(data as Client[]); } };
-  useEffect(() => { fetchClients(); }, []);
+  useEffect(() => { fetchClients()
+    if (dataFromQuotation && dataFromQuotation.itens_cotados) {
+      // Transforma os itens da cotação em produtos do orçamento
+      const newProducts = dataFromQuotation.itens_cotados.map(item => {
+        const unitPrice = item.custo_unitario * (1 + dataFromQuotation.porcentagem_lucro / 100);
+        return {
+          id: Date.now().toString() + item.descricao,
+          description: item.descricao,
+          quantity: item.quantidade,
+          unit: "UN", // Ou outro padrão
+          unitPrice: unitPrice,
+          total: unitPrice * item.quantidade,
+        };
+      });
+
+      // Pré-preenche o formulário
+      setBudgetData(prev => ({
+        ...prev,
+        products: newProducts,
+      }));
+    }
+  }, [dataFromQuotation]); // Roda quando os dados da cotação chegam
 
   const handleClientSelect = (clientId: string) => { const selected = clients.find(c => c.id === clientId); if (selected) { setBudgetData(prev => ({ ...prev, client: { name: selected.nome, address: selected.endereco || "", phone: selected.telefone || "", email: selected.email || "" } })); } };
   const handleSaveNewClient = async () => { if (!newClient.nome.trim()) { alert("O nome do novo cliente é obrigatório."); return; } setIsSavingClient(true); const { data: { user } } = await supabase.auth.getUser(); if (!user) { alert("Erro de autenticação."); return; } const { data: insertedClient, error } = await supabase.from('clientes').insert([{ ...newClient, user_id: user.id }]).select().single(); if (error) { alert("Falha ao cadastrar novo cliente."); console.error(error); } else { alert("Cliente cadastrado com sucesso!"); await fetchClients(); handleClientSelect(insertedClient.id); setIsClientModalOpen(false); setNewClient({ nome: "", telefone: "", email: "", endereco: "" }); } setIsSavingClient(false); };
-  
-  const handleGenerateBudget = async () => {
-    if (!budgetData.client.name.trim()) { alert("Por favor, selecione ou cadastre um cliente."); return; }
-    setIsGenerating(true);
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { throw new Error("Erro de autenticação. Faça login novamente."); }
-      const budgetToInsert = { budgetNumber: budgetData.budgetNumber, client: budgetData.client, products: budgetData.products, paymentMethod: budgetData.paymentMethod, observations: budgetData.observations, validUntil: budgetData.validUntil || null, totalValue: getTotalBudget(), status: "em-aberto", user_id: user.id };
-      const { error } = await supabase.from('orcamentos').insert([budgetToInsert]);
-      if (error) { throw error; }
-      alert(`Orçamento ${budgetData.budgetNumber} salvo com sucesso!`);
-      setShowPreview(true);
-    } catch (error: any) {
-      console.error("Erro ao gerar orçamento:", error);
-      alert(`Falha ao salvar o orçamento: ${error.message}`);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+  const handleGenerateBudget = async () => { if (!budgetData.client.name.trim()) { alert("Por favor, selecione ou cadastre um cliente."); return; } setIsGenerating(true); try { const { data: { user } } = await supabase.auth.getUser(); if (!user) { throw new Error("Erro de autenticação. Faça login novamente."); } const budgetToInsert = { budgetNumber: budgetData.budgetNumber, client: budgetData.client, products: budgetData.products, paymentMethod: budgetData.paymentMethod, observations: budgetData.observations, validUntil: budgetData.validUntil || null, totalValue: getTotalBudget(), status: "em-aberto", user_id: user.id }; const { error } = await supabase.from('orcamentos').insert([budgetToInsert]); if (error) { throw error; } alert(`Orçamento ${budgetData.budgetNumber} salvo com sucesso!`); setShowPreview(true); } catch (error: any) { console.error("Erro ao gerar orçamento:", error); alert(`Falha ao salvar o orçamento: ${error.message}`); } finally { setIsGenerating(false); } };
 
   const addProduct = () => { const newProduct: Product = { id: Date.now().toString(), description: "", quantity: 1, unit: "UN", unitPrice: 0, total: 0 }; setBudgetData((prev) => ({ ...prev, products: [...prev.products, newProduct] })); };
   const removeProduct = (id: string) => { setBudgetData((prev) => ({ ...prev, products: prev.products.filter((p) => p.id !== id) })); };
   const updateProduct = (id: string, field: keyof Product, value: any) => { setBudgetData((prev) => ({ ...prev, products: prev.products.map((p) => { if (p.id === id) { const updated = { ...p, [field]: value }; if (field === "quantity" || field === "unitPrice") { updated.total = (Number(updated.quantity) || 0) * (Number(updated.unitPrice) || 0); } return updated; } return p; }), })); };
-  const getTotalBudget = () => { return budgetData.products.reduce((sum, product) => sum + product.total, 0); };
-
-  if (showPreview) {
-    return <BudgetPreview budgetData={budgetData} onBack={() => setShowPreview(false)} />;
-  }
+  const getTotalBudget = () => { return budgetData.products.reduce((sum, product) => sum + product.total, 0); }; if (showPreview) { return <BudgetPreview budgetData={budgetData} onBack={() => setShowPreview(false)} />; }
 
   return (
     <div className="min-h-screen bg-background">
