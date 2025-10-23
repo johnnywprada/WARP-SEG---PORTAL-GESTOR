@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { ArrowLeft, Printer, Download } from "lucide-react"
 import Image from "next/image"
+import { DocumentFooter } from "./DocumentFooter"
 
 // Interfaces adaptadas para os dados do formulário
 interface Product { id: string; description: string; quantity: number; unit: string; unitPrice: number; total: number; }
@@ -135,14 +136,14 @@ export function BudgetPreview({ budgetData, onBack }: BudgetPreviewProps) {
             <div className="grid grid-cols-3 items-center mt-8 print:mt-4">
               <div></div>
               <div className="flex justify-center">
-                <Image alt="Mascote WARP" width={60} height={60} className="h-12 w-auto opacity-85 print:h-8" src="/images/warp-mascot.png" />
+                <Image alt="warpicon" width={60} height={60} className="h-12 w-auto opacity-85 print:h-8" src="/images/warpicon.png" />
               </div>
               <div className="flex justify-end">
-                {/* CORREÇÃO DA COR APLICADA */}
-                <p className="text-xs font-medium.mb-2">DATA: ______ / ______ / ______</p>
+                <p className="text-sm font-medium print:text-black">DATA: ______ / ______ / ______</p>
               </div>
             </div>
           </CardContent>
+          <DocumentFooter />
         </Card>
       </div>
     </div>

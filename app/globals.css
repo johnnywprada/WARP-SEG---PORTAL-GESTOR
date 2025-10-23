@@ -145,7 +145,7 @@
 
 .print-page {
     margin: 0 !important;
-    padding: 1.5cm !important; /* Adiciona uma margem interna para respiro */
+    padding-bottom: 1.5cm !important; /* Adiciona uma margem interna para respiro */
     border: none !important;
     box-shadow: none !important;
     width: 100% !important;

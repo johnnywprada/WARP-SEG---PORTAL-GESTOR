@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { ArrowLeft, Printer } from "lucide-react"
 import Image from "next/image"
+import { DocumentFooter } from "./DocumentFooter"
 
 // --- CORREÇÃO 1: Definimos a "forma" de um Produto para sermos específicos ---
 interface Product {
@@ -156,22 +157,9 @@ export function SavedBudgetPreview({ budget, onBack }: SavedBudgetPreviewProps) 
               <div className="flex justify-end">
                 <p className="text-sm font-medium print:text-black">DATA: ______ / ______ / ______</p>
               </div>
-              {/* ========================================================== */}
-      {/* NOVO BLOCO DO RODAPÉ (com ajustes)                         */}
-      {/* ========================================================== */}
-      <div className="mt-8 print:mt-4 print:fixed print:bottom-5 print:left-0 print:right-0">
-        <div className="flex justify-center w-full max-w-4xl mx-auto p-4 print:p-0"> {/* <-- CONTAINER NOVO */}
-          <Image
-            src="/images/rodape-warp.png"
-            alt="Rodapé WARP Segurança Eletrônica"
-            width={750} // Ajuste esta largura até ficar bom visualmente
-            height={70} // Ajuste esta altura
-            // className="w-full h-auto" <-- REMOVIDO
-          />
-        </div>
-      </div>
             </div>
           </CardContent>
+          <DocumentFooter />
         </Card>
       </div>
     </div>

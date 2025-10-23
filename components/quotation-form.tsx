@@ -205,8 +205,8 @@ const handleSave = async (): Promise<boolean> => { // Modificado para retornar u
           </Card>
 
           <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => window.print()} className="gap-2"><Printer className="h-4 w-4"/>Imprimir / Salvar PDF</Button>
-            <Button onClick={handleSave} disabled={isLoading} className="gap-2"><Save className="h-4 w-4"/>{isLoading ? "Salvando..." : (quotationToEdit ? "Salvar Alterações" : "Salvar Cotação")}</Button>
+            {/* <Button variant="outline" onClick={() => window.print()} className="gap-2"><Printer className="h-4 w-4"/>Imprimir / Salvar PDF</Button> */}
+            <Button onClick={handleSave} disabled={isLoading} className="gap-2 border-red-200 text-red-600 hover:bg-red-50 bg-transparent"><Save className="h-4 w-4"/>{isLoading ? "Salvando..." : (quotationToEdit ? "Salvar Alterações" : "Salvar Cotação")}</Button>
            <Button onClick={handleConvertToBudget} disabled={isLoading} className="gap-2 bg-red-600 hover:bg-red-700"> <FileText className="h-4 w-4"/> {isLoading ? "Salvando..." : "Converter em Orçamento"} </Button>
           </div>
         </div>

@@ -6,6 +6,7 @@ import { ArrowLeft, Printer, Download } from "lucide-react"
 import Image from "next/image"
 import { formatStructuredService, type StructuredServiceData } from "@/lib/serviceUtils"
 import { type ServiceOrderData } from "@/lib/types"
+import { DocumentFooter } from "./DocumentFooter"
 
 
 interface ServiceOrderPreviewProps {
@@ -130,27 +131,19 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
                                 <div className="border border-gray-300 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">ACEITE E ASSINATURA DO CLIENTE:</p><div className="h-12 print:h-8"></div><div className="border-t border-gray-300 pt-1"><p className="text-xs text-center">CLIENTE</p></div></div>
                             </div>
                         </div>
-                        <div className="grid grid-cols-3 items-center mt-8 print:mt-4">
-                            <div></div>
-                            <div className="flex justify-center"><Image alt="warpicon" width={60} height={60} className="h-12 w-auto opacity-85 print:h-8" src="/images/warpicon.png" /></div>
-                            <div className="flex justify-end"><p className="text-xs font-medium">DATA: ______ / ______ / ______</p></div>
-                                      {/* ========================================================== */}
-                              {/* NOVO BLOCO DO RODAPÉ (com ajustes)                         */}
-                              {/* ========================================================== */}
-                              <div className="mt-8 print:mt-4 print:fixed print:bottom-5 print:left-0 print:right-0">
-                                <div className="flex justify-center w-full max-w-4xl mx-auto p-4 print:p-0"> {/* <-- CONTAINER NOVO */}
-                                  <Image
-                                    src="/images/rodape-warp.png"
-                                    alt="Rodapé WARP Segurança Eletrônica"
-                                    width={750} // Ajuste esta largura até ficar bom visualmente
-                                    height={70} // Ajuste esta altura
-                                    // className="w-full h-auto" <-- REMOVIDO
-                                  />
-                                </div>
-                              </div>
-                        </div>
-                    </CardContent>
-                </Card>
+            <div className="grid grid-cols-3 items-center mt-8 print:mt-4">
+              <div></div>
+              <div className="flex justify-center">
+                <Image alt="warpicon" width={60} height={60} className="h-12 w-auto opacity-85 print:h-8" src="/images/warpicon.png" />
+              </div>
+              <div className="flex justify-end">
+                <p className="text-sm font-medium print:text-black">DATA: ______ / ______ / ______</p>
+              </div>
+            </div>
+          </CardContent>
+                        <div></div>
+          <DocumentFooter />
+        </Card>
             </div>
         </div>
     )
