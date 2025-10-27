@@ -23,9 +23,9 @@ export function DocumentFooter() {
             <Image
               src="/images/warp-mascot.png"
               alt="Mascote WARP"
-              width={60} // Reduzido de 70
-              height={75} // Reduzido de 90
-              className="h-16 w-auto" // Reduzido de h-20
+              width={75}   // largura proporcional
+              height={90}  // altura proporcional
+              className="w-auto h-20"
             />
           </div>
 
@@ -52,7 +52,7 @@ export function DocumentFooter() {
               </div>
               <div className="flex items-center justify-end gap-1.5">
                 <Globe className="h-2.5 w-2.5 text-red-600" />
-                <span>https://warpseggestao.vercel.app</span>
+                <span>https://warpseg.vercel.app</span>
               </div>
               <div className="pt-1">
                 <span className="text-[10px] text-gray-700">CNPJ: 35.550.155/0001-86</span>

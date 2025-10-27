@@ -127,14 +127,14 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
                                 <p className="text-xs text-red-600">Esta Ordem de Serviço é válida somente mediante assinatura do cliente e da WARP SEGURANÇA ELETRÔNICA. Documentos não assinados não possuem validade comercial.</p>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 print:gap-2">
-                                <div className="border border-gray-300 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">ASSINATURA (TÉCNICO RESPONSÁVEL):</p><div className="h-12 print:h-8"></div><div className="border-t border-gray-300 pt-1"><p className="text-xs text-center">WARP SEGURANÇA ELETRÔNICA</p></div></div>
-                                <div className="border border-gray-300 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">ACEITE E ASSINATURA DO CLIENTE:</p><div className="h-12 print:h-8"></div><div className="border-t border-gray-300 pt-1"><p className="text-xs text-center">CLIENTE</p></div></div>
+                                <div className="border border-red-200 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">ASSINATURA (TÉCNICO RESPONSÁVEL):</p><div className="h-12 print:h-8"></div><div className="border-t border-red-200 pt-1"><p className="text-xs text-center">WARP SEGURANÇA ELETRÔNICA</p></div></div>
+                                <div className="border border-red-200 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">ACEITE E ASSINATURA DO CLIENTE:</p><div className="h-12 print:h-8"></div><div className="border-t border-red-200 pt-1"><p className="text-xs text-center">CLIENTE</p></div></div>
                             </div>
                         </div>
             <div className="grid grid-cols-3 items-center mt-8 print:mt-4">
               <div></div>
               <div className="flex justify-center">
-                <Image alt="warpicon" width={60} height={60} className="h-12 w-auto opacity-85 print:h-8" src="/images/warpicon.png" />
+                <Image alt="warpicon" width={60} height={48} className="opacity-100 print:h-8 object-contain" src="/images/warpicon.png" />
               </div>
               <div className="flex justify-end">
                 <p className="text-xs font-medium mb-2">DATA: ______ / ______ / ______</p>

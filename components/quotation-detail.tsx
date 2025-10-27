@@ -139,14 +139,14 @@ export function QuotationDetail({ quotation, onBack, onLogout }: QuotationDetail
             {/* 5. Rodapé Padrão */}
             <div className="space-y-3 print:space-y-2 mt-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 print:gap-2">
-                  <div className="border border-gray-300 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">ASSINATURA E CARIMBO:</p><div className="h-12 print:h-8"></div><div className="border-t border-gray-300 pt-1"><p className="text-xs text-center">WARP SEGURANÇA ELETRÔNICA</p></div></div>
-                  <div className="border border-gray-300 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">SITUAÇÃO:</p><div className="h-12 print:h-8"></div><div className="border-t border-gray-300 pt-1"><p className="text-xs text-center">PROPOSTA APROVADA</p></div></div>
+                  <div className="border border-red-200 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">ASSINATURA E CARIMBO:</p><div className="h-12 print:h-8"></div><div className="border-t border-red-200 pt-1"><p className="text-xs text-center">WARP SEGURANÇA ELETRÔNICA</p></div></div>
+                  <div className="border border-red-200 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">SITUAÇÃO:</p><div className="h-12 print:h-8"></div><div className="border-t border-red-200 pt-1"><p className="text-xs text-center">PROPOSTA APROVADA</p></div></div>
               </div>
             </div>
             <div className="grid grid-cols-3 items-center mt-8 print:mt-4">
               <div></div>
               <div className="flex justify-center">
-                <Image alt="warpicon" width={60} height={60} className="h-12 w-auto opacity-85 print:h-8" src="/images/warpicon.png" />
+                <Image alt="warpicon" width={60} height={48} className="opacity-100 print:h-8 object-contain" src="/images/warpicon.png" />
               </div>
               <div className="flex justify-end">
 
