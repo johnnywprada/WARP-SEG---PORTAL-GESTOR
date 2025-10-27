@@ -85,7 +85,7 @@ export function QuotationList({ onBack, onLogout, onAddQuotation, onEditQuotatio
             <ArrowLeft className="h-4 w-4" />
             Voltar ao Menu
           </Button>
-          <Image src="/images/warp-logo.png" alt="WARP" width={150} height={45} className="h-10 w-auto" />
+          <Image src="/images/warp-logo.png" alt="WARP" width={708} height={256} quality={100} className="h-10 w-auto" />
           <Button onClick={onAddQuotation} className="gap-2 bg-red-600 hover:bg-red-700">
               <span className="flex items-center">
                 <Calculator className="h-4 w-4" />

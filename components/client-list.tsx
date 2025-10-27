@@ -69,7 +69,7 @@ export function ClientList({ onBack, onViewClient, onAddClient, onLogout }: Clie
             <ArrowLeft className="h-4 w-4" />
             Voltar ao Menu
           </Button>
-          <Image src="/images/warp-logo.png" alt="WARP" width={150} height={45} className="h-10 w-auto" />
+          <Image src="/images/warp-logo.png" alt="WARP" width={708} height={256} quality={100} className="h-10 w-auto" />
           <Button onClick={onAddClient} className="gap-2 bg-red-600 hover:bg-red-700">
             <UserPlus className="h-4 w-4" />
             Cadastrar Novo Cliente

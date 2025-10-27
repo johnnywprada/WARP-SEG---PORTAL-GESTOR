@@ -44,7 +44,7 @@ export function BudgetPreview({ budgetData, onBack }: BudgetPreviewProps) {
         <Card className="print-page border-red-100 print:border-0 print:shadow-none"> 
         <CardContent className="p-4 print:p-6">
             <div className="flex items-center justify-between mb-4 print:mb-3">
-              <Image src="/images/warp-logo.png" alt="WARP Segurança Eletrônica" width={200} height={60} className="h-12 w-auto print:h-10" />
+              <Image src="/images/warp-logo.png" alt="WARP Segurança Eletrônica" width={708} height={256} quality={100} className="h-12 w-auto print:h-10" />
               <div className="text-right">
                 <h1 className="text-xl font-bold text-red-600 print:text-lg">ORÇAMENTO</h1>
                 <p className="text-sm font-semibold">{budgetData.budgetNumber}</p>
@@ -139,7 +139,7 @@ export function BudgetPreview({ budgetData, onBack }: BudgetPreviewProps) {
             <div className="grid grid-cols-3 items-center mt-8 print:mt-4">
               <div></div>
               <div className="flex justify-center">
-                <Image alt="warpicon" width={60} height={48} className="opacity-100 print:h-8 object-contain" src="/images/warpicon.png" />
+                <Image alt="warpicon" width={375} height={463} quality={100} className="w-auto h-15 opacity-100 print:h-8 object-contain" src="/images/warpicon.png" />
               </div>
               <div className="flex justify-end">
                 <p className="text-xs font-medium mb-2">DATA: ______ / ______ / ______</p>

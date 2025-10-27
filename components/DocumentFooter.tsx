@@ -23,9 +23,10 @@ export function DocumentFooter() {
             <Image
               src="/images/warp-mascot.png"
               alt="Mascote WARP"
-              width={75}   // largura proporcional
-              height={90}  // altura proporcional
-              className="w-auto h-20"
+              width={1120}     // <-- Largura real em pixels
+    height={928}     // <-- Altura real em pixels
+    quality={100}    // Opcional, para nitidez máxima
+    className="w-auto h-25" // Agora vai redimensionar na proporção correta
             />
           </div>
 

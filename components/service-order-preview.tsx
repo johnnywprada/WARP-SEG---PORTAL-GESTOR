@@ -65,7 +65,7 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
                     <CardContent className="p-3 print:p-4">
                         <div className="print-header mb-3">
                             <div className="flex justify-between items-start mb-2">
-                                <div className="flex items-center gap-2"><Image src="/images/warp-logo.png" alt="WARP Segurança Eletrônica" width={140} height={42} className="h-8 w-auto print:h-10" /></div>
+                                <div className="flex items-center gap-2"><Image src="/images/warp-logo.png" alt="WARP Segurança Eletrônica" width={708} height={256} quality={100} className="h-8 w-auto print:h-10" /></div>
                                 <div className="text-right">
                                     <div className="text-xl font-bold text-red-600 mb-1 print:text-2xl">ORDEM DE SERVIÇO</div>
                                     <div className="text-xs space-y-0">
@@ -134,7 +134,7 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
             <div className="grid grid-cols-3 items-center mt-8 print:mt-4">
               <div></div>
               <div className="flex justify-center">
-                <Image alt="warpicon" width={60} height={48} className="opacity-100 print:h-8 object-contain" src="/images/warpicon.png" />
+                <Image alt="warpicon" width={375} height={463} quality={100} className="w-auto h-15 opacity-100 print:h-8 object-contain" src="/images/warpicon.png" />
               </div>
               <div className="flex justify-end">
                 <p className="text-xs font-medium mb-2">DATA: ______ / ______ / ______</p>

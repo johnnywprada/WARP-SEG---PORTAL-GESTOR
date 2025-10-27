@@ -113,8 +113,9 @@ export function ChangePassword({ onBack }: ChangePasswordProps) {
             <Image
               src="/images/warp-logo.png"
               alt="WARP Segurança Eletrônica"
-              width={200}
-              height={60}
+              width={708}
+              height={256}
+              quality={100}
               className="h-12 w-auto"
             />
           </div>
