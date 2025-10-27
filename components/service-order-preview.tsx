@@ -137,12 +137,12 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
                 <Image alt="warpicon" width={60} height={60} className="h-12 w-auto opacity-85 print:h-8" src="/images/warpicon.png" />
               </div>
               <div className="flex justify-end">
-                <p className="text-sm font-medium print:text-black">DATA: ______ / ______ / ______</p>
+                <p className="text-xs font-medium mb-2">DATA: ______ / ______ / ______</p>
               </div>
             </div>
           </CardContent>
-                        <div></div>
-          <DocumentFooter />
+          <div> </div>
+          <div><DocumentFooter /> </div>
         </Card>
             </div>
         </div>

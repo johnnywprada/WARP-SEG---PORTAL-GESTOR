@@ -125,61 +125,55 @@
   }
 }
 
-/* Added print styles for professional budget printing */
+/* ======== ESTILOS PARA IMPRESSÃO ======== */
+
 @media print {
+  /* Define o tamanho da página e bordas seguras */
+  @page {
+    size: A4 portrait; /* A4 em modo retrato */
+    margin: 1cm;       /* margem segura — evita corte da impressora */
+  }
 
-  html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100%;
-    height: auto;
-    background: white !important;
-}
-
-.container {
-    max-width: none !important;
-    width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-.print-page {
-    margin: 0 !important;
-    padding-bottom: 1.5cm !important; /* Adiciona uma margem interna para respiro */
+  /* Estilos principais do conteúdo que será impresso */
+  .print-page {
+    margin: 0 auto !important;
+    padding: 1cm 1cm 1.5cm 1cm !important; /* espaço interno (top, right, bottom, left) */
     border: none !important;
     box-shadow: none !important;
     width: 100% !important;
     box-sizing: border-box;
-}
 
-@page {
-    size: A4 portrait; /* Define a página como A4 em modo retrato */
-    margin: 0; /* Zera as margens da impressora */
-}
-  .no-print {
+    /* Ajuste de escala para caber na folha */
+    transform: scale(0.95); /* reduz levemente o tamanho total */
+    transform-origin: top center; /* mantém centralizado ao reduzir */
+
+    /* Garante que o conteúdo não quebre feio */
+    page-break-inside: avoid;
+  }
+
+  /* Oculta elementos não necessários na impressão */
+  .no-print,
+  [data-no-print="true"] {
     display: none !important;
   }
 
-  .print-page {
-    page-break-after: always;
-  }
-
-  body {
-    background: white !important;
-    color: black !important;
-  }
-
-  .print-header {
-    border-bottom: 2px solid #374151;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
+  /* Ajusta o rodapé fixo */
+  .print-footer {
+    position: fixed;
+    bottom: 1cm; /* distância da borda inferior da página */
+    left: 0;
+    right: 0;
+    width: 100%;
+    opacity: 0.85;
   }
 }
-@media print {
-  /* Esconde elementos que não devem aparecer na impressão */
-  .no-print {
-    display: none !important;
-  }
+
+/* ======== VISUAL NA TELA NORMAL ======== */
+.print-page {
+  margin: 0 auto;
+  padding: 2rem;
+  background: white;
+  box-sizing: border-box;
 
   /* Força o navegador a imprimir cores de fundo e texto */
   * {

@@ -110,14 +110,14 @@ export function QuotationDetail({ quotation, onBack, onLogout }: QuotationDetail
                       const lucroItem = precoVendaTotalItem - custoTotalItem;
                       
                       return (
-                        <tr key={index} className="border-b border-red-100">
-                          <td className="p-1.5">{item.descricao}</td>
-                          <td className="p-1.5">{item.fornecedor}</td>
-                          <td className="p-1.5 text-center">{item.quantidade}</td>
-                          <td className="p-1.5 text-right">R$ {item.custo_unitario.toFixed(2)}</td>
-                          <td className="p-1.5 text-right">R$ {custoTotalItem.toFixed(2)}</td>
-                          <td className="p-1.5 text-right text-green-600 font-medium">R$ {lucroItem.toFixed(2)}</td>
-                          <td className="p-1.5 text-right font-semibold text-red-600">R$ {precoVendaTotalItem.toFixed(2)}</td>
+                        <tr key={index} className="border border-red-200 p-2 print:p-1">
+                          <td className="border border-red-200 p-1.5 print:p-1">{item.descricao}</td>
+                          <td className="border border-red-200 p-1.5 print:p-1">{item.fornecedor}</td>
+                          <td className="border border-red-200 p-1.5 print:p-1 text-center">{item.quantidade}</td>
+                          <td className="border border-red-200 p-1.5 print:p-1 text-right">{item.custo_unitario.toFixed(2)}</td>
+                          <td className="border border-red-200 p-1.5 print:p-1 text-right">{custoTotalItem.toFixed(2)}</td>
+                          <td className="border border-red-200 p-1.5 print:p-1 text-right text-green-600 font-medium">{lucroItem.toFixed(2)}</td>
+                          <td className="border border-red-200 p-1.5 print:p-1 text-right font-semibold text-red-600">{precoVendaTotalItem.toFixed(2)}</td>
                         </tr>
                       );
                     })}
@@ -140,7 +140,7 @@ export function QuotationDetail({ quotation, onBack, onLogout }: QuotationDetail
             <div className="space-y-3 print:space-y-2 mt-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 print:gap-2">
                   <div className="border border-gray-300 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">ASSINATURA E CARIMBO:</p><div className="h-12 print:h-8"></div><div className="border-t border-gray-300 pt-1"><p className="text-xs text-center">WARP SEGURANÇA ELETRÔNICA</p></div></div>
-                  <div className="border border-gray-300 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">ACEITE DO CLIENTE:</p><div className="h-12 print:h-8"></div><div className="border-t border-gray-300 pt-1"><p className="text-xs text-center">PROPOSTA APROVADA</p></div></div>
+                  <div className="border border-gray-300 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">SITUAÇÃO:</p><div className="h-12 print:h-8"></div><div className="border-t border-gray-300 pt-1"><p className="text-xs text-center">PROPOSTA APROVADA</p></div></div>
               </div>
             </div>
             <div className="grid grid-cols-3 items-center mt-8 print:mt-4">
@@ -149,11 +149,13 @@ export function QuotationDetail({ quotation, onBack, onLogout }: QuotationDetail
                 <Image alt="warpicon" width={60} height={60} className="h-12 w-auto opacity-85 print:h-8" src="/images/warpicon.png" />
               </div>
               <div className="flex justify-end">
-                <p className="text-sm font-medium print:text-black">DATA: ______ / ______ / ______</p>
+
+                <p className="text-xs font-medium mb-2">DATA: ______ / ______ / ______</p>
               </div>
             </div>
           </CardContent>
-          <DocumentFooter />
+          <div> </div>
+          <div><DocumentFooter /> </div>
         </Card>
       </div>
     </div>

@@ -60,22 +60,23 @@ export function SavedBudgetPreview({ budget, onBack }: SavedBudgetPreviewProps) 
 }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="print:hidden bg-white border-b p-4">
-        <div className="container mx-auto max-w-4xl flex justify-between items-center">
-           {/* BOTÃO DE VOLTAR NA ESQUERDA */}
-          <Button variant="outline" onClick={onBack} className="gap-2 text-red-600 border-red-200 hover:bg-red-50">
-            <ArrowLeft className="h-4 w-4" /> Voltar à Lista
-          </Button>
+    <div className="min-h-screen bg-gray-50 relative">
+      
+      {/* Container do papel timbrado para impressão */}
+      <div className="print-only print-background-container"></div>
 
-          {/* BOTÃO ÚNICO NA DIREITA */}
-          <Button onClick={handlePrint} className="gap-2 bg-red-600 hover:bg-red-700">
-            <Printer className="h-4 w-4" /> Imprimir / Salvar PDF
-          </Button>
-        </div>
+      {/* Cabeçalho da página (só aparece na tela) */}
+      <div className="no-print sticky top-0 bg-background border-b p-4 flex justify-between items-center print:hidden">
+        <Button variant="outline" onClick={onBack} className="gap-2 text-red-600 border-red-200 hover:bg-red-50">
+          <ArrowLeft className="h-4 w-4" /> Voltar para a Lista
+        </Button>
+        <Button onClick={handlePrint} className="gap-2 bg-red-600 hover:bg-red-700">
+          <Printer className="h-4 w-4" /> Imprimir / Salvar PDF
+        </Button>
       </div>
-      <div className="container mx-auto max-w-4xl p-4 print:p-0">
-        <Card className="print:shadow-none print:border-0">
+      
+      <div className="container mx-auto p-2 max-w-4xl print:p-0 print:max-w-none">
+        <Card className="print-page border-red-100 print:border-0 print:shadow-none">
           <CardContent className="p-4 print:p-6">
             <div className="flex items-center justify-between mb-4 print:mb-3">
               <Image src="/images/warp-logo.png" alt="WARP Segurança Eletrônica" width={200} height={60} className="h-12 w-auto print:h-10" />
@@ -155,7 +156,7 @@ export function SavedBudgetPreview({ budget, onBack }: SavedBudgetPreviewProps) 
                 <Image alt="warpicon" width={60} height={60} className="h-12 w-auto opacity-85 print:h-8" src="/images/warpicon.png" />
               </div>
               <div className="flex justify-end">
-                <p className="text-sm font-medium print:text-black">DATA: ______ / ______ / ______</p>
+                <p className="text-xs font-medium mb-2">DATA: ______ / ______ / ______</p>
               </div>
             </div>
           </CardContent>

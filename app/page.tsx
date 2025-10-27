@@ -86,10 +86,10 @@ export default function Home() {
   if (currentView === "change-password") { return <ChangePassword onBack={handleBackToMenu} /> }
   if (currentView === "client-list") { return <ClientList onBack={handleBackToMenu} onViewClient={handleViewClient} onAddClient={handleViewClientForm} onLogout={handleLogout} /> }
   if (currentView === "quotation-list") { return <QuotationList onBack={handleBackToMenu} onLogout={handleLogout} onAddQuotation={handleViewQuotationForm} onEditQuotation={handleViewQuotationEdit} onViewQuotation={handleViewQuotationDetail} /> }
-  if (currentView === "quotation-form") { return <QuotationForm onBack={handleViewQuotationList} onLogout={handleLogout} quotationToEdit={selectedQuotation} onConvertToBudget={handleConvertToBudget} onViewQuotationList={handleViewQuotationList} /> }
+  if (currentView === "quotation-form") { return <QuotationForm onBack={handleBackToMenu} onLogout={handleLogout} quotationToEdit={selectedQuotation} onConvertToBudget={handleConvertToBudget} onViewQuotationList={handleViewQuotationList} /> }
   if (currentView === "client-form") { return <ClientForm onBack={selectedClient ? () => handleViewClient(selectedClient) : handleBackToClientList} clientToEdit={selectedClient} onBackToMenu={handleBackToMenu} onViewList={handleViewClientList} onLogout={handleLogout} />  }
   if (currentView === "client-detail" && selectedClient) { return <ClientDetail client={selectedClient} onBack={handleBackToClientList} onEdit={handleViewClientEdit} /> }
-  if (currentView === "quotation-detail" && selectedQuotation) { return <QuotationDetail quotation={selectedQuotation} onBack={handleViewQuotationList} onEdit={() => handleViewQuotationEdit(selectedQuotation)} onLogout={handleLogout} /> }  
+  if (currentView === "quotation-detail" && selectedQuotation) { return <QuotationDetail quotation={selectedQuotation} onBack={handleBackToMenu} onLogout={handleLogout} /> }  
   
   return (
     <div className="min-h-screen bg-background">
