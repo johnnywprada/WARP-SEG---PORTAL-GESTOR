@@ -11,6 +11,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { KeyRound, Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react"
 import Image from "next/image"
 
+const brandMascot = process.env.NEXT_PUBLIC_BRAND_MASCOT_URL;
+
 interface ChangePasswordProps {
   onBack: () => void
 }
@@ -25,6 +27,18 @@ export function ChangePassword({ onBack }: ChangePasswordProps) {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const brandMascot = process.env.NEXT_PUBLIC_BRAND_MASCOT_URL;
+  const brandName = process.env.NEXT_PUBLIC_BRAND_NAME;
+  const brandSlogan = process.env.NEXT_PUBLIC_BRAND_SLOGAN;
+  const brandPhone = process.env.NEXT_PUBLIC_BRAND_PHONE;
+  const brandEmail = process.env.NEXT_PUBLIC_BRAND_EMAIL;
+  const brandWebsite = process.env.NEXT_PUBLIC_BRAND_WEBSITE;
+  const brandCnpj = process.env.NEXT_PUBLIC_BRAND_CNPJ;
+  const brandAddress = process.env.NEXT_PUBLIC_BRAND_ADDRESS;
+  const brandCity = process.env.NEXT_PUBLIC_BRAND_CITY;
+  const brandIcon = process.env.NEXT_PUBLIC_BRAND_ICON;
+  const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL;
+
 
   // FUNÇÃO ANTIGA REMOVIDA:
   // A função getCurrentPassword() não é mais necessária, pois o Supabase gerencia a senha atual.
@@ -110,18 +124,20 @@ export function ChangePassword({ onBack }: ChangePasswordProps) {
       <Card className="w-full max-w-md shadow-xl border-0">
         <CardHeader className="text-center space-y-4 pb-8">
           <div className="flex justify-center">
+            {brandLogo && (
             <Image
-              src="/images/warp-logo.png"
-              alt="WARP Segurança Eletrônica"
+              src={brandLogo}
+              alt="Logo da Empresa"
               width={708}
               height={256}
               quality={100}
               className="h-12 w-auto"
             />
+            )}
           </div>
           <div className="flex justify-center">
-            <div className="bg-red-50 p-3 rounded-full">
-              <KeyRound className="h-8 w-8 text-red-600" />
+            <div className="bg-destructive/10 p-3 rounded-full">
+              <KeyRound className="h-8 w-8 text-destructive" />
             </div>
           </div>
           <CardTitle className="text-2xl font-bold text-slate-800">Alterar Senha</CardTitle>
@@ -233,7 +249,7 @@ export function ChangePassword({ onBack }: ChangePasswordProps) {
               </div>
 
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm flex items-center space-x-2">
+                <div className="bg-destructive/10 border border-destructive/40 text-destructive px-4 py-3 rounded-md text-sm flex items-center space-x-2">
                   <AlertCircle className="h-4 w-4" />
                   <span>{error}</span>
                 </div>
@@ -243,7 +259,7 @@ export function ChangePassword({ onBack }: ChangePasswordProps) {
                 <Button
                   type="button"
                   variant="outline"
-                  className="flex-1 gap-2 text-red-600 border-red-200 hover:bg-red-50"
+                  className="flex-1 gap-2 text-destructive border-destructive/40 hover:bg-destructive/10"
                   onClick={onBack}
                   disabled={isLoading}
                 >
@@ -251,7 +267,7 @@ export function ChangePassword({ onBack }: ChangePasswordProps) {
                 </Button>
                 <Button
                   type="submit"
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium"
+                  className="flex-1 bg-destructive hover:bg-destructive/90 text-white font-medium"
                   disabled={isLoading}
                 >
                   {isLoading ? "Alterando..." : "Alterar Senha"}
@@ -262,8 +278,9 @@ export function ChangePassword({ onBack }: ChangePasswordProps) {
 
           <div className="mt-6 pt-6 border-t border-slate-200">
             <div className="flex items-center justify-center space-x-2">
-              <Image src="/images/warp-mascot.png" alt="Mascote WARP" width={32} height={32} className="h-8 w-8" />
-              <p className="text-xs text-slate-500 text-center">WARP Segurança Eletrônica - Gestão Interna</p>
+              {brandMascot && (
+              <Image src={brandMascot} alt="Mascote" width={1120} height={928} quality={100} className="h-8 w-8" /> )}
+              <p className="text-xs text-slate-500 text-center">{brandName} - Gestão Interna</p>
             </div>
           </div>
         </CardContent>

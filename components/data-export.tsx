@@ -1,5 +1,3 @@
-// components/data-export.tsx
-
 "use client"
 
 import { useState } from "react"
@@ -9,6 +7,20 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Download, FileText, Table } from "lucide-react"
 import { formatStructuredService } from "@/lib/serviceUtils"
+
+// --- Bloco de Constantes de Neutralização ---
+const brandMascot = process.env.NEXT_PUBLIC_BRAND_MASCOT_URL;
+const brandName = process.env.NEXT_PUBLIC_BRAND_NAME;
+const brandSlogan = process.env.NEXT_PUBLIC_BRAND_SLOGAN;
+const brandPhone = process.env.NEXT_PUBLIC_BRAND_PHONE;
+const brandEmail = process.env.NEXT_PUBLIC_BRAND_EMAIL;
+const brandWebsite = process.env.NEXT_PUBLIC_BRAND_WEBSITE;
+const brandCnpj = process.env.NEXT_PUBLIC_BRAND_CNPJ;
+const brandAddress = process.env.NEXT_PUBLIC_BRAND_ADDRESS;
+const brandCity = process.env.NEXT_PUBLIC_BRAND_CITY;
+const brandIcon = process.env.NEXT_PUBLIC_BRAND_ICON;
+const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL;
+const brandDominio = process.env.NEXT_PUBLIC_BRAND_DOMINIO
 
 interface DataExportProps {
   onBackToMenu: () => void
@@ -21,8 +33,8 @@ export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
   const exportToHTML = async () => {
     setIsExporting(true)
     try {
-      // SUBSTITUA "seu-dominio.vercel.app" PELO SEU DOMÍNIO REAL NA VERCEL
-      const baseUrl = "https://warpseggestao.vercel.app";
+      // Usa a variável de ambiente para o 'baseUrl'
+      const baseUrl = brandDominio || "https://warpseggestao.vercel.app"; // Garante um fallback
 
       const { data: budgets, error: budgetError } = await supabase.from("orcamentos").select("*")
       const { data: serviceOrders, error: osError } = await supabase.from("ordens_servico").select("*")
@@ -35,7 +47,7 @@ export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
         <html lang="pt-BR">
         <head>
             <meta charset="UTF-8">
-            <title>Relatório Completo - WARP</title>
+            <title>Relatório Completo - ${brandName}</title>
             <style>
                 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 0; padding: 2rem; background-color: #f9fafb; color: #111827; }
                 .container { max-width: 1024px; margin: auto; }
@@ -56,8 +68,8 @@ export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
         <body>
             <div class="container">
                 <div class="header">
-                    <img src="${baseUrl}/images/warp-logo.png" alt="Logo WARP">
-                    <h1>Relatório Completo</h1>
+                    <img src="${baseUrl}${brandLogo}" alt="Logo">
+                    <h1>Relatório Completo - ${brandName}</h1>
                     <p>Gerado em: ${new Date().toLocaleString("pt-BR")}</p>
                 </div>
                 
@@ -73,13 +85,13 @@ export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
                 <table>
                     <thead><tr><th>Número</th><th>Cliente</th><th>Contato</th><th>Tipo de Serviço</th><th>Status</th><th>Data</th></tr></thead>
                     <tbody>
-                        ${serviceOrders?.map((os: any) => `<tr><td>${os.osnumber}</td><td>${os.cliente_nome}</td><td>${os.cliente_telefone}</td><td>${formatStructuredService(os.servicetype)}</td><td>${os.status}</td><td>${formatDate(os.created_at)}</td></tr>`).join("") || '<tr><td colspan="6">Nenhuma O.S.</td></tr>'}
+                        ${serviceOrders?.map((os: any) => `<tr><td>${os.osnumber}</td><td>${os.cliente_nome}</td><td>${os.cliente_telefone}</td><td>${formatStructuredService(os.servicetype)}</td><td>${os.status}</td><td>${formatDate(os.created_at)}</td></tr>`).join("") || '<tr><td colspan="6">Nenhuma O.S</td></tr>'}
                     </tbody>
                 </table>
 
                 <div class="footer">
-                    <img src="${baseUrl}/images/warp-mascot.png" alt="Mascote WARP">
-                    <p>&copy; ${new Date().getFullYear()} WARP Segurança Eletrônica. Todos os direitos reservados.</p>
+                    ${brandMascot ? `<img src="${baseUrl}${brandMascot}" alt="Mascote">` : ''}
+                    <p>&copy; ${new Date().getFullYear()} ${brandName}. Todos os direitos reservados.</p>
                 </div>
             </div>
         </body>
@@ -89,9 +101,10 @@ export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `relatorio-warp-${new Date().toISOString().split("T")[0]}.html`;
+      // Nome do arquivo neutralizado
+      a.download = `relatorio-completo-${new Date().toISOString().split("T")[0]}.html`;
       document.body.appendChild(a);
-a.click();
+      a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
@@ -144,14 +157,14 @@ a.click();
 
       const allRows = [headers, ...budgetRows, ...osRows];
       
-      // AQUI ESTÁ A CORREÇÃO: Adicionamos `: any` ao parâmetro `field`.
       const csvContent = allRows.map(row => row.map((field: any) => `"${String(field || '').replace(/"/g, '""')}"`).join(",")).join("\n");
 
       const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `relatorio-completo-warp-${new Date().toISOString().split("T")[0]}.csv`;
+      // Nome do arquivo neutralizado
+      a.download = `relatorio-completo-${new Date().toISOString().split("T")[0]}.csv`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -167,25 +180,25 @@ a.click();
   return (
     <div className="min-h-screen bg-background">
       <PageHeader
-        title="Exportação de Dados"
+        title="Exportação de Dados - WARP"
         onBackToMenu={onBackToMenu}
         onLogout={onLogout}
       />
       <div className="container mx-auto p-6 max-w-4xl">
         <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-red-600 mb-2">Relatórios Completos</h2>
+            <h2 className="text-3xl font-bold text-destructive mb-2">Relatórios Completos</h2>
             <p className="text-muted-foreground">Exporte todos os dados do sistema em diferentes formatos</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="shadow-lg border-red-100">
             <CardHeader className="text-center">
-              <div className="mx-auto bg-red-100 p-3 rounded-full w-fit mb-4"><FileText className="h-8 w-8 text-red-600" /></div>
+              <div className="mx-auto bg-destructive/20 p-3 rounded-full w-fit mb-4"><FileText className="h-8 w-8 text-destructive" /></div>
               <CardTitle className="text-xl">Exportar para HTML</CardTitle>
               <CardDescription>Gera um relatório visual completo para impressão ou visualização no navegador.</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button onClick={exportToHTML} disabled={isExporting} className="w-full bg-red-600 hover:bg-red-700">
+              <Button onClick={exportToHTML} disabled={isExporting} className="w-full bg-destructive hover:bg-destructive/90">
                 <Download className="h-4 w-4 mr-2" /> {isExporting ? "Exportando..." : "Baixar Relatório HTML"}
               </Button>
             </CardContent>

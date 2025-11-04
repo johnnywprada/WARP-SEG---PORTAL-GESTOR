@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, User, HardDrive, Edit, Eye, EyeOff } from "lucide-react"
 // --- CORREÇÃO: Importamos o tipo centralizado ---
 import { type SavedClient } from "@/lib/types"
+import { getEquipmentLabel } from "@/lib/constants"
 
 interface ClientDetailProps {
   client: SavedClient;
@@ -48,15 +49,15 @@ export function ClientDetail({ client, onBack, onEdit }: ClientDetailProps) {
     <div className="container mx-auto p-6 max-w-4xl">
       <div className="flex items-center justify-between mb-8">
         <div>
-            <h1 className="text-3xl font-bold text-red-600">{client.nome}</h1>
+            <h1 className="text-3xl font-bold text-destructive">{client.nome}</h1>
             <p className="text-muted-foreground">Ficha completa do cliente</p>
         </div>
         <div className="flex gap-2">
-            <Button variant="outline" onClick={onBack} className="gap-2 border-red-200 text-red-600 hover:bg-red-50 bg-transparent">
+            <Button variant="outline" onClick={onBack} className="gap-2 border-destructive/40 text-destructive hover:bg-destructive/10 bg-transparent">
               <ArrowLeft className="h-4 w-4" />
               Voltar para a Lista
             </Button>
-            <Button onClick={onEdit} className="gap-2 bg-red-600 hover:bg-red-700">
+            <Button onClick={onEdit} className="gap-2 bg-destructive hover:bg-destructive/90">
                 <Edit className="h-4 w-4" />
                 Editar Cliente
             </Button>
@@ -65,7 +66,7 @@ export function ClientDetail({ client, onBack, onEdit }: ClientDetailProps) {
 
       <div className="space-y-6">
         <Card className="border-red-100">
-          <CardHeader className="bg-red-50"><CardTitle className="flex items-center gap-2 text-red-700"><User className="h-5 w-5" />Dados Cadastrais</CardTitle></CardHeader>
+          <CardHeader className="bg-destructive/10"><CardTitle className="flex items-center gap-2 text-destructive"><User className="h-5 w-5" />Dados Cadastrais</CardTitle></CardHeader>
           <CardContent className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <DataField label="Nome / Razão Social" value={client.nome} />
             <DataField label="CPF / CNPJ" value={client.documento} />
@@ -81,14 +82,14 @@ export function ClientDetail({ client, onBack, onEdit }: ClientDetailProps) {
         </Card>
 
         <div className="space-y-4">
-            <h2 className="text-xl font-bold text-red-700 flex items-center gap-2 mt-8"><HardDrive className="h-5 w-5" />Equipamentos e Dados Técnicos</h2>
+            <h2 className="text-xl font-bold text-destructive flex items-center gap-2 mt-8"><HardDrive className="h-5 w-5" />Equipamentos e Dados Técnicos</h2>
             {(client.dados_equipamentos || []).length === 0 && (
               <Card><CardContent className="text-center py-8 text-muted-foreground">Nenhum equipamento cadastrado para este cliente.</CardContent></Card>
             )}
             {(client.dados_equipamentos || []).map((equip: any) => (
                 <Card key={equip.id} className="border-gray-200">
                     <CardHeader>
-                        <CardTitle className="text-base text-slate-800">{equip.tipo} - {equip.modelo}</CardTitle>
+                        <CardTitle className="text-base text-slate-800">{getEquipmentLabel(equip.tipo)} - {equip.modelo}</CardTitle>
                         <p className="text-xs text-muted-foreground">Local: {equip.local}</p>
                     </CardHeader>
                     <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3 text-sm">

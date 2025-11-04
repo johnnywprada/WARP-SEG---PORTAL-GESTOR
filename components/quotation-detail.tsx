@@ -4,25 +4,40 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { ArrowLeft, Printer } from "lucide-react" // Importei ArrowLeft
+import { ArrowLeft, Printer, FileText } from "lucide-react" // Importei ArrowLeft
 import Image from "next/image"
 import { PageHeader } from "./PageHeader"
 import { type Quotation } from "@/lib/types" // Importa o tipo central
 import { DocumentFooter } from "./DocumentFooter"
 
+// --- Bloco de Constantes de Neutralização ---
+const brandMascot = process.env.NEXT_PUBLIC_BRAND_MASCOT_URL;
+const brandName = process.env.NEXT_PUBLIC_BRAND_NAME;
+const brandSlogan = process.env.NEXT_PUBLIC_BRAND_SLOGAN;
+const brandPhone = process.env.NEXT_PUBLIC_BRAND_PHONE;
+const brandEmail = process.env.NEXT_PUBLIC_BRAND_EMAIL;
+const brandWebsite = process.env.NEXT_PUBLIC_BRAND_WEBSITE;
+const brandCnpj = process.env.NEXT_PUBLIC_BRAND_CNPJ;
+const brandAddress = process.env.NEXT_PUBLIC_BRAND_ADDRESS;
+const brandCity = process.env.NEXT_PUBLIC_BRAND_CITY;
+const brandIcon = process.env.NEXT_PUBLIC_BRAND_ICON;
+const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL;
+
 interface QuotationDetailProps {
   quotation: Quotation;
   onBack: () => void;
   onLogout: () => void;
+  onViewQuotationList: () => void;
+  onConvertToBudget: (quotation: any) => void;
 }
 
 const statusColors: { [key: string]: string } = {
   "Em cotação": "bg-blue-100 text-blue-800",
   "Aprovado": "bg-green-100 text-green-800",
-  "Cancelado": "bg-red-100 text-red-800",
+  "Cancelado": "bg-destructive/20 text-red-800",
 };
 
-export function QuotationDetail({ quotation, onBack, onLogout }: QuotationDetailProps) {
+export function QuotationDetail({ quotation, onBack, onLogout, onViewQuotationList, onConvertToBudget }: QuotationDetailProps) {
   
   // --- FUNÇÕES DE CÁLCULO (Replicadas para exibição) ---
   const { itens_cotados = [], porcentagem_lucro = 0 } = quotation;
@@ -45,10 +60,15 @@ export function QuotationDetail({ quotation, onBack, onLogout }: QuotationDetail
 
       {/* Cabeçalho da página (só aparece na tela) */}
       <div className="no-print sticky top-0 bg-background border-b p-4 flex justify-between items-center print:hidden">
-        <Button variant="outline" onClick={onBack} className="gap-2 text-red-600 border-red-200 hover:bg-red-50">
+        <Button variant="outline" onClick={onViewQuotationList} className="gap-2 text-destructive border-destructive/40 hover:bg-destructive/10">
           <ArrowLeft className="h-4 w-4" /> Voltar para a Lista
         </Button>
-        <Button onClick={handlePrint} className="gap-2 bg-red-600 hover:bg-red-700">
+        <Button
+            onClick={() => onConvertToBudget(quotation)}
+            className="bg-destructive hover:bg-destructive/90 gap-2">
+            <FileText className="h-4 w-4" /> Converter em Orçamento
+          </Button>
+        <Button onClick={handlePrint} className="gap-2 bg-destructive hover:bg-destructive/90">
           <Printer className="h-4 w-4" /> Imprimir / Salvar PDF
         </Button>
       </div>
@@ -61,24 +81,26 @@ export function QuotationDetail({ quotation, onBack, onLogout }: QuotationDetail
             {/* 1. Cabeçalho do Documento */}
             <div className="print-header mb-3">
               <div className="flex justify-between items-start mb-2">
-                <Image src="/images/warp-logo.png" alt="WARP" width={708} height={256} quality={100} className="h-8 w-auto print:h-10" />
+                {brandLogo && (
+                <Image src={brandLogo} alt="Logo" width={708} height={256} quality={100} className="h-8 w-auto print:h-10" />  )}
                 <div className="text-right">
-                  <div className="text-xl font-bold text-red-600 mb-1 print:text-2xl">COTAÇÃO INTERNA</div>
+                  <div className="text-xl font-bold text-destructive mb-1 print:text-2xl">COTAÇÃO INTERNA</div>
                   <Badge className={statusColors[quotation.status] || 'bg-gray-100'}>{quotation.status}</Badge>
                 </div>
               </div>
-              <div className="bg-red-50 border border-red-200 rounded p-1.5 mb-2">
-                <div className="text-xs text-gray-700 flex flex-wrap gap-x-3 gap-y-0">
-                  <span><strong>CNPJ:</strong> 35.550.155/0001-86</span>
-                  <span><strong>End.:</strong> Rua Barros Cassal, 35 - Jardim Bom Clima</span>
-                  <span><strong>Cidade:</strong> Guarulhos, SP - CEP: 07196-270</span>
-                </div>
+            <Separator className="mb-4 print:mb-3" />
+
+            <div className="bg-destructive/10 p-3 rounded-lg mb-4 print:mb-3 print:p-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs print:text-xs">
+                <div><p className="font-semibold text-destructive">{brandName}</p><p>{brandCnpj}</p></div>
+                <div><p>{brandAddress}</p><p>{brandCity}</p></div>
               </div>
+            </div>
             </div>
 
             {/* 2. Informações Gerais da Cotação */}
             <div className="mb-3">
-              <h2 className="text-base font-semibold mb-1 text-red-600 border-b border-red-200 pb-0.5">INFORMAÇÕES GERAIS</h2>
+              <h2 className="text-base font-semibold mb-1 text-destructive border-b border-destructive/40 pb-0.5">INFORMAÇÕES GERAIS</h2>
               <div className="bg-gray-50 border border-gray-200 p-1.5 rounded text-xs grid grid-cols-1 md:grid-cols-3 gap-2">
                 <p><strong>Nome da Cotação:</strong> {quotation.nome_cotacao}</p>
                 <p><strong>Margem de Lucro:</strong> {quotation.porcentagem_lucro}%</p>
@@ -88,10 +110,10 @@ export function QuotationDetail({ quotation, onBack, onLogout }: QuotationDetail
 
             {/* 3. Tabela de Itens e Custos */}
             <div className="mb-3">
-              <h2 className="text-base font-semibold mb-1 text-red-600 border-b border-red-200 pb-0.5">ITENS E CÁLCULO DE CUSTO</h2>
-              <div className="border border-red-200 rounded overflow-hidden">
+              <h2 className="text-base font-semibold mb-1 text-destructive border-b border-destructive/40 pb-0.5">ITENS E CÁLCULO DE CUSTO</h2>
+              <div className="border border-destructive/40 rounded overflow-hidden">
                 <table className="w-full text-xs products-table">
-                  <thead className="bg-red-100 text-black font-bold table-print-header">
+                  <thead className="bg-destructive/20 text-black font-bold table-print-header">
                     <tr>
                       <th className="p-1.5 font-semibold text-left">Descrição</th>
                       <th className="p-1.5 font-semibold text-left">Fornecedor</th>
@@ -110,14 +132,14 @@ export function QuotationDetail({ quotation, onBack, onLogout }: QuotationDetail
                       const lucroItem = precoVendaTotalItem - custoTotalItem;
                       
                       return (
-                        <tr key={index} className="border border-red-200 p-2 print:p-1">
-                          <td className="border border-red-200 p-1.5 print:p-1">{item.descricao}</td>
-                          <td className="border border-red-200 p-1.5 print:p-1">{item.fornecedor}</td>
-                          <td className="border border-red-200 p-1.5 print:p-1 text-center">{item.quantidade}</td>
-                          <td className="border border-red-200 p-1.5 print:p-1 text-right">{item.custo_unitario.toFixed(2)}</td>
-                          <td className="border border-red-200 p-1.5 print:p-1 text-right">{custoTotalItem.toFixed(2)}</td>
-                          <td className="border border-red-200 p-1.5 print:p-1 text-right text-green-600 font-medium">{lucroItem.toFixed(2)}</td>
-                          <td className="border border-red-200 p-1.5 print:p-1 text-right font-semibold text-red-600">{precoVendaTotalItem.toFixed(2)}</td>
+                        <tr key={index} className="border border-destructive/40 p-2 print:p-1">
+                          <td className="border border-destructive/40 p-1.5 print:p-1">{item.descricao}</td>
+                          <td className="border border-destructive/40 p-1.5 print:p-1">{item.fornecedor}</td>
+                          <td className="border border-destructive/40 p-1.5 print:p-1 text-center">{item.quantidade}</td>
+                          <td className="border border-destructive/40 p-1.5 print:p-1 text-right">{item.custo_unitario.toFixed(2)}</td>
+                          <td className="border border-destructive/40 p-1.5 print:p-1 text-right">{custoTotalItem.toFixed(2)}</td>
+                          <td className="border border-destructive/40 p-1.5 print:p-1 text-right text-green-600 font-medium">{lucroItem.toFixed(2)}</td>
+                          <td className="border border-destructive/40 p-1.5 print:p-1 text-right font-semibold text-destructive">{precoVendaTotalItem.toFixed(2)}</td>
                         </tr>
                       );
                     })}
@@ -132,21 +154,22 @@ export function QuotationDetail({ quotation, onBack, onLogout }: QuotationDetail
                 <div className="flex justify-between"><span>Custo Total Geral:</span><span className="font-semibold">R$ {custoTotal.toFixed(2)}</span></div>
                 <div className="flex justify-between"><span>Lucro Total Estimado:</span><span className="font-semibold text-green-600">R$ {valorLucro.toFixed(2)}</span></div>
                 <Separator/>
-                <div className="flex justify-between text-base font-bold text-red-600"><span>Preço Venda Final (Sugestão):</span><span>R$ {precoFinalVenda.toFixed(2)}</span></div>
+                <div className="flex justify-between text-base font-bold text-destructive"><span>Preço Venda Final (Sugestão):</span><span>R$ {precoFinalVenda.toFixed(2)}</span></div>
               </div>
             </div>
 
             {/* 5. Rodapé Padrão */}
             <div className="space-y-3 print:space-y-2 mt-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 print:gap-2">
-                  <div className="border border-red-200 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">ASSINATURA E CARIMBO:</p><div className="h-12 print:h-8"></div><div className="border-t border-red-200 pt-1"><p className="text-xs text-center">WARP SEGURANÇA ELETRÔNICA</p></div></div>
-                  <div className="border border-red-200 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">SITUAÇÃO:</p><div className="h-12 print:h-8"></div><div className="border-t border-red-200 pt-1"><p className="text-xs text-center">PROPOSTA APROVADA</p></div></div>
+                  <div className="border border-destructive/40 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">ASSINATURA E CARIMBO:</p><div className="h-12 print:h-8"></div><div className="border-t border-destructive/40 pt-1"><p className="text-xs text-center">{brandName}</p></div></div>
+                  <div className="border border-destructive/40 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">SITUAÇÃO:</p><div className="h-12 print:h-8"></div><div className="border-t border-destructive/40 pt-1"><p className="text-xs text-center">PROPOSTA APROVADA</p></div></div>
               </div>
             </div>
             <div className="grid grid-cols-3 items-center mt-8 print:mt-4">
               <div></div>
               <div className="flex justify-center">
-                <Image alt="warpicon" width={375} height={463} quality={100} className="w-auto h-15 opacity-100 print:h-8 object-contain" src="/images/warpicon.png" />
+                {brandIcon && (
+                <Image alt="Icon" width={375} height={463} quality={100} className="w-auto h-15 opacity-100 print:h-8 object-contain" src={brandIcon} /> )}
               </div>
               <div className="flex justify-end">
 
@@ -154,8 +177,8 @@ export function QuotationDetail({ quotation, onBack, onLogout }: QuotationDetail
               </div>
             </div>
           </CardContent>
-          <div> </div>
-          <div><DocumentFooter /> </div>
+          <div></div>
+          <DocumentFooter />
         </Card>
       </div>
     </div>

@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Eye, Trash2, PlusCircle, Search, FilePlus  } from "lucide-react";
 import Image from "next/image";
 
+const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL;
+
 
 interface SavedBudget {
   id: string;
@@ -26,7 +28,7 @@ interface SavedBudget {
 interface BudgetListProps { onBack: () => void; onViewBudget: (budget: any) => void; onAddBudget: () => void; }
 
 const statusLabels = { "em-aberto": "Em Aberto", instalando: "Instalando", concluido: "Concluído", cancelado: "Cancelado" };
-const statusColors = { "em-aberto": "bg-yellow-100 text-yellow-800 border-yellow-200", instalando: "bg-blue-100 text-blue-800 border-blue-200", concluido: "bg-green-100 text-green-800 border-green-200", cancelado: "bg-red-100 text-red-800 border-red-200" };
+const statusColors = { "em-aberto": "bg-yellow-100 text-yellow-800 border-yellow-200", instalando: "bg-blue-100 text-blue-800 border-blue-200", concluido: "bg-green-100 text-green-800 border-green-200", cancelado: "bg-destructive/20 text-red-800 border-destructive/40" };
 
 export function BudgetList({ onBack, onViewBudget, onAddBudget  }: BudgetListProps) {
   const [budgets, setBudgets] = useState<SavedBudget[]>([]);
@@ -86,12 +88,13 @@ export function BudgetList({ onBack, onViewBudget, onAddBudget  }: BudgetListPro
       <div className="mb-8">
   {/* Novo Cabeçalho com Logo no Centro */}
   <div className="flex items-center justify-between mb-6">
-    <Button variant="outline" onClick={onBack} className="gap-2 text-red-600 border-red-200 hover:bg-red-50">
+    <Button variant="outline" onClick={onBack} className="gap-2 text-destructive border-destructive/40 hover:bg-destructive/10">
       <ArrowLeft className="h-4 w-4" />
       Voltar ao Menu
     </Button>
-    <Image src="/images/warp-logo.png" alt="WARP" width={708} height={256} quality={100} className="h-10 w-auto" />
-    <Button onClick={onAddBudget} className="gap-2 bg-red-600 hover:bg-red-700">
+    {brandLogo && (
+    <Image src={brandLogo} alt="Logo" width={708} height={256} quality={100} className="h-10 w-auto" /> )}
+    <Button onClick={onAddBudget} className="gap-2 bg-destructive hover:bg-destructive/90">
             {/* ÍCONE ALTERADO AQUI */}
             <FilePlus className="h-4 w-4" />
             Criar Novo Orçamento
@@ -99,7 +102,7 @@ export function BudgetList({ onBack, onViewBudget, onAddBudget  }: BudgetListPro
         </div>
 
        
-  <h1 className="text-3xl font-bold text-red-600 mb-2 text-center">Controle de Orçamentos</h1>
+  <h1 className="text-3xl font-bold text-destructive mb-2 text-center">Controle de Orçamentos</h1>
   <p className="text-muted-foreground text-center">Visualize e gerencie todos os orçamentos gerados</p>
 </div>
 
@@ -139,7 +142,7 @@ export function BudgetList({ onBack, onViewBudget, onAddBudget  }: BudgetListPro
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                    <h3 className="text-lg font-semibold text-red-600">{budget.budgetNumber}</h3>
+                    <h3 className="text-lg font-semibold text-destructive">{budget.budgetNumber}</h3>
                     <p className="text-sm text-muted-foreground">
                       Criado em {new Date(budget.created_at).toLocaleDateString("pt-BR")}
                     </p>
@@ -153,7 +156,7 @@ export function BudgetList({ onBack, onViewBudget, onAddBudget  }: BudgetListPro
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-600">Valor Total</p>
-                    <p className="text-sm font-semibold text-red-600">
+                    <p className="text-sm font-semibold text-destructive">
                       R$ {budget.totalValue.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                     </p>
                   </div>
@@ -181,10 +184,10 @@ export function BudgetList({ onBack, onViewBudget, onAddBudget  }: BudgetListPro
                     </Select>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => onViewBudget(budget)} className="gap-2 border-red-200 text-red-600 hover:bg-red-50">
+                    <Button variant="outline" size="sm" onClick={() => onViewBudget(budget)} className="gap-2 border-destructive/40 text-destructive hover:bg-destructive/10">
                       <Eye className="h-4 w-4" /> Visualizar
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => deleteBudget(budget.id)} className="gap-2 border-red-200 text-red-600 hover:bg-red-50">
+                    <Button variant="outline" size="sm" onClick={() => deleteBudget(budget.id)} className="gap-2 border-destructive/40 text-destructive hover:bg-destructive/10">
                       <Trash2 className="h-4 w-4" /> Excluir
                     </Button>
                   </div>

@@ -27,7 +27,8 @@ interface ServiceOrderListProps {
 }
 
 const statusLabels = { agendado: "Agendado", "em-andamento": "Em Andamento", concluido: "Concluído", cancelado: "Cancelado" };
-const statusColors = { agendado: "bg-yellow-100 text-yellow-800 border-yellow-200", "em-andamento": "bg-blue-100 text-blue-800 border-blue-200", concluido: "bg-green-100 text-green-800 border-green-200", cancelado: "bg-red-100 text-red-800 border-red-200" };
+const statusColors = { agendado: "bg-yellow-100 text-yellow-800 border-yellow-200", "em-andamento": "bg-blue-100 text-blue-800 border-blue-200", concluido: "bg-green-100 text-green-800 border-green-200", cancelado: "bg-destructive/20 text-red-800 border-destructive/40" };
+const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL;
 
 export function ServiceOrderList({ onBack, onViewServiceOrder, onAddServiceOrder  }: ServiceOrderListProps) {
   const [serviceOrders, setServiceOrders] = useState<SavedServiceOrder[]>([]) 
@@ -73,20 +74,21 @@ export function ServiceOrderList({ onBack, onViewServiceOrder, onAddServiceOrder
         <div className="mb-8">
   {/* Novo Cabeçalho com Logo no Centro */}
   <div className="flex items-center justify-between mb-6">
-    <Button variant="outline" onClick={onBack} className="gap-2 text-red-600 border-red-200 hover:bg-red-50">
+    <Button variant="outline" onClick={onBack} className="gap-2 text-destructive border-destructive/40 hover:bg-destructive/10">
       <ArrowLeft className="h-4 w-4" />
       Voltar ao Menu
     </Button>
-    <Image src="/images/warp-logo.png" alt="WARP" width={708} height={256} quality={100} className="h-10 w-auto" />
-    <Button onClick={onAddServiceOrder} className="gap-2 bg-red-600 hover:bg-red-700">
+    {brandLogo && (
+    <Image src={brandLogo} alt="Logo" width={708} height={256} quality={100} className="h-10 w-auto" /> )}
+    <Button onClick={onAddServiceOrder} className="gap-2 bg-destructive hover:bg-destructive/90">
               <span className="flex items-center">
                 <Wrench className="h-4 w-4" />
                 <Plus className="h-3 w-3 -ml-1.5 -translate-y-1" />
               </span>
-              Criar Nova O.S.
+              Criar Nova O.S
             </Button>
           </div>
-  <h1 className="text-3xl font-bold text-red-600 mb-2 text-center">Controle de Ordens de Serviço</h1>
+  <h1 className="text-3xl font-bold text-destructive mb-2 text-center">Controle de Ordens de Serviço</h1>
   <p className="text-muted-foreground text-center">Visualize e gerencie todas as ordens de serviço geradas</p>
 </div>
 
@@ -95,7 +97,7 @@ export function ServiceOrderList({ onBack, onViewServiceOrder, onAddServiceOrder
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input 
               type="text"
-              placeholder="Buscar por cliente, nº da O.S. ou status..."
+              placeholder="Buscar por cliente, nº da O.S ou status..."
               className="pl-10"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -107,14 +109,14 @@ export function ServiceOrderList({ onBack, onViewServiceOrder, onAddServiceOrder
         : (
           <div className="space-y-4">
             {filteredServiceOrders.length === 0 && (
-              <Card><CardContent className="text-center py-12 text-muted-foreground">Nenhuma O.S. encontrada para a busca "{searchTerm}"</CardContent></Card>
+              <Card><CardContent className="text-center py-12 text-muted-foreground">Nenhuma O.S encontrada para a busca "{searchTerm}"</CardContent></Card>
             )}
             {filteredServiceOrders.map((order) => (
               <Card key={order.id} className="border-red-100">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <h3 className="text-lg font-semibold text-red-600">{order.osnumber || 'Nº Indisponível'}</h3> 
+                      <h3 className="text-lg font-semibold text-destructive">{order.osnumber || 'Nº Indisponível'}</h3> 
                       <p className="text-sm text-muted-foreground">Criado em {(order.created_at && new Date(order.created_at).toLocaleDateString("pt-BR")) || 'Data Indisponível'}</p>
                     </div>
                     <Badge className={statusColors[order.status as keyof typeof statusColors]}>{statusLabels[order.status as keyof typeof statusLabels]}</Badge>
@@ -135,11 +137,11 @@ export function ServiceOrderList({ onBack, onViewServiceOrder, onAddServiceOrder
                     <div className="flex flex-wrap gap-2 justify-end">
                       {order.status !== 'concluido' && order.status !== 'cancelado' && (
                         <Button variant="outline" size="sm" onClick={() => openFinalizeModal(order)} className="gap-2 border-green-200 text-green-600 hover:bg-green-50">
-                          <CheckCircle className="h-4 w-4" /> Finalizar O.S.
+                          <CheckCircle className="h-4 w-4" /> Finalizar O.S
                         </Button>
                       )}
-                      <Button variant="outline" size="sm" onClick={() => onViewServiceOrder(order)} className="gap-2 border-red-200 text-red-600 hover:bg-red-50"><Eye className="h-4 w-4" /> Visualizar</Button>
-                      <Button variant="outline" size="sm" onClick={() => deleteServiceOrder(order.id)} className="gap-2 border-red-200 text-red-600 hover:bg-red-50"><Trash2 className="h-4 w-4" /> Excluir</Button>
+                      <Button variant="outline" size="sm" onClick={() => onViewServiceOrder(order)} className="gap-2 border-destructive/40 text-destructive hover:bg-destructive/10"><Eye className="h-4 w-4" /> Visualizar</Button>
+                      <Button variant="outline" size="sm" onClick={() => deleteServiceOrder(order.id)} className="gap-2 border-destructive/40 text-destructive hover:bg-destructive/10"><Trash2 className="h-4 w-4" /> Excluir</Button>
                     </div>
                   </div>
                 </CardContent>
@@ -151,15 +153,15 @@ export function ServiceOrderList({ onBack, onViewServiceOrder, onAddServiceOrder
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Finalizar Ordem de Serviço: {selectedOrder?.osnumber}</DialogTitle>
-          <DialogDescription>Descreva o que foi executado. Este texto será salvo como o relatório final da O.S.</DialogDescription>
+          <DialogDescription>Descreva o que foi executado. Este texto será salvo como o relatório final da O.S</DialogDescription>
         </DialogHeader>
         <div className="py-4 space-y-2">
             <Label htmlFor="report">Relatório de Execução</Label>
             <Textarea id="report" value={reportText} onChange={(e) => setReportText(e.target.value)} rows={8} placeholder="Ex: Foi realizada a troca da câmera do portão. Equipamento testado e funcionando perfeitamente." />
         </div>
         <DialogFooter>
-          <DialogClose asChild><Button variant="ghost" className="gap-2 border-red-200 text-red-600 hover:bg-red-50">Cancelar</Button></DialogClose>
-          <Button onClick={handleFinalizeOS} disabled={isSavingReport} className="gap-2 bg-red-600 hover:bg-red-700">{isSavingReport ?  "Salvando..." :  "Salvar e Concluir O.S."}</Button>
+          <DialogClose asChild><Button variant="ghost" className="gap-2 border-destructive/40 text-destructive hover:bg-destructive/10">Cancelar</Button></DialogClose>
+          <Button onClick={handleFinalizeOS} disabled={isSavingReport} className="gap-2 bg-destructive hover:bg-destructive/90">{isSavingReport ?  "Salvando..." :  "Salvar e Concluir O.S"}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

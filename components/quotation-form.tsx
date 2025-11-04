@@ -139,13 +139,27 @@ const handleSave = async (): Promise<boolean> => { // Modificado para retornar u
     return true;
   };
 
-  const handleSaveAndGoBack = async () => {
-    const success = await handleSave();
-    if (success) {
-      alert(quotationToEdit ? "Cotação atualizada com sucesso!" : "Cotação salva com sucesso!");
-      onBack();
-    }
+const handleSaveAndGoBack = async () => {
+  const success = await handleSave();
+
+  if (success) {
+    // ✅ Mostra aviso temporário (sem travar o fluxo)
+    const successMsg = document.createElement("div");
+    successMsg.textContent = quotationToEdit
+      ? "Cotação atualizada com sucesso!"
+      : "Cotação salva com sucesso!";
+    successMsg.className =
+      "fixed bottom-6 right-6 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50";
+    document.body.appendChild(successMsg);
+
+    // ⏳ Espera 2.5s e troca para tela de visualização
+    setTimeout(() => {
+      successMsg.remove();
+      onViewQuotationList(); // muda de tela para o preview
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }, 2500);
   }
+};
 
   // --- NOVA FUNÇÃO PARA SALVAR E CONVERTER ---
   const handleConvertToBudget = async () => {
@@ -174,7 +188,7 @@ const handleSave = async (): Promise<boolean> => { // Modificado para retornar u
             <CardContent className="space-y-4">
               {quotation.itens_cotados.map(item => (
                 <div key={item.id} className="p-4 border rounded-lg space-y-3 relative bg-slate-50">
-                  <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)} className="absolute -top-2 -right-2 h-6 w-6 bg-red-100 text-red-600 hover:bg-red-200"><Trash2 className="h-4 w-4" /></Button>
+                  <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)} className="absolute -top-2 -right-2 h-6 w-6 bg-destructive/20 text-destructive hover:bg-red-200"><Trash2 className="h-4 w-4" /></Button>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="md:col-span-2"><Label>Descrição do Item</Label><Input value={item.descricao} onChange={e => handleItemChange(item.id, "descricao", e.target.value)} /></div>
                     <div><Label>Fornecedor</Label><Input value={item.fornecedor} onChange={e => handleItemChange(item.id, "fornecedor", e.target.value)} /></div>
@@ -186,7 +200,7 @@ const handleSave = async (): Promise<boolean> => { // Modificado para retornar u
                       <div><span className="text-muted-foreground">Custo Total:</span><p className="font-semibold text-slate-700">R$ {item.custo_total_item.toFixed(2)}</p></div>
                       <div><span className="text-muted-foreground">Rev. Unit. (R$):</span><p className="font-semibold text-slate-700">R$ {item.preco_venda_unitario.toFixed(2)}</p></div>
                       <div><span className="text-muted-foreground">Lucro (R$):</span><p className="font-semibold text-green-600">R$ {item.lucro_item.toFixed(2)}</p></div>
-                      <div><span className="text-muted-foreground">Rev. Total (R$):</span><p className="font-semibold text-red-600">R$ {item.preco_venda_total_item.toFixed(2)}</p></div>
+                      <div><span className="text-muted-foreground">Rev. Total (R$):</span><p className="font-semibold text-destructive">R$ {item.preco_venda_total_item.toFixed(2)}</p></div>
                   </div>
                 </div>
               ))}
@@ -200,14 +214,14 @@ const handleSave = async (): Promise<boolean> => { // Modificado para retornar u
               <div className="flex justify-between"><span>Custo Total dos Materiais:</span><span className="font-medium">R$ {custoTotal.toFixed(2)}</span></div>
               <div className="flex justify-between"><span>Valor Total do Lucro:</span><span className="font-medium text-green-600">R$ {valorLucro.toFixed(2)}</span></div>
               <Separator/>
-              <div className="flex justify-between text-base font-bold text-red-600"><span>Preço Final de Venda (Total):</span><span>R$ {precoFinalVenda.toFixed(2)}</span></div>
+              <div className="flex justify-between text-base font-bold text-destructive"><span>Preço Final de Venda (Total):</span><span>R$ {precoFinalVenda.toFixed(2)}</span></div>
             </CardContent>
           </Card>
 
           <div className="flex justify-end gap-2">
             {/* <Button variant="outline" onClick={() => window.print()} className="gap-2"><Printer className="h-4 w-4"/>Imprimir / Salvar PDF</Button> */}
-            <Button onClick={handleSave} disabled={isLoading} className="gap-2 border-red-200 text-red-600 hover:bg-red-50 bg-transparent"><Save className="h-4 w-4"/>{isLoading ? "Salvando..." : (quotationToEdit ? "Salvar Alterações" : "Salvar Cotação")}</Button>
-           <Button onClick={handleConvertToBudget} disabled={isLoading} className="gap-2 bg-red-600 hover:bg-red-700"> <FileText className="h-4 w-4"/> {isLoading ? "Salvando..." : "Converter em Orçamento"} </Button>
+            <Button onClick={handleSaveAndGoBack} disabled={isLoading} className="gap-2 border-destructive/40 text-destructive hover:bg-destructive/10 bg-transparent"><Save className="h-4 w-4"/>{isLoading ? "Salvando..." : (quotationToEdit ? "Salvar Alterações" : "Salvar Cotação")}</Button>
+           <Button onClick={handleConvertToBudget} disabled={isLoading} className="gap-2 bg-destructive hover:bg-destructive/90"> <FileText className="h-4 w-4"/> {isLoading ? "Salvando..." : "Converter em Orçamento"} </Button>
           </div>
         </div>
       </div>

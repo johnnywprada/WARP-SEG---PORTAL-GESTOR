@@ -23,17 +23,17 @@ export function PageHeader({ title, onBackToMenu, onLogout, onViewList, viewList
   onClick={onBackToMenu} 
   variant="outline" 
   size="sm" 
-  className="gap-2 text-red-600 border-red-200 hover:bg-red-50"
+  className="gap-2 text-destructive border-destructive/40 hover:bg-destructive/10"
 >
   <ArrowLeft className="h-4 w-4" /> Voltar ao Menu
 </Button>
           {onViewList && viewListText && (
-            <Button onClick={onViewList} variant="outline" size="sm" className="text-red-600 border-red-200 hover:bg-red-50 bg-transparent">
+            <Button onClick={onViewList} variant="outline" size="sm" className="text-destructive border-destructive/40 hover:bg-destructive/10 bg-transparent">
               <List className="h-4 w-4 mr-2" />
               {viewListText}
             </Button>
           )}
-          <Button onClick={onLogout} variant="outline" size="sm" className="text-red-600 border-red-200 hover:bg-red-50 bg-transparent">
+          <Button onClick={onLogout} variant="outline" size="sm" className="text-destructive border-destructive/40 hover:bg-destructive/10 bg-transparent">
             <LogOut className="h-4 w-4 mr-2" />
             Sair
           </Button>

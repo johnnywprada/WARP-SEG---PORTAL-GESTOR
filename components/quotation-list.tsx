@@ -12,6 +12,8 @@ import Image from "next/image"
 import { PageHeader } from "./PageHeader"
 import { type Quotation } from "@/lib/types"
 
+const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL;
+
 interface QuotationListProps {
   onBack: () => void;
   onLogout: () => void;
@@ -23,7 +25,7 @@ interface QuotationListProps {
 const statusColors: { [key: string]: string } = {
   "Em cotação": "bg-blue-100 text-blue-800",
   "Aprovado": "bg-green-100 text-green-800",
-  "Cancelado": "bg-red-100 text-red-800",
+  "Cancelado": "bg-destructive/20 text-red-800",
 };
 
 export function QuotationList({ onBack, onLogout, onAddQuotation, onEditQuotation, onViewQuotation }: QuotationListProps) {
@@ -81,12 +83,13 @@ export function QuotationList({ onBack, onLogout, onAddQuotation, onEditQuotatio
 <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-8">
         <div className="flex items-center justify-between gap-4 mb-6">
-          <Button variant="outline" onClick={onBack} className="gap-2 text-red-600 border-red-200 hover:bg-red-50">
+          <Button variant="outline" onClick={onBack} className="gap-2 text-destructive border-destructive/40 hover:bg-destructive/10">
             <ArrowLeft className="h-4 w-4" />
             Voltar ao Menu
           </Button>
-          <Image src="/images/warp-logo.png" alt="WARP" width={708} height={256} quality={100} className="h-10 w-auto" />
-          <Button onClick={onAddQuotation} className="gap-2 bg-red-600 hover:bg-red-700">
+          {brandLogo && (
+          <Image src={brandLogo} alt="Logo" width={708} height={256} quality={100} className="h-10 w-auto" /> )}
+          <Button onClick={onAddQuotation} className="gap-2 bg-destructive hover:bg-destructive/90">
               <span className="flex items-center">
                 <Calculator className="h-4 w-4" />
                 <Plus className="h-3 w-3 -ml-1.5 -translate-y-1" />
@@ -94,7 +97,7 @@ export function QuotationList({ onBack, onLogout, onAddQuotation, onEditQuotatio
             Criar Nova Cotação
           </Button>
         </div>
-        <h1 className="text-3xl font-bold text-red-600 mb-2 text-center">Cotações</h1>
+        <h1 className="text-3xl font-bold text-destructive mb-2 text-center">Cotações</h1>
         <p className="text-muted-foreground text-center">Calcule custos e margens para seus orçamentos</p>
       </div>
 
@@ -147,9 +150,9 @@ export function QuotationList({ onBack, onLogout, onAddQuotation, onEditQuotatio
                            </Select>
                         </div>
                         <div className="flex gap-2">
-                         <Button variant="outline" size="sm" onClick={() => onViewQuotation(quotation)} className="gap-2 text-red-600 hover:text-red-600 border-red-200 hover:bg-red-50"> <Eye className="h-4 w-4" /> Visualizar </Button>
-                         <Button variant="outline" size="sm" onClick={() => onEditQuotation(quotation)} className="gap-2 text-red-600 hover:text-red-600 border-red-200 hover:bg-red-50"> <Edit className="h-4 w-4" /> Editar </Button>
-                         <Button variant="outline" size="sm" onClick={() => deleteQuotation(quotation.id)} className="gap-2 text-red-600 hover:text-red-600 border-red-200 hover:bg-red-50"> <Trash2 className="h-4 w-4" /> Excluir </Button>
+                         <Button variant="outline" size="sm" onClick={() => onViewQuotation(quotation)} className="gap-2 text-destructive hover:text-destructive border-destructive/40 hover:bg-destructive/10"> <Eye className="h-4 w-4" /> Visualizar </Button>
+                         <Button variant="outline" size="sm" onClick={() => onEditQuotation(quotation)} className="gap-2 text-destructive hover:text-destructive border-destructive/40 hover:bg-destructive/10"> <Edit className="h-4 w-4" /> Editar </Button>
+                         <Button variant="outline" size="sm" onClick={() => deleteQuotation(quotation.id)} className="gap-2 text-destructive hover:text-destructive border-destructive/40 hover:bg-destructive/10"> <Trash2 className="h-4 w-4" /> Excluir </Button>
                         </div>
                     </div>
                 </CardContent>

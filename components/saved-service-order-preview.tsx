@@ -34,7 +34,7 @@ export function SavedServiceOrderPreview({ serviceOrder, onBack }: SavedServiceO
         <Button
           variant="outline"
           onClick={onBack}
-          className="gap-2 bg-transparent border-red-200 text-red-600 hover:bg-red-50"
+          className="gap-2 bg-transparent border-destructive/40 text-destructive hover:bg-destructive/10"
         >
           <ArrowLeft className="h-4 w-4" />
           Voltar à Lista

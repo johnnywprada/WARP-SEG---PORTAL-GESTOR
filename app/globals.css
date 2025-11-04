@@ -137,7 +137,7 @@
   /* Estilos principais do conteúdo que será impresso */
   .print-page {
     margin: 0 auto !important;
-    padding: 1cm 1cm 1.5cm 1cm !important; /* espaço interno (top, right, bottom, left) */
+    padding: 1cm 1cm 1cm 1cm !important; /* espaço interno (top, right, bottom, left) */
     border: none !important;
     box-shadow: none !important;
     width: 100% !important;

@@ -11,12 +11,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { User, HardDrive, PlusCircle, Trash2, Save } from "lucide-react"
 import { PageHeader } from "./PageHeader"
 import { type SavedClient } from "@/lib/types"
+import { equipmentTypes } from "@/lib/constants"
 
 
 // --- LISTA PRÉ-DEFINIDA DE EQUIPAMENTOS ---
-const equipmentTypes = [
-  { value: "dvr", label: "DVR (Gravador)" }, { value: "nvr", label: "NVR (Gravador de Rede)" }, { value: "camera_bullet", label: "Câmera Bullet" }, { value: "camera_dome", label: "Câmera Dome" }, { value: "camera_ip", label: "Câmera IP" }, { value: "central_alarme", label: "Central de Alarme" }, { value: "sensor_presenca", label: "Sensor de Presença (IVP)" }, { value: "sensor_magnetico", label: "Sensor Magnético (Abertura)" }, { value: "sirene", label: "Sirene" }, { value: "controladora_acesso", label: "Controladora de Acesso" }, { value: "leitor_biometrico", label: "Leitor Biométrico" }, { value: "leitor_cartao", label: "Leitor de Cartão (Tag)" }, { value: "fechadura_eletromagnetica", label: "Fechadura Eletromagnética" }, { value: "fechadura_eletrica", label: "Fechadura Elétrica (Eletroímã)" }, { value: "botoeira", label: "Botoeira (Botão de Saída)" }, { value: "cerca_eletrica", label: "Central de Cerca Elétrica" }, { value: "video_porteiro", label: "Vídeo Porteiro" }, { value: "nobreak", label: "Nobreak" }, { value: "fonte_alimentacao", label: "Fonte de Alimentação" }, { value: "outros", label: "Outros" },
-];
+// const equipmentTypes = [
+//   { value: "dvr", label: "DVR (Gravador)" }, { value: "nvr", label: "NVR (Gravador de Rede)" }, { value: "camera_bullet", label: "Câmera Bullet" }, { value: "camera_dome", label: "Câmera Dome" }, { value: "camera_ip", label: "Câmera IP" }, { value: "central_alarme", label: "Central de Alarme" }, { value: "sensor_presenca", label: "Sensor de Presença (IVP)" }, { value: "sensor_magnetico", label: "Sensor Magnético (Abertura)" }, { value: "sirene", label: "Sirene" }, { value: "controladora_acesso", label: "Controladora de Acesso" }, { value: "leitor_biometrico", label: "Leitor Biométrico" }, { value: "leitor_cartao", label: "Leitor de Cartão (Tag)" }, { value: "fechadura_eletromagnetica", label: "Fechadura Eletromagnética" }, { value: "fechadura_eletrica", label: "Fechadura Elétrica (Eletroímã)" }, { value: "botoeira", label: "Botoeira (Botão de Saída)" }, { value: "cerca_eletrica", label: "Central de Cerca Elétrica" }, { value: "video_porteiro", label: "Vídeo Porteiro" }, { value: "nobreak", label: "Nobreak" }, { value: "fonte_alimentacao", label: "Fonte de Alimentação" }, { value: "outros", label: "Outros" },
+// ];
 
 // --- TIPOS E INTERFACES ---
 interface DadosTecnicos { numero_serie?: string; usuario_admin?: string; senha_admin?: string; acesso_remoto?: string; senha_instalador?: string; senha_master?: string; zonas?: string; observacoes_equipamento?: string; senha_acesso_remoto?: string; }
@@ -61,13 +62,13 @@ export function ClientForm({ onBack, clientToEdit, onBackToMenu, onViewList, onL
     if (clientToEdit) {
       const { error } = await supabase.from('clientes').update(client).eq('id', clientToEdit.id);
       if (error) { alert("Falha ao atualizar cliente."); console.error("Erro no Supabase:", error); } 
-      else { alert("Cliente atualizado com sucesso!"); onBack(); }
+      else { alert("Cliente atualizado com sucesso!"); onViewList(); }
     } else {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { alert("Erro de autenticação."); setIsLoading(false); return; }
       const { error } = await supabase.from('clientes').insert([{ ...client, user_id: user.id }]);
       if (error) { alert("Falha ao cadastrar cliente."); console.error("Erro no Supabase:", error); } 
-      else { alert("Cliente cadastrado com sucesso!"); onBack(); }
+      else { alert("Cliente cadastrado com sucesso!"); onViewList(); }
     }
     setIsLoading(false);
   };
@@ -75,7 +76,7 @@ export function ClientForm({ onBack, clientToEdit, onBackToMenu, onViewList, onL
   return (
     <div className="min-h-screen bg-background">
       <PageHeader
-        title={clientToEdit ? "Editar Cliente" : "Cadastro de Cliente"}
+        title={clientToEdit ? "Editar Cliente" : "Sistema de cadastro de clientes - WARP"}
         onBackToMenu={onBackToMenu}
         onViewList={onViewList}
         viewListText="Ver Clientes"
@@ -84,7 +85,7 @@ export function ClientForm({ onBack, clientToEdit, onBackToMenu, onViewList, onL
       <div className="container mx-auto p-6 max-w-4xl">
         <div className="space-y-6 mt-8">
           <Card className="border-red-100">
-            <CardHeader className="bg-red-50"><CardTitle className="flex items-center gap-2 text-red-700"><User className="h-5 w-5" />Dados Cadastrais</CardTitle></CardHeader>
+            <CardHeader className="bg-destructive/10"><CardTitle className="flex items-center gap-2 text-destructive"><User className="h-5 w-5" />Dados Cadastrais</CardTitle></CardHeader>
             <CardContent className="pt-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div><Label htmlFor="nome">Nome / Razão Social *</Label><Input id="nome" value={client.nome} onChange={(e) => handleFieldChange("nome", e.target.value)} /></div>
@@ -99,12 +100,12 @@ export function ClientForm({ onBack, clientToEdit, onBackToMenu, onViewList, onL
             </CardContent>
           </Card>
           <Card className="border-red-100">
-            <CardHeader className="bg-red-50"><CardTitle className="flex items-center gap-2 text-red-700"><HardDrive className="h-5 w-5" />Equipamentos e Dados Técnicos</CardTitle></CardHeader>
+            <CardHeader className="bg-destructive/10"><CardTitle className="flex items-center gap-2 text-destructive"><HardDrive className="h-5 w-5" />Equipamentos e Dados Técnicos</CardTitle></CardHeader>
             <CardContent className="pt-6 space-y-4">
               {(client.dados_equipamentos || []).length === 0 && (<p className="text-sm text-center text-muted-foreground">Nenhum equipamento adicionado.</p>)}
               {(client.dados_equipamentos || []).map((equip) => (
                 <div key={equip.id} className="p-4 border bg-slate-50 rounded-lg space-y-4 relative">
-                  <Button variant="ghost" size="icon" onClick={() => removeEquipment(equip.id)} className="absolute top-1 right-1 h-7 w-7 text-red-500 hover:bg-red-100"><Trash2 className="h-4 w-4" /></Button>
+                  <Button variant="ghost" size="icon" onClick={() => removeEquipment(equip.id)} className="absolute top-1 right-1 h-7 w-7 text-red-500 hover:bg-destructive/20"><Trash2 className="h-4 w-4" /></Button>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label>Tipo de Equipamento</Label>
@@ -143,7 +144,7 @@ export function ClientForm({ onBack, clientToEdit, onBackToMenu, onViewList, onL
             </CardContent>
           </Card>
           <div className="flex justify-end">
-            <Button onClick={handleSaveClient} disabled={isLoading} className="gap-2 bg-red-600 hover:bg-red-700">
+            <Button onClick={handleSaveClient} disabled={isLoading} className="gap-2 bg-destructive hover:bg-destructive/90">
               <Save className="h-4 w-4" />
               {isLoading ? "Salvando..." : (clientToEdit ? "Salvar Alterações" : "Salvar Cliente")}
             </Button>

@@ -12,6 +12,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Shield, Eye, EyeOff } from "lucide-react"
 import Image from "next/image"
 
+// --- Lendo as variáveis de ambiente ---
+const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL || "/images/warp-logo.png";
+const brandMascot = process.env.NEXT_PUBLIC_BRAND_MASCOT_URL || "/images/warp-mascot.png";
+const brandName = process.env.NEXT_PUBLIC_BRAND_NAME || "WARP Segurança Eletrônica";
+
 interface LoginFormProps {
   onLogin: () => void
 }
@@ -67,25 +72,28 @@ export function LoginForm({ onLogin }: LoginFormProps) {
       <Card className="w-full max-w-md shadow-xl border-0">
         <CardHeader className="text-center space-y-4 pb-8">
           <div className="flex justify-center">
-            <Image
-              src="/images/warp-logo.png"
-              alt="WARP Segurança Eletrônica"
+            {brandLogo && (
+              <Image
+                src={brandLogo}
+              alt="Logo da Empresa"
               width={708}
               height={256}
               quality={100}
               className="h-12 w-auto"
+              priority // Carrega o logo primeiro
             />
+            )}
           </div>
           <div className="flex justify-center">
-            <div className="bg-red-50 p-3 rounded-full">
-              <Shield className="h-8 w-8 text-red-600" />
+            <div className="bg-destructive/10 p-3 rounded-full">
+              <Shield className="h-8 w-8 text-destructive" />
             </div>
           </div>
           <CardTitle className="text-2xl font-bold text-slate-800">Acesso Restrito</CardTitle>
           <CardDescription className="text-slate-600">
             Sistema de Gestão de Clientes
             <br />
-            <span className="text-sm font-medium text-red-600">Apenas funcionários autorizados</span>
+            <span className="text-sm font-medium text-destructive">Apenas funcionários autorizados</span>
           </CardDescription>
         </CardHeader>
 
@@ -137,12 +145,12 @@ export function LoginForm({ onLogin }: LoginFormProps) {
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">{error}</div>
+              <div className="bg-destructive/10 border border-destructive/40 text-destructive px-4 py-3 rounded-md text-sm">{error}</div>
             )}
 
             <Button
               type="submit"
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2.5"
+              className="w-full bg-destructive hover:bg-destructive/90 text-white font-medium py-2.5"
               disabled={isLoading}
             >
               {isLoading ? "Verificando..." : "Entrar"}
@@ -151,8 +159,9 @@ export function LoginForm({ onLogin }: LoginFormProps) {
 
           <div className="mt-6 pt-6 border-t border-slate-200">
             <div className="flex items-center justify-center space-x-2">
-              <Image src="/images/warp-mascot.png" alt="Mascote WARP" width={32} height={32} className="h-8 w-8" />
-              <p className="text-xs text-slate-500 text-center">WARP Segurança Eletrônica - Gestão Interna</p>
+              {brandMascot && ( 
+                <Image src={brandMascot} alt="Mascote" width={1120} height={928} quality={100} className="h-8 w-8" /> )}
+              <p className="text-xs text-slate-500 text-center">{brandName} - Gestão Interna</p>
             </div>
           </div>
         </CardContent>

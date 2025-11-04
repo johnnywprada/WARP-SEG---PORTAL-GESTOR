@@ -9,6 +9,8 @@ import { ArrowLeft, UserPlus, Eye, Trash2, Search } from "lucide-react" // Impor
 import Image from "next/image"
 import { type SavedClient } from "@/lib/types"
 
+const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL;
+
 interface ClientListProps {
   onBack: () => void;
   onViewClient: (client: SavedClient) => void;
@@ -65,17 +67,18 @@ export function ClientList({ onBack, onViewClient, onAddClient, onLogout }: Clie
     <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-8">
         <div className="flex items-center justify-between gap-4 mb-6">
-          <Button variant="outline" onClick={onBack} className="gap-2 text-red-600 border-red-200 hover:bg-red-50">
+          <Button variant="outline" onClick={onBack} className="gap-2 text-destructive border-destructive/40 hover:bg-destructive/10">
             <ArrowLeft className="h-4 w-4" />
             Voltar ao Menu
           </Button>
-          <Image src="/images/warp-logo.png" alt="WARP" width={708} height={256} quality={100} className="h-10 w-auto" />
-          <Button onClick={onAddClient} className="gap-2 bg-red-600 hover:bg-red-700">
+          {brandLogo && (
+          <Image src={brandLogo} alt="Logo" width={708} height={256} quality={100} className="h-10 w-auto" /> )}
+          <Button onClick={onAddClient} className="gap-2 bg-destructive hover:bg-destructive/90">
             <UserPlus className="h-4 w-4" />
             Cadastrar Novo Cliente
           </Button>
         </div>
-        <h1 className="text-3xl font-bold text-red-600 mb-2 text-center">Gerenciar Clientes</h1>
+        <h1 className="text-3xl font-bold text-destructive mb-2 text-center">Gerenciar Clientes</h1>
         <p className="text-muted-foreground text-center">Visualize, edite ou exclua os clientes cadastrados</p>
       </div>
       
@@ -111,10 +114,10 @@ export function ClientList({ onBack, onViewClient, onAddClient, onLogout }: Clie
                   <p className="text-sm text-muted-foreground">{client.telefone || 'Sem telefone'} | {client.email || 'Sem email'}</p>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" onClick={() => onViewClient(client)} className="gap-2 text-red-600 border-red-200 hover:bg-red-50">
+                  <Button variant="outline" size="sm" onClick={() => onViewClient(client)} className="gap-2 text-destructive border-destructive/40 hover:bg-destructive/10">
                     <Eye className="h-4 w-4" /> Visualizar
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => deleteClient(client.id)} className="gap-2 text-red-600 hover:bg-red-50 hover:text-red-600 border-red-200">
+                  <Button variant="outline" size="sm" onClick={() => deleteClient(client.id)} className="gap-2 text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/40">
                     <Trash2 className="h-4 w-4" /> Excluir
                   </Button>
                 </div>

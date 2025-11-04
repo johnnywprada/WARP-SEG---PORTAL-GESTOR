@@ -8,6 +8,15 @@ import { ArrowLeft, Printer } from "lucide-react"
 import Image from "next/image"
 import { DocumentFooter } from "./DocumentFooter"
 
+// --- Lendo as variáveis de ambiente ---
+const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL || "/images/warp-logo.png";
+const brandName = process.env.NEXT_PUBLIC_BRAND_NAME || "WARP SEGURANÇA ELETRÔNICA";
+const brandCnpj = process.env.NEXT_PUBLIC_BRAND_CNPJ || "CNPJ: 35.550.155/0001-86";
+// Adicionei estas duas para o cabeçalho do documento
+const brandAddress = process.env.NEXT_PUBLIC_BRAND_ADDRESS || "Rua barros cassal, 35";
+const brandCity = process.env.NEXT_PUBLIC_BRAND_CITY || "Jardim Bom Clima - Guarulhos, SP - 07196-270";
+const brandIcon = process.env.NEXT_PUBLIC_BRAND_ICON || "/images/warpicon.png"
+
 // --- CORREÇÃO 1: Definimos a "forma" de um Produto para sermos específicos ---
 interface Product {
   id: string
@@ -40,12 +49,14 @@ interface SavedBudget {
 interface SavedBudgetPreviewProps {
   budget: SavedBudget
   onBack: () => void
+  onViewBudgetList: () => void;
+
 }
 
 const statusLabels = { "em-aberto": "Em Aberto", instalando: "Instalando", concluido: "Concluído", cancelado: "Cancelado" };
-const statusColors = { "em-aberto": "bg-yellow-100 text-yellow-800 border-yellow-200", instalando: "bg-blue-100 text-blue-800 border-blue-200", concluido: "bg-green-100 text-green-800 border-green-200", cancelado: "bg-red-100 text-red-800 border-red-200" };
+const statusColors = { "em-aberto": "bg-yellow-100 text-yellow-800 border-yellow-200", instalando: "bg-blue-100 text-blue-800 border-blue-200", concluido: "bg-green-100 text-green-800 border-green-200", cancelado: "bg-destructive/20 text-red-800 border-destructive/40" };
 
-export function SavedBudgetPreview({ budget, onBack }: SavedBudgetPreviewProps) {
+export function SavedBudgetPreview({ budget, onBack, onViewBudgetList }: SavedBudgetPreviewProps) {
   const handlePrint = () => {
     // Salva o título original da página
     const originalTitle = document.title;
@@ -67,10 +78,10 @@ export function SavedBudgetPreview({ budget, onBack }: SavedBudgetPreviewProps) 
 
       {/* Cabeçalho da página (só aparece na tela) */}
       <div className="no-print sticky top-0 bg-background border-b p-4 flex justify-between items-center print:hidden">
-        <Button variant="outline" onClick={onBack} className="gap-2 text-red-600 border-red-200 hover:bg-red-50">
+        <Button variant="outline" onClick={onViewBudgetList} className="gap-2 text-destructive border-destructive/40 hover:bg-destructive/10">
           <ArrowLeft className="h-4 w-4" /> Voltar para a Lista
         </Button>
-        <Button onClick={handlePrint} className="gap-2 bg-red-600 hover:bg-red-700">
+        <Button onClick={handlePrint} className="gap-2 bg-destructive hover:bg-destructive/90">
           <Printer className="h-4 w-4" /> Imprimir / Salvar PDF
         </Button>
       </div>
@@ -79,23 +90,23 @@ export function SavedBudgetPreview({ budget, onBack }: SavedBudgetPreviewProps) 
         <Card className="print-page border-red-100 print:border-0 print:shadow-none">
           <CardContent className="p-4 print:p-6">
             <div className="flex items-center justify-between mb-4 print:mb-3">
-              <Image src="/images/warp-logo.png" alt="WARP Segurança Eletrônica" width={708} height={256} quality={100} className="h-12 w-auto print:h-10" />
+              <Image src={brandLogo} alt="Logo" width={708} height={256} quality={100} className="h-12 w-auto print:h-10" />
               <div className="text-right">
-                <h1 className="text-xl font-bold text-red-600 print:text-lg">ORÇAMENTO</h1>
+                <h1 className="text-xl font-bold text-destructive print:text-lg">ORÇAMENTO</h1>
                 <p className="text-sm font-semibold">{budget.budgetNumber}</p>
                 <Badge className={`${statusColors[budget.status]} print:text-xs`}>{statusLabels[budget.status]}</Badge>
               </div>
             </div>
             <Separator className="mb-4 print:mb-3" />
-            <div className="bg-red-50 p-3 rounded-lg mb-4 print:mb-3 print:p-2">
+            <div className="bg-destructive/10 p-3 rounded-lg mb-4 print:mb-3 print:p-2">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs print:text-xs">
-                <div><p className="font-semibold text-red-700">WARP SEGURANÇA ELETRÔNICA</p><p>CNPJ: 35.550.155/0001-86</p></div>
-                <div><p>Rua barros cassal, 35</p><p>Jardim Bom Clima - Guarulhos, SP - 07196-270</p></div>
+                <div><p className="font-semibold text-destructive">{brandName}</p><p>{brandCnpj}</p></div>
+                <div><p>{brandAddress}</p><p>{brandCity}</p></div>
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 print:mb-3">
               <div>
-                <h3 className="font-semibold text-red-600 mb-2 print:text-sm">DADOS DO CLIENTE</h3>
+                <h3 className="font-semibold text-destructive mb-2 print:text-sm">DADOS DO CLIENTE</h3>
                 <div className="space-y-1 text-sm print:text-xs">
                   <p><span className="font-medium">Nome:</span> {budget.client.name}</p>
                   {budget.client.phone && (<p><span className="font-medium">Telefone:</span> {budget.client.phone}</p>)}
@@ -104,7 +115,7 @@ export function SavedBudgetPreview({ budget, onBack }: SavedBudgetPreviewProps) 
                 </div>
               </div>
               <div>
-                <h3 className="font-semibold text-red-600 mb-2 print:text-sm">INFORMAÇÕES DO ORÇAMENTO</h3>
+                <h3 className="font-semibold text-destructive mb-2 print:text-sm">INFORMAÇÕES DO ORÇAMENTO</h3>
                 <div className="space-y-1 text-sm print:text-xs">
                   <p><span className="font-medium">Data:</span> {new Date(budget.created_at).toLocaleDateString("pt-BR")}</p>
                   {budget.validUntil && (<p><span className="font-medium">Válido até:</span> {new Date(budget.validUntil).toLocaleDateString("pt-BR")}</p>)}
@@ -114,52 +125,53 @@ export function SavedBudgetPreview({ budget, onBack }: SavedBudgetPreviewProps) 
             </div>
             <Separator className="mb-4 print:mb-3" />
             <div className="mb-4 print:mb-3">
-              <h3 className="font-semibold text-red-600 mb-2 print:text-sm">PRODUTOS/SERVIÇOS</h3>
+              <h3 className="font-semibold text-destructive mb-2 print:text-sm">PRODUTOS/SERVIÇOS</h3>
               <div className="overflow-x-auto">
-                <table className="w-full border-collapse border border-red-200 text-sm print:text-xs products-table">
-                  <thead className="bg-red-100 text-black font-bold table-print-header"><tr><th className="border border-red-200 p-2 text-left print:p-1">Descrição</th><th className="border border-red-200 p-2 text-center print:p-1">Qtd</th><th className="border border-red-200 p-2 text-center print:p-1">Un.</th><th className="border border-red-200 p-2 text-right print:p-1">Valor Unit.</th><th className="border border-red-200 p-2 text-right print:p-1">Total</th></tr></thead>
+                <table className="w-full border-collapse border border-destructive/40 text-sm print:text-xs products-table">
+                  <thead className="bg-destructive/20 text-black font-bold table-print-header"><tr><th className="border border-destructive/40 p-2 text-left print:p-1">Descrição</th><th className="border border-destructive/40 p-2 text-center print:p-1">Qtd</th><th className="border border-destructive/40 p-2 text-center print:p-1">Un.</th><th className="border border-destructive/40 p-2 text-right print:p-1">Valor Unit.</th><th className="border border-destructive/40 p-2 text-right print:p-1">Total</th></tr></thead>
                   <tbody>
                     {/* --- CORREÇÃO 2: Usamos 'budget.products' em vez de 'budgetData.products' --- */}
                     {budget.products.map((product, index) => (
                       <tr key={product.id} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                        <td className="border border-red-200 p-2 print:p-1">{product.description}</td>
-                        <td className="border border-red-200 p-2 text-center print:p-1">{product.quantity}</td>
-                        <td className="border border-red-200 p-2 text-center print:p-1">{product.unit}</td>
-                        <td className="border border-red-200 p-2 text-right print:p-1">R$ {product.unitPrice.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td>
-                        <td className="border border-red-200 p-2 text-right print:p-1">R$ {product.total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td>
+                        <td className="border border-destructive/40 p-2 print:p-1">{product.description}</td>
+                        <td className="border border-destructive/40 p-2 text-center print:p-1">{product.quantity}</td>
+                        <td className="border border-destructive/40 p-2 text-center print:p-1">{product.unit}</td>
+                        <td className="border border-destructive/40 p-2 text-right print:p-1">R$ {product.unitPrice.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td>
+                        <td className="border border-destructive/40 p-2 text-right print:p-1">R$ {product.total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td>
                       </tr>
                     ))}
                   </tbody>
-                  <tfoot className="bg-red-100 text-black font-bold table-print-footer"><tr><td colSpan={4} className="border border-red-200 p-2 text-right print:p-1">TOTAL GERAL:</td><td className="border border-red-200 p-2 text-right print:p-1">R$ {budget.totalValue.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td></tr></tfoot>
+                  <tfoot className="bg-destructive/20 text-black font-bold table-print-footer"><tr><td colSpan={4} className="border border-destructive/40 p-2 text-right print:p-1">TOTAL GERAL:</td><td className="border border-destructive/40 p-2 text-right print:p-1">R$ {budget.totalValue.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td></tr></tfoot>
                 </table>
               </div>
             </div>
             {budget.observations && (
               <div className="mb-4 print:mb-3">
-                <h3 className="font-semibold text-red-600 mb-2 print:text-sm">OBSERVAÇÕES</h3>
+                <h3 className="font-semibold text-destructive mb-2 print:text-sm">OBSERVAÇÕES</h3>
                 <p className="text-sm bg-gray-50 p-2 rounded print:text-xs print:p-1">{budget.observations}</p>
               </div>
             )}
             <div className="space-y-3 print:space-y-2">
-              <div className="bg-red-50 border border-red-200 p-3 rounded print:p-2">
-                <p className="text-xs font-semibold text-red-700 mb-1">IMPORTANTE:</p>
-                <p className="text-xs text-red-600">Este orçamento é válido somente mediante assinatura e carimbo oficial da WARP SEGURANÇA ELETRÔNICA. Orçamentos não assinados não possuem validade comercial.</p>
+              <div className="bg-destructive/10 border border-destructive/40 p-3 rounded print:p-2">
+                <p className="text-xs font-semibold text-destructive mb-1">IMPORTANTE:</p>
+                <p className="text-xs text-destructive">Este orçamento é válido somente mediante assinatura e carimbo oficial da {brandName}. Orçamentos não assinados não possuem validade comercial.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 print:gap-2">
-                <div className="border border-red-200 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">ASSINATURA E CARIMBO:</p><div className="h-12 print:h-8"></div><div className="border-t border-red-200 pt-1"><p className="text-xs text-center">WARP SEGURANÇA ELETRÔNICA</p></div></div>
-                <div className="border border-red-200 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">ACEITE DO CLIENTE:</p><div className="h-12 print:h-8"></div><div className="border-t border-red-200 pt-1"><p className="text-xs text-center">CLIENTE</p></div></div>
+                <div className="border border-destructive/40 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">ASSINATURA E CARIMBO:</p><div className="h-12 print:h-8"></div><div className="border-t border-destructive/40 pt-1"><p className="text-xs text-center">{brandName}</p></div></div>
+                <div className="border border-destructive/40 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">ACEITE DO CLIENTE:</p><div className="h-12 print:h-8"></div><div className="border-t border-destructive/40 pt-1"><p className="text-xs text-center">CLIENTE</p></div></div>
               </div>
             </div>
             <div className="grid grid-cols-3 items-center mt-8 print:mt-4">
               <div></div>
               <div className="flex justify-center">
-                <Image alt="warpicon" width={375} height={463} quality={100} className="w-auto h-15 opacity-100 print:h-8 object-contain" src="/images/warpicon.png" />
+                <Image alt="Icon" width={375} height={463} quality={100} className="w-auto h-15 opacity-100 print:h-8 object-contain" src={brandIcon} />
               </div>
               <div className="flex justify-end">
                 <p className="text-xs font-medium mb-2">DATA: ______ / ______ / ______</p>
               </div>
             </div>
           </CardContent>
+          <div></div>
           <DocumentFooter />
         </Card>
       </div>
