@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Eye, Trash2, PlusCircle, Search, FilePlus  } from "lucide-react";
 import Image from "next/image";
 
-const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL;
+const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL || "/images/warp-logo.png";
 
 
 interface SavedBudget {

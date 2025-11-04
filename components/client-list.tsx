@@ -9,7 +9,7 @@ import { ArrowLeft, UserPlus, Eye, Trash2, Search } from "lucide-react" // Impor
 import Image from "next/image"
 import { type SavedClient } from "@/lib/types"
 
-const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL;
+const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL || "/images/warp-logo.png";
 
 interface ClientListProps {
   onBack: () => void;

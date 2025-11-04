@@ -10,12 +10,12 @@ import { DocumentFooter } from "./DocumentFooter"
 
 // --- Lendo as variáveis de ambiente ---
 const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL || "/images/warp-logo.png";
-const brandName = process.env.NEXT_PUBLIC_BRAND_NAME || "WARP SEGURANÇA ELETRÔNICA";
+const brandName = process.env.NEXT_PUBLIC_BRAND_NAME || "WARP Segurança Eletrônica";
 const brandCnpj = process.env.NEXT_PUBLIC_BRAND_CNPJ || "CNPJ: 35.550.155/0001-86";
 // Adicionei estas duas para o cabeçalho do documento
 const brandAddress = process.env.NEXT_PUBLIC_BRAND_ADDRESS || "Rua barros cassal, 35";
 const brandCity = process.env.NEXT_PUBLIC_BRAND_CITY || "Jardim Bom Clima - Guarulhos, SP - 07196-270";
-const brandIcon = process.env.NEXT_PUBLIC_BRAND_ICON || "/images/warpicon.png"
+const brandIcon = process.env.NEXT_PUBLIC_BRAND_ICON || "/images/warpicon.png";
 
 // --- CORREÇÃO 1: Definimos a "forma" de um Produto para sermos específicos ---
 interface Product {

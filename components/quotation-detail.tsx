@@ -11,17 +11,17 @@ import { type Quotation } from "@/lib/types" // Importa o tipo central
 import { DocumentFooter } from "./DocumentFooter"
 
 // --- Bloco de Constantes de Neutralização ---
-const brandMascot = process.env.NEXT_PUBLIC_BRAND_MASCOT_URL;
-const brandName = process.env.NEXT_PUBLIC_BRAND_NAME;
-const brandSlogan = process.env.NEXT_PUBLIC_BRAND_SLOGAN;
-const brandPhone = process.env.NEXT_PUBLIC_BRAND_PHONE;
-const brandEmail = process.env.NEXT_PUBLIC_BRAND_EMAIL;
-const brandWebsite = process.env.NEXT_PUBLIC_BRAND_WEBSITE;
-const brandCnpj = process.env.NEXT_PUBLIC_BRAND_CNPJ;
-const brandAddress = process.env.NEXT_PUBLIC_BRAND_ADDRESS;
-const brandCity = process.env.NEXT_PUBLIC_BRAND_CITY;
-const brandIcon = process.env.NEXT_PUBLIC_BRAND_ICON;
-const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL;
+const brandMascot = process.env.NEXT_PUBLIC_BRAND_MASCOT_URL || "/images/warp-mascot.png";
+const brandName = process.env.NEXT_PUBLIC_BRAND_NAME || "WARP Segurança Eletrônica";
+const brandSlogan = process.env.NEXT_PUBLIC_BRAND_SLOGAN || "Especialistas em segurança eletrônica oferecendo soluções completas para proteger o que é mais importante para você.";
+const brandPhone = process.env.NEXT_PUBLIC_BRAND_PHONE || "(11) 95990-2308";
+const brandEmail = process.env.NEXT_PUBLIC_BRAND_EMAIL || "johnnywprada@gmail.com";
+const brandWebsite = process.env.NEXT_PUBLIC_BRAND_WEBSITE || "https://warpseg.vercel.app";
+const brandCnpj = process.env.NEXT_PUBLIC_BRAND_CNPJ || "CNPJ: 35.550.155/0001-86";
+const brandAddress = process.env.NEXT_PUBLIC_BRAND_ADDRESS || "Rua barros cassal, 35";
+const brandCity = process.env.NEXT_PUBLIC_BRAND_CITY || "Jardim Bom Clima - Guarulhos, SP - 07196-270";
+const brandIcon = process.env.NEXT_PUBLIC_BRAND_ICON || "/images/warpicon.png";
+const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL || "/images/warp-logo.png";
 
 interface QuotationDetailProps {
   quotation: Quotation;
