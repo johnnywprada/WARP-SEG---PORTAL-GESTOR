@@ -28,6 +28,7 @@ interface QuotationItemForConversion {
   descricao: string;
   quantidade: number;
   custo_unitario: number;
+  preco_venda_unitario?: number; // ← Adicionado
 }
 interface QuotationDataForConversion {
   porcentagem_lucro: number;
@@ -52,28 +53,31 @@ export function BudgetGenerator({ onBackToMenu, onViewBudgetList, onLogout, data
   const [isGenerating, setIsGenerating] = useState(false);
 
   const fetchClients = async () => { const { data, error } = await supabase.from('clientes').select('id, nome, endereco, telefone, email').order('nome', { ascending: true }); if (error) { console.error("Erro ao buscar clientes:", error); } else { setClients(data as Client[]); } };
-  useEffect(() => { fetchClients()
-    if (dataFromQuotation && dataFromQuotation.itens_cotados) {
-      // Transforma os itens da cotação em produtos do orçamento
-      const newProducts = dataFromQuotation.itens_cotados.map(item => {
-        const unitPrice = item.custo_unitario * (1 + dataFromQuotation.porcentagem_lucro / 100);
-        return {
-          id: Date.now().toString() + item.descricao,
-          description: item.descricao,
-          quantity: item.quantidade,
-          unit: "UN", // Ou outro padrão
-          unitPrice: unitPrice,
-          total: unitPrice * item.quantidade,
-        };
-      });
+useEffect(() => {
+  fetchClients(); // busca clientes sempre que o componente carrega
 
-      // Pré-preenche o formulário
-      setBudgetData(prev => ({
-        ...prev,
-        products: newProducts,
-      }));
-    }
-  }, [dataFromQuotation]); // Roda quando os dados da cotação chegam
+  if (dataFromQuotation && dataFromQuotation.itens_cotados) {
+    const newProducts = dataFromQuotation.itens_cotados.map(item => {
+      // Se preco_venda_unitario existir (cotação), usa direto, senão calcula com o lucro da cotação
+      const unitPrice = (item as any).preco_venda_unitario ?? item.custo_unitario * (1 + dataFromQuotation.porcentagem_lucro / 100);
+
+      return {
+        id: Date.now().toString() + item.descricao,
+        description: item.descricao,
+        quantity: item.quantidade,
+        unit: "UN",
+        unitPrice,
+        total: unitPrice * item.quantidade,
+      };
+    });
+
+    setBudgetData(prev => ({
+      ...prev,
+      products: newProducts,
+    }));
+  }
+}, [dataFromQuotation]);
+
 
   const handleClientSelect = (clientId: string) => { const selected = clients.find(c => c.id === clientId); if (selected) { setBudgetData(prev => ({ ...prev, client: { name: selected.nome, address: selected.endereco || "", phone: selected.telefone || "", email: selected.email || "" } })); } };
   const handleSaveNewClient = async () => { if (!newClient.nome.trim()) { alert("O nome do novo cliente é obrigatório."); return; } setIsSavingClient(true); const { data: { user } } = await supabase.auth.getUser(); if (!user) { alert("Erro de autenticação."); return; } const { data: insertedClient, error } = await supabase.from('clientes').insert([{ ...newClient, user_id: user.id }]).select().single(); if (error) { alert("Falha ao cadastrar novo cliente."); console.error(error); } else { alert("Cliente cadastrado com sucesso!"); await fetchClients(); handleClientSelect(insertedClient.id); setIsClientModalOpen(false); setNewClient({ nome: "", telefone: "", email: "", endereco: "" }); } setIsSavingClient(false); };

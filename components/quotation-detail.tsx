@@ -125,24 +125,55 @@ export function QuotationDetail({ quotation, onBack, onLogout, onViewQuotationLi
                     </tr>
                   </thead>
                   <tbody>
-                    {itens_cotados.map((item, index) => {
-                      const custoTotalItem = item.custo_unitario * item.quantidade;
-                      const precoVendaUnitario = item.custo_unitario * (1 + porcentagem_lucro / 100);
-                      const precoVendaTotalItem = precoVendaUnitario * item.quantidade;
-                      const lucroItem = precoVendaTotalItem - custoTotalItem;
-                      
-                      return (
-                        <tr key={index} className="border border-destructive/40 p-2 print:p-1">
-                          <td className="border border-destructive/40 p-1.5 print:p-1">{item.descricao}</td>
-                          <td className="border border-destructive/40 p-1.5 print:p-1">{item.fornecedor}</td>
-                          <td className="border border-destructive/40 p-1.5 print:p-1 text-center">{item.quantidade}</td>
-                          <td className="border border-destructive/40 p-1.5 print:p-1 text-right">{item.custo_unitario.toFixed(2)}</td>
-                          <td className="border border-destructive/40 p-1.5 print:p-1 text-right">{custoTotalItem.toFixed(2)}</td>
-                          <td className="border border-destructive/40 p-1.5 print:p-1 text-right text-green-600 font-medium">{lucroItem.toFixed(2)}</td>
-                          <td className="border border-destructive/40 p-1.5 print:p-1 text-right font-semibold text-destructive">{precoVendaTotalItem.toFixed(2)}</td>
-                        </tr>
-                      );
-                    })}
+{itens_cotados.map((item, index) => {
+  let custoUnitarioItem = item.custo_unitario;
+  let custoTotalItem = item.custo_unitario * item.quantidade;
+  let precoVendaUnitario = item.custo_unitario;
+  let precoVendaTotalItem = 0;
+  let lucroItem = 0;
+
+  // --- 1. Caso o item tenha "Lucro total (100%)" ---
+  if (item.lucro_total === true) {
+    // Lucro total = 100% do valor, custo zerado
+    custoUnitarioItem = 0;
+    custoTotalItem = 0;
+    precoVendaUnitario = item.custo_unitario; // valor final será igual ao custo original, mas tratado como 100% lucro
+    precoVendaTotalItem = precoVendaUnitario * item.quantidade;
+    lucroItem = precoVendaTotalItem;
+  }
+
+  // --- 2. Caso tenha lucro individual definido ---
+  else if (item.porcentagem_lucro_item !== null && item.porcentagem_lucro_item !== undefined) {
+    precoVendaUnitario = item.custo_unitario * (1 + item.porcentagem_lucro_item / 100);
+    precoVendaTotalItem = precoVendaUnitario * item.quantidade;
+    lucroItem = precoVendaTotalItem - custoTotalItem;
+  }
+
+  // --- 3. Caso contrário, usa o lucro global padrão ---
+  else {
+    precoVendaUnitario = item.custo_unitario * (1 + porcentagem_lucro / 100);
+    precoVendaTotalItem = precoVendaUnitario * item.quantidade;
+    lucroItem = precoVendaTotalItem - custoTotalItem;
+  }
+
+  return (
+    <tr key={index} className="border border-destructive/40 p-2 print:p-1">
+      <td className="border border-destructive/40 p-1.5 print:p-1">{item.descricao}</td>
+      <td className="border border-destructive/40 p-1.5 print:p-1">{item.fornecedor}</td>
+      <td className="border border-destructive/40 p-1.5 print:p-1 text-center">{item.quantidade}</td>
+      <td className="border border-destructive/40 p-1.5 print:p-1 text-right">
+  {item.lucro_total
+    ? (0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })
+    : Number(item.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+</td>
+      <td className="border border-destructive/40 p-1.5 print:p-1 text-right">{custoTotalItem.toFixed(2)}</td>
+      <td className="border border-destructive/40 p-1.5 print:p-1 text-right text-green-600 font-medium">{lucroItem.toFixed(2)}</td>
+      <td className="border border-destructive/40 p-1.5 print:p-1 text-right font-semibold text-destructive">{precoVendaTotalItem.toFixed(2)}</td>
+    </tr>
+  );
+})}
+
+
                   </tbody>
                 </table>
               </div>
@@ -153,7 +184,6 @@ export function QuotationDetail({ quotation, onBack, onLogout, onViewQuotationLi
               <div className="w-full max-w-sm space-y-2 text-sm">
                 <div className="flex justify-between"><span>Custo Total Geral:</span><span className="font-semibold">R$ {custoTotal.toFixed(2)}</span></div>
                 <div className="flex justify-between"><span>Lucro Total Estimado:</span><span className="font-semibold text-green-600">R$ {valorLucro.toFixed(2)}</span></div>
-                <Separator/>
                 <div className="flex justify-between text-base font-bold text-destructive"><span>Preço Venda Final (Sugestão):</span><span>R$ {precoFinalVenda.toFixed(2)}</span></div>
               </div>
             </div>
@@ -172,8 +202,7 @@ export function QuotationDetail({ quotation, onBack, onLogout, onViewQuotationLi
                 <Image alt="Icon" width={375} height={463} quality={100} className="w-auto h-15 opacity-100 print:h-8 object-contain" src={brandIcon} /> )}
               </div>
               <div className="flex justify-end">
-
-                <p className="text-xs font-medium mb-2">DATA: ______ / ______ / ______</p>
+              <p className="text-xs font-medium mb-2">DATA: ______ / ______ / ______</p>
               </div>
             </div>
           </CardContent>

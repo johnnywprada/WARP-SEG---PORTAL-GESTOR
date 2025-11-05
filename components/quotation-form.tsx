@@ -17,6 +17,8 @@ export interface QuotationItem {
   fornecedor: string;
   quantidade: number;
   custo_unitario: number;
+  porcentagem_lucro_item?: number | null; // Novo campo opcional
+  lucro_total?: boolean; // 👈 Indica se o item tem lucro direto de 100%
   // NOVOS CAMPOS CALCULADOS PARA EXIBIÇÃO
   custo_total_item: number;
   lucro_item: number;
@@ -52,15 +54,17 @@ export function QuotationForm({ onBack, onLogout, quotationToEdit, onConvertToBu
   useEffect(() => {
     if (quotationToEdit) {
       // Quando editamos, precisamos adicionar os campos calculados que não vêm do banco
-      const itemsFromDb = (quotationToEdit.itens_cotados || []).map((item: any, index: number) => ({
-        ...item,
-        id: Date.now() + index, // Adiciona ID temporário
-        // Inicializa campos que serão preenchidos pelo próximo useEffect
-        custo_total_item: 0,
-        lucro_item: 0,
-        preco_venda_unitario: 0,
-        preco_venda_total_item: 0,
+const itemsFromDb = (quotationToEdit.itens_cotados || []).map((item: any, index: number) => ({
+  ...item,
+  id: Date.now() + index,
+  porcentagem_lucro_item: item.porcentagem_lucro_item ?? null,
+  lucro_total: item.lucro_total ?? false, // garante o campo
+  custo_total_item: 0,
+  lucro_item: 0,
+  preco_venda_unitario: item.preco_venda_unitario ?? 0,
+  preco_venda_total_item: 0,
       }));
+
 
       setQuotation({
         nome_cotacao: quotationToEdit.nome_cotacao || "",
@@ -72,21 +76,55 @@ export function QuotationForm({ onBack, onLogout, quotationToEdit, onConvertToBu
   }, [quotationToEdit]);
 
   // --- EFEITO PARA CÁLCULO EM TEMPO REAL ---
-  useEffect(() => {
-    const updatedItems = quotation.itens_cotados.map(item => {
-      const custoTotalItem = item.custo_unitario * item.quantidade;
-      const precoVendaUnitario = item.custo_unitario * (1 + quotation.porcentagem_lucro / 100);
-      const precoVendaTotalItem = precoVendaUnitario * item.quantidade;
-      const lucroItem = precoVendaTotalItem - custoTotalItem;
-      
-      return { ...item, custo_total_item: custoTotalItem, lucro_item: lucroItem, preco_venda_unitario: precoVendaUnitario, preco_venda_total_item: precoVendaTotalItem };
-    });
-    
-    // Evita loop infinito, atualizando o estado apenas se houver mudança nos valores
-    if (JSON.stringify(updatedItems) !== JSON.stringify(quotation.itens_cotados)) {
-        setQuotation(prev => ({ ...prev, itens_cotados: updatedItems }));
-    }
-  }, [quotation.itens_cotados, quotation.porcentagem_lucro]);
+useEffect(() => {
+const updatedItems = quotation.itens_cotados.map(item => {
+  const custoTotalItem = item.custo_unitario * item.quantidade;
+
+// Se "Zerar custo" estiver marcado
+if (item.lucro_total) {
+  // Mantém o preço de venda unitário já definido pelo usuário ou valor anterior
+  const precoVendaUnitario = item.preco_venda_unitario > 0 ? item.preco_venda_unitario : item.custo_unitario || 0;
+  const precoVendaTotalItem = precoVendaUnitario * item.quantidade;
+  const lucroItem = precoVendaTotalItem; // tudo é lucro
+
+  return {
+    ...item,
+    custo_total_item: 0, // custo zerado
+    lucro_item: lucroItem,
+    preco_venda_unitario: precoVendaUnitario,
+    preco_venda_total_item: precoVendaTotalItem,
+  };
+}
+
+
+
+
+  // Caso normal: aplica % individual ou geral
+  const lucroUsado =
+    item.porcentagem_lucro_item !== null && item.porcentagem_lucro_item !== undefined
+      ? item.porcentagem_lucro_item
+      : quotation.porcentagem_lucro;
+
+  const precoVendaUnitario = item.custo_unitario * (1 + lucroUsado / 100);
+  const precoVendaTotalItem = precoVendaUnitario * item.quantidade;
+  const lucroItem = precoVendaTotalItem - custoTotalItem;
+
+  return {
+    ...item,
+    custo_total_item: custoTotalItem,
+    lucro_item: lucroItem,
+    preco_venda_unitario: precoVendaUnitario,
+    preco_venda_total_item: precoVendaTotalItem,
+  };
+});
+
+
+  // Evita loop infinito
+  if (JSON.stringify(updatedItems) !== JSON.stringify(quotation.itens_cotados)) {
+    setQuotation(prev => ({ ...prev, itens_cotados: updatedItems }));
+  }
+}, [quotation.itens_cotados, quotation.porcentagem_lucro]);
+
 
   // --- FUNÇÕES DE CÁLCULO GLOBAIS ---
   const custoTotal = quotation.itens_cotados.reduce((sum, item) => sum + item.custo_total_item, 0);
@@ -107,7 +145,7 @@ export function QuotationForm({ onBack, onLogout, quotationToEdit, onConvertToBu
   const addItem = () => {
     setQuotation(prev => ({
       ...prev,
-      itens_cotados: [ ...prev.itens_cotados, { id: Date.now(), descricao: "", fornecedor: "", quantidade: 1, custo_unitario: 0, custo_total_item: 0, lucro_item: 0, preco_venda_unitario: 0, preco_venda_total_item: 0 } ]
+      itens_cotados: [ ...prev.itens_cotados, { id: Date.now(), descricao: "", fornecedor: "", quantidade: 1, custo_unitario: 0, porcentagem_lucro_item: null, lucro_total: false, custo_total_item: 0, lucro_item: 0, preco_venda_unitario: 0, preco_venda_total_item: 0 } ]
     }));
   };
 
@@ -117,7 +155,16 @@ const handleSave = async (): Promise<boolean> => { // Modificado para retornar u
     if (!quotation.nome_cotacao.trim()) { alert("Por favor, dê um nome para a cotação."); return false; }
     setIsLoading(true);
     
-    const itemsToSave = quotation.itens_cotados.map(({ descricao, fornecedor, quantidade, custo_unitario }) => ({ descricao, fornecedor, quantidade, custo_unitario }));
+    const itemsToSave = quotation.itens_cotados.map(item => ({
+      descricao: item.descricao,
+      fornecedor: item.fornecedor,
+      quantidade: item.quantidade,
+      custo_unitario: item.custo_unitario,
+      porcentagem_lucro_item: item.porcentagem_lucro_item,
+      lucro_total: item.lucro_total,
+      preco_venda_unitario: item.preco_venda_unitario, // ✅ incluído
+    }));
+
 
     let error;
     if (quotationToEdit) {
@@ -161,14 +208,23 @@ const handleSaveAndGoBack = async () => {
   }
 };
 
-  // --- NOVA FUNÇÃO PARA SALVAR E CONVERTER ---
+  // --- Função de conversão em budget ---
   const handleConvertToBudget = async () => {
     const success = await handleSave();
     if (success) {
-      // Apenas chama a função de conversão se o salvamento for bem-sucedido
-      onConvertToBudget(quotation);
+      const quotationForBudget = {
+        ...quotation,
+        itens_cotados: quotation.itens_cotados.map(item => {
+          const precoVendaUnitarioFinal = item.lucro_total
+            ? item.preco_venda_unitario > 0 ? item.preco_venda_unitario : item.custo_unitario || 0
+            : item.preco_venda_unitario || item.custo_unitario * (1 + quotation.porcentagem_lucro / 100);
+          return { ...item, preco_venda_unitario: precoVendaUnitarioFinal };
+        }),
+      };
+      onConvertToBudget(quotationForBudget);
     }
-  }
+  };
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -186,7 +242,7 @@ const handleSaveAndGoBack = async () => {
           <Card>
             <CardHeader><CardTitle>Itens Cotados</CardTitle></CardHeader>
             <CardContent className="space-y-4">
-              {quotation.itens_cotados.map(item => (
+              {quotation.itens_cotados.map((item, index) => (
                 <div key={item.id} className="p-4 border rounded-lg space-y-3 relative bg-slate-50">
                   <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)} className="absolute -top-2 -right-2 h-6 w-6 bg-destructive/20 text-destructive hover:bg-red-200"><Trash2 className="h-4 w-4" /></Button>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -194,7 +250,51 @@ const handleSaveAndGoBack = async () => {
                     <div><Label>Fornecedor</Label><Input value={item.fornecedor} onChange={e => handleItemChange(item.id, "fornecedor", e.target.value)} /></div>
                     <div><Label>Quantidade</Label><Input type="number" value={item.quantidade} onChange={e => handleItemChange(item.id, "quantidade", e.target.value)} /></div>
                     <div><Label>Custo Unit. (R$)</Label><Input type="number" value={item.custo_unitario} onChange={e => handleItemChange(item.id, "custo_unitario", e.target.value)}/></div>
-                  </div>
+                    <div><Label>Lucro Individual (%)</Label><Input type="number" placeholder="Usar geral" value={item.porcentagem_lucro_item ?? ""} onChange={e => {const value = e.target.value === "" ? null : Number(e.target.value); handleItemChange(item.id, "porcentagem_lucro_item", value); }} /></div>
+<button
+  type="button"
+  onClick={() => {
+    const updated = quotation.itens_cotados.map(it =>
+      it.id === item.id
+        ? {
+            ...it,
+            porcentagem_lucro_item:
+              it.porcentagem_lucro_item === 0 ? null : 0, // alterna entre 0 e null
+          }
+        : it
+    );
+    setQuotation({ ...quotation, itens_cotados: updated });
+  }}
+  className={`px-3 py-1 text-sm font-medium rounded-md transition-colors gap-2
+    ${
+      item.porcentagem_lucro_item === 0
+        ? "bg-destructive hover:bg-destructive/90 text-white"
+        : "border border-destructive/40 text-destructive hover:bg-destructive/10 bg-transparent"
+    }`}
+>
+  {item.porcentagem_lucro_item === 0 ? "Lucro zerado ativado" : "Zerar lucro"}
+</button>
+
+
+                    <button
+  type="button"
+  onClick={() => {
+    const updated = quotation.itens_cotados.map((it, i) =>
+      i === index ? { ...it, lucro_total: !it.lucro_total } : it
+    );
+    setQuotation({ ...quotation, itens_cotados: updated });
+  }}
+  className={`gap-2 rounded-md transition-colors ${
+    item.lucro_total
+      ? "bg-destructive hover:bg-destructive/90 text-white"
+      : "border border-destructive/40 text-destructive hover:bg-destructive/10 bg-transparent"
+  }`}
+>
+  {item.lucro_total ? "Custo zerado ativado" : "Zerar custo"}
+</button>
+
+                    
+                    </div>
                   
                   <div className="pt-3 border-t grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2 text-xs">
                       <div><span className="text-muted-foreground">Custo Total:</span><p className="font-semibold text-slate-700">R$ {item.custo_total_item.toFixed(2)}</p></div>

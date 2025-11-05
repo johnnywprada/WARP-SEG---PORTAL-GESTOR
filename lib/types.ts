@@ -66,6 +66,9 @@ export interface QuotationItem {
   fornecedor: string;
   quantidade: number;
   custo_unitario: number;
+    // Campos opcionais para lucro
+  lucro_total?: boolean
+  porcentagem_lucro_item?: number
 }
 
 export interface Quotation {
