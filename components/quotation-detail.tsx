@@ -40,10 +40,43 @@ const statusColors: { [key: string]: string } = {
 export function QuotationDetail({ quotation, onBack, onLogout, onViewQuotationList, onConvertToBudget }: QuotationDetailProps) {
   
   // --- FUNÇÕES DE CÁLCULO (Replicadas para exibição) ---
-  const { itens_cotados = [], porcentagem_lucro = 0 } = quotation;
-  const custoTotal = itens_cotados.reduce((sum, item) => sum + (item.custo_unitario * item.quantidade), 0);
-  const precoFinalVenda = custoTotal * (1 + porcentagem_lucro / 100);
-  const valorLucro = precoFinalVenda - custoTotal;
+const { itens_cotados = [], porcentagem_lucro = 0 } = quotation;
+
+// Calcula os totais com base nas mesmas fórmulas usadas no map()
+let custoTotal = 0;
+let valorLucro = 0;
+let precoFinalVenda = 0;
+
+itens_cotados.forEach((item) => {
+  let custoUnitarioItem = item.custo_unitario;
+  let custoTotalItem = item.custo_unitario * item.quantidade;
+  let precoVendaUnitario = item.custo_unitario;
+  let precoVendaTotalItem = 0;
+  let lucroItem = 0;
+
+  if (item.lucro_total === true) {
+    custoUnitarioItem = 0;
+    custoTotalItem = 0;
+    precoVendaUnitario = item.custo_unitario;
+    precoVendaTotalItem = precoVendaUnitario * item.quantidade;
+    lucroItem = precoVendaTotalItem;
+  } else if (item.porcentagem_lucro_item !== null && item.porcentagem_lucro_item !== undefined) {
+    precoVendaUnitario = item.custo_unitario * (1 + item.porcentagem_lucro_item / 100);
+    precoVendaTotalItem = precoVendaUnitario * item.quantidade;
+    lucroItem = precoVendaTotalItem - custoTotalItem;
+  } else {
+    precoVendaUnitario = item.custo_unitario * (1 + porcentagem_lucro / 100);
+    precoVendaTotalItem = precoVendaUnitario * item.quantidade;
+    lucroItem = precoVendaTotalItem - custoTotalItem;
+  }
+
+  // 🔢 Soma os resultados totais
+  custoTotal += custoTotalItem;
+  valorLucro += lucroItem;
+  precoFinalVenda += precoVendaTotalItem;
+});
+
+
 
   const handlePrint = () => {
     const originalTitle = document.title;
