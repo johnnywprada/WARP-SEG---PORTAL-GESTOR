@@ -19,7 +19,7 @@
   --muted-foreground: #1f2937;
   --accent: #6366f1;
   --accent-foreground: #ffffff;
-  --destructive: #dc2626;
+  --destructive: #007fff;
   --destructive-foreground: #ffffff;
   --border: #e5e7eb;
   --input: #f8fafc;
@@ -55,7 +55,7 @@
   --muted-foreground: #94a3b8;
   --accent: #475569;
   --accent-foreground: #f1f5f9;
-  --destructive: #dc2626;
+  --destructive: #007fff;
   --destructive-foreground: #f1f5f9;
   --border: #334155;
   --input: #1e293b;
@@ -185,6 +185,6 @@
   /* Define a cor de fundo do cabeçalho/rodapé da tabela para vermelho-claro */
   .table-print-header,
   .table-print-footer {
-    background-color: #fee2e2 !important; /* Cor exata do red-100 */
+    background-color: #d6ebff !important; /* Cor exata do red-100 */
   }
 }
