@@ -28,7 +28,7 @@ interface ServiceOrderListProps {
 
 const statusLabels = { agendado: "Agendado", "em-andamento": "Em Andamento", concluido: "Concluído", cancelado: "Cancelado" };
 const statusColors = { agendado: "bg-yellow-100 text-yellow-800 border-yellow-200", "em-andamento": "bg-blue-100 text-blue-800 border-blue-200", concluido: "bg-green-100 text-green-800 border-green-200", cancelado: "bg-destructive/20 text-red-800 border-destructive/40" };
-const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL || "/images/warp-logo.png";
+const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL || "/images/WARP-logo.png";
 
 export function ServiceOrderList({ onBack, onViewServiceOrder, onAddServiceOrder  }: ServiceOrderListProps) {
   const [serviceOrders, setServiceOrders] = useState<SavedServiceOrder[]>([]) 

@@ -8,7 +8,7 @@ import Image from "next/image"
 import { DocumentFooter } from "./DocumentFooter"
 
 // --- Bloco de Constantes de Neutralização ---
-const brandMascot = process.env.NEXT_PUBLIC_BRAND_MASCOT_URL || "/images/warp-mascot.png";
+const brandMascot = process.env.NEXT_PUBLIC_BRAND_MASCOT_URL || "/images/WARP-mascot.png";
 const brandName = process.env.NEXT_PUBLIC_BRAND_NAME || "WARP Segurança Eletrônica";
 const brandSlogan = process.env.NEXT_PUBLIC_BRAND_SLOGAN || "Especialistas em segurança eletrônica oferecendo soluções completas para proteger o que é mais importante para você.";
 const brandPhone = process.env.NEXT_PUBLIC_BRAND_PHONE || "(11) 95990-2308";
@@ -18,7 +18,7 @@ const brandCnpj = process.env.NEXT_PUBLIC_BRAND_CNPJ || "CNPJ: 35.550.155/0001-8
 const brandAddress = process.env.NEXT_PUBLIC_BRAND_ADDRESS || "Rua barros cassal, 35";
 const brandCity = process.env.NEXT_PUBLIC_BRAND_CITY || "Jardim Bom Clima - Guarulhos, SP - 07196-270";
 const brandIcon = process.env.NEXT_PUBLIC_BRAND_ICON || "/images/warpicon.png";
-const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL || "/images/warp-logo.png";
+const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL || "/images/WARP-logo.png";
 
 // Interfaces adaptadas para os dados do formulário
 interface Product { id: string; description: string; quantity: number; unit: string; unitPrice: number; total: number; }
@@ -100,7 +100,7 @@ export function BudgetPreview({ budgetData, onBack, }: BudgetPreviewProps) {
               <h3 className="font-semibold text-destructive mb-2 print:text-sm">PRODUTOS/SERVIÇOS</h3>
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse border border-destructive/40 text-sm print:text-xs products-table">
-                  <thead><tr className="bg-red-200 text-black font-bold"><th className="border border-destructive/40 p-2 text-left print:p-1">Descrição</th><th className="border border-destructive/40 p-2 text-center print:p-1">Qtd</th><th className="border border-destructive/40 p-2 text-center print:p-1">Un.</th><th className="border border-destructive/40 p-2 text-right print:p-1">Valor Unit.</th><th className="border border-destructive/40 p-2 text-right print:p-1">Total</th></tr></thead>
+                  <thead><tr className="table-print-header text-black font-bold"><th className="border border-destructive/40 p-2 text-left print:p-1">Descrição</th><th className="border border-destructive/40 p-2 text-center print:p-1">Qtd</th><th className="border border-destructive/40 p-2 text-center print:p-1">Un.</th><th className="border border-destructive/40 p-2 text-right print:p-1">Valor Unit.</th><th className="border border-destructive/40 p-2 text-right print:p-1">Total</th></tr></thead>
                   <tbody>
   {budgetData.products.map((product, index) => (
     <tr key={product.id} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
@@ -127,7 +127,7 @@ export function BudgetPreview({ budgetData, onBack, }: BudgetPreviewProps) {
     </tr>
   ))}
 </tbody>
-                  <tfoot><tr className="bg-red-200 text-black font-bold"><td colSpan={4} className="border border-destructive/40 p-2 text-right print:p-1">TOTAL GERAL:</td><td className="border border-destructive/40 p-2 text-right print:p-1">R$ {getTotalBudget().toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td></tr></tfoot>
+                  <tfoot><tr className="table-print-header text-black font-bold"><td colSpan={4} className="border border-destructive/40 p-2 text-right print:p-1">TOTAL GERAL:</td><td className="border border-destructive/40 p-2 text-right print:p-1">R$ {getTotalBudget().toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td></tr></tfoot>
                 </table>
               </div>
             </div>

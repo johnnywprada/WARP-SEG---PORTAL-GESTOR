@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { KeyRound, Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react"
 import Image from "next/image"
 
-const brandMascot = process.env.NEXT_PUBLIC_BRAND_MASCOT_URL || "/images/warp-mascot.png";;
+const brandMascot = process.env.NEXT_PUBLIC_BRAND_MASCOT_URL || "/images/WARP-mascot.png";;
 
 interface ChangePasswordProps {
   onBack: () => void
@@ -27,7 +27,7 @@ export function ChangePassword({ onBack }: ChangePasswordProps) {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const brandMascot = process.env.NEXT_PUBLIC_BRAND_MASCOT_URL || "/images/warp-mascot.png";
+  const brandMascot = process.env.NEXT_PUBLIC_BRAND_MASCOT_URL || "/images/WARP-mascot.png";
   const brandName = process.env.NEXT_PUBLIC_BRAND_NAME || "WARP Segurança Eletrônica";
   const brandSlogan = process.env.NEXT_PUBLIC_BRAND_SLOGAN || "Especialistas em segurança eletrônica oferecendo soluções completas para proteger o que é mais importante para você.";
   const brandPhone = process.env.NEXT_PUBLIC_BRAND_PHONE || "(11) 95990-2308";
@@ -37,7 +37,7 @@ export function ChangePassword({ onBack }: ChangePasswordProps) {
   const brandAddress = process.env.NEXT_PUBLIC_BRAND_ADDRESS || "Rua barros cassal, 35";
   const brandCity = process.env.NEXT_PUBLIC_BRAND_CITY || "Jardim Bom Clima - Guarulhos, SP - 07196-270";
   const brandIcon = process.env.NEXT_PUBLIC_BRAND_ICON || "/images/warpicon.png";
-  const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL || "/images/warp-logo.png";
+  const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL || "/images/WARP-logo.png";
 
 
   // FUNÇÃO ANTIGA REMOVIDA:

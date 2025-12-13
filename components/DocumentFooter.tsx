@@ -4,7 +4,7 @@ import Image from "next/image"
 import { Phone, Mail, Globe } from "lucide-react"
 
 // Lemos as variáveis de ambiente. Elas começarão com NEXT_PUBLIC_ para serem acessíveis no navegador.
-const brandMascot = process.env.NEXT_PUBLIC_BRAND_MASCOT_URL || "/images/warp-mascot.png";
+const brandMascot = process.env.NEXT_PUBLIC_BRAND_MASCOT_URL || "/images/WARP-mascot.png";
 const brandName = process.env.NEXT_PUBLIC_BRAND_NAME || "WARP Segurança Eletrônica";
 const brandSlogan = process.env.NEXT_PUBLIC_BRAND_SLOGAN || "Especialistas em segurança eletrônica oferecendo soluções completas para proteger o que é mais importante para você.";
 const brandPhone = process.env.NEXT_PUBLIC_BRAND_PHONE || "(11) 95990-2308";

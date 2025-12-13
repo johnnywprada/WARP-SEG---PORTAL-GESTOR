@@ -9,7 +9,7 @@ import "./globals.css"
 import { Footer } from "@/components/Footer" // 1. IMPORTAMOS O FOOTER
 
 export const metadata: Metadata = {
-  title: "Portal Warp SEG",
+  title: "Portal DÉF SEG",
   // ... (o resto dos seus metadados)
 };
 

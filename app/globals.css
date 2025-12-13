@@ -172,7 +172,7 @@
 .print-page {
   margin: 0 auto;
   padding: 2rem;
-  background: white;
+  background: rgb(255, 255, 255);
   box-sizing: border-box;
 
   /* Força o navegador a imprimir cores de fundo e texto */

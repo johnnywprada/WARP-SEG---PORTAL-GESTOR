@@ -9,7 +9,7 @@ import Image from "next/image"
 import { DocumentFooter } from "./DocumentFooter"
 
 // --- Lendo as variáveis de ambiente ---
-const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL || "/images/warp-logo.png";
+const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL || "/images/WARP-logo.png";
 const brandName = process.env.NEXT_PUBLIC_BRAND_NAME || "WARP Segurança Eletrônica";
 const brandCnpj = process.env.NEXT_PUBLIC_BRAND_CNPJ || "CNPJ: 35.550.155/0001-86";
 // Adicionei estas duas para o cabeçalho do documento

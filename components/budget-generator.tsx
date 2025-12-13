@@ -44,7 +44,7 @@ interface BudgetGeneratorProps {
 
 export function BudgetGenerator({ onBackToMenu, onViewBudgetList, onLogout, dataFromQuotation }: BudgetGeneratorProps) {
   const [showPreview, setShowPreview] = useState(false);
-  const [budgetData, setBudgetData] = useState<BudgetData>({ client: { name: "", address: "", phone: "", email: "" }, products: [{ id: "1", description: "", quantity: 1, unit: "UN", unitPrice: 0, total: 0 }], paymentMethod: "", observations: "", validUntil: "", budgetNumber: `WARP-${Date.now().toString().slice(-6)}` });
+  const [budgetData, setBudgetData] = useState<BudgetData>({ client: { name: "", address: "", phone: "", email: "" }, products: [{ id: "1", description: "", quantity: 1, unit: "UN", unitPrice: 0, total: 0 }], paymentMethod: "", observations: "", validUntil: "", budgetNumber: `DÉF-${Date.now().toString().slice(-6)}` });
   const [clients, setClients] = useState<Client[]>([]);
   const [openCombobox, setOpenCombobox] = useState(false);
   const [isClientModalOpen, setIsClientModalOpen] = useState(false);
