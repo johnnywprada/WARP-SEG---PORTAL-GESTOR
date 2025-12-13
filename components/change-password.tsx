@@ -131,7 +131,7 @@ export function ChangePassword({ onBack }: ChangePasswordProps) {
               width={2011}
               height={755}
               quality={100}
-              className="h-12 w-auto"
+              className="h-32 w-auto"
             />
             )}
           </div>
@@ -279,7 +279,7 @@ export function ChangePassword({ onBack }: ChangePasswordProps) {
           <div className="mt-6 pt-6 border-t border-slate-200">
             <div className="flex items-center justify-center space-x-2">
               {brandMascot && (
-              <Image src={brandMascot} alt="Mascote" width={1984} height={2144} quality={100} className="h-8 w-8" /> )}
+              <Image src={brandMascot} alt="Mascote" width={1984} height={2144} quality={100} className="h-16 w-auto" /> )}
               <p className="text-xs text-slate-500 text-center">{brandName} - Gestão Interna</p>
             </div>
           </div>
