@@ -115,7 +115,7 @@ itens_cotados.forEach((item) => {
             <div className="print-header mb-3">
               <div className="flex justify-between items-start mb-2">
                 {brandLogo && (
-                <Image src={brandLogo} alt="Logo" width={708} height={256} quality={100} className="h-8 w-auto print:h-10" />  )}
+                <Image src={brandLogo} alt="Logo" width={2011} height={755} quality={100} className="h-8 w-auto print:h-10" />  )}
                 <div className="text-right">
                   <div className="text-xl font-bold text-destructive mb-1 print:text-2xl">COTAÇÃO INTERNA</div>
                   <Badge className={statusColors[quotation.status] || 'bg-gray-100'}>{quotation.status}</Badge>
@@ -232,7 +232,7 @@ itens_cotados.forEach((item) => {
               <div></div>
               <div className="flex justify-center">
                 {brandIcon && (
-                <Image alt="Icon" width={375} height={463} quality={100} className="w-auto h-15 opacity-100 print:h-8 object-contain" src={brandIcon} /> )}
+                <Image alt="Icon" width={320} height={350} quality={100} className="w-auto h-15 opacity-100 print:h-8 object-contain" src={brandIcon} /> )}
               </div>
               <div className="flex justify-end">
               <p className="text-xs font-medium mb-2">DATA: ______ / ______ / ______</p>

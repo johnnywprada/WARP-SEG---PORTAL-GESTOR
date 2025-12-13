@@ -90,7 +90,7 @@ export function SavedBudgetPreview({ budget, onBack, onViewBudgetList }: SavedBu
         <Card className="print-page border-red-100 print:border-0 print:shadow-none">
           <CardContent className="p-4 print:p-6">
             <div className="flex items-center justify-between mb-4 print:mb-3">
-              <Image src={brandLogo} alt="Logo" width={708} height={256} quality={100} className="h-12 w-auto print:h-10" />
+              <Image src={brandLogo} alt="Logo" width={2011} height={755} quality={100} className="h-12 w-auto print:h-10" />
               <div className="text-right">
                 <h1 className="text-xl font-bold text-destructive print:text-lg">ORÇAMENTO</h1>
                 <p className="text-sm font-semibold">{budget.budgetNumber}</p>
@@ -164,7 +164,7 @@ export function SavedBudgetPreview({ budget, onBack, onViewBudgetList }: SavedBu
             <div className="grid grid-cols-3 items-center mt-8 print:mt-4">
               <div></div>
               <div className="flex justify-center">
-                <Image alt="Icon" width={375} height={463} quality={100} className="w-auto h-15 opacity-100 print:h-8 object-contain" src={brandIcon} />
+                <Image alt="Icon" width={320} height={350} quality={100} className="w-auto h-15 opacity-100 print:h-8 object-contain" src={brandIcon} />
               </div>
               <div className="flex justify-end">
                 <p className="text-xs font-medium mb-2">DATA: ______ / ______ / ______</p>
