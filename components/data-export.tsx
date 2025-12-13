@@ -34,7 +34,7 @@ export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
     setIsExporting(true)
     try {
       // Usa a variável de ambiente para o 'baseUrl'
-      const baseUrl = brandDominio || "https://warpseggestao.vercel.app"; // Garante um fallback
+      const baseUrl = brandDominio || "https://portaldefseg.vercel.app"; // Garante um fallback
 
       const { data: budgets, error: budgetError } = await supabase.from("orcamentos").select("*")
       const { data: serviceOrders, error: osError } = await supabase.from("ordens_servico").select("*")
@@ -53,8 +53,8 @@ export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
                 .container { max-width: 1024px; margin: auto; }
                 .header { text-align: center; border-bottom: 2px solid #e5e7eb; padding-bottom: 1rem; margin-bottom: 2rem; }
                 .header img { max-width: 250px; margin-bottom: 1rem; }
-                h1 { font-size: 2.25rem; color: #dc2626; margin: 0; }
-                h2 { font-size: 1.5rem; color: #dc2626; border-bottom: 1px solid #fca5a5; padding-bottom: 0.5rem; margin-top: 3rem; }
+                h1 { font-size: 2.25rem; color: #007fff; margin: 0; }
+                h2 { font-size: 1.5rem; color: #007fff; border-bottom: 1px solid #d6ebff; padding-bottom: 0.5rem; margin-top: 3rem; }
                 p { font-size: 0.875rem; color: #6b7280; }
                 table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; background-color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
                 th, td { border: 1px solid #e5e7eb; padding: 0.75rem; text-align: left; font-size: 0.875rem; }
@@ -191,7 +191,7 @@ export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="shadow-lg border-red-100">
+          <Card className="shadow-lg border-destructive">
             <CardHeader className="text-center">
               <div className="mx-auto bg-destructive/20 p-3 rounded-full w-fit mb-4"><FileText className="h-8 w-8 text-destructive" /></div>
               <CardTitle className="text-xl">Exportar para HTML</CardTitle>
