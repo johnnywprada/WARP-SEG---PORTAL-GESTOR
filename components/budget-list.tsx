@@ -93,7 +93,7 @@ export function BudgetList({ onBack, onViewBudget, onAddBudget  }: BudgetListPro
       Voltar ao Menu
     </Button>
     {brandLogo && (
-    <Image src={brandLogo} alt="Logo" width={708} height={256} quality={100} className="h-10 w-auto" /> )}
+    <Image src={brandLogo} alt="Logo" width={708} height={256} quality={100} className="h-24 w-auto" /> )}
     <Button onClick={onAddBudget} className="gap-2 bg-destructive hover:bg-destructive/90">
             {/* ÍCONE ALTERADO AQUI */}
             <FilePlus className="h-4 w-4" />

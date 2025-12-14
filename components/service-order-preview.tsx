@@ -80,7 +80,7 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
                         <div className="print-header mb-3">
                             <div className="flex justify-between items-start mb-2">
                                 {brandLogo && (
-                                <Image src={brandLogo} alt="Logo" width={708} height={256} quality={100} className="h-12 w-auto print:h-10" /> )} 
+                                <Image src={brandLogo} alt="Logo" width={708} height={256} quality={100} className="h-16 w-auto" /> )} 
                                 <div className="text-right">
                                     <div className="text-xl font-bold text-destructive mb-1 print:text-2xl">ORDEM DE SERVIÇO</div>
                                     <div className="text-xs space-y-0">

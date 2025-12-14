@@ -79,7 +79,7 @@ export function LoginForm({ onLogin }: LoginFormProps) {
               width={708}
               height={256}
               quality={100}
-              className="h-12 w-auto"
+              className="h-16 w-auto"
               priority // Carrega o logo primeiro
             />
             )}
@@ -160,7 +160,7 @@ export function LoginForm({ onLogin }: LoginFormProps) {
           <div className="mt-6 pt-6 border-t border-slate-200">
             <div className="flex items-center justify-center space-x-2">
               {brandMascot && ( 
-                <Image src={brandMascot} alt="Mascote" width={1120} height={928} quality={100} className="h-8 w-8" /> )}
+                <Image src={brandMascot} alt="Mascote" width={1120} height={928} quality={100} className="h-20 w-auto" /> )}
               <p className="text-xs text-slate-500 text-center">{brandName} - Gestão Interna</p>
             </div>
           </div>

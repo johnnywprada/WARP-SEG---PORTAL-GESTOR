@@ -90,7 +90,7 @@ export function SavedBudgetPreview({ budget, onBack, onViewBudgetList }: SavedBu
         <Card className="print-page border-red-100 print:border-0 print:shadow-none">
           <CardContent className="p-4 print:p-6">
             <div className="flex items-center justify-between mb-4 print:mb-3">
-              <Image src={brandLogo} alt="Logo" width={708} height={256} quality={100} className="h-12 w-auto print:h-10" />
+              <Image src={brandLogo} alt="Logo" width={708} height={256} quality={100} className="h-16 w-auto" />
               <div className="text-right">
                 <h1 className="text-xl font-bold text-destructive print:text-lg">ORÇAMENTO</h1>
                 <p className="text-sm font-semibold">{budget.budgetNumber}</p>
