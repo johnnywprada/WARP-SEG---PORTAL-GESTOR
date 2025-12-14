@@ -228,7 +228,7 @@ const handleSaveAndGoBack = async () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <PageHeader title={quotationToEdit ? "Editar Cotação" : "Sistema de Cotação - WARP"} onBackToMenu={onBack} onLogout={onLogout} onViewList={onViewQuotationList} viewListText="Ver Cotações" />
+      <PageHeader title={quotationToEdit ? "Editar Cotação" : "Sistema de Cotação - WARP Sistemas Inteligentes"} onBackToMenu={onBack} onLogout={onLogout} onViewList={onViewQuotationList} viewListText="Ver Cotações" />
       <div className="container mx-auto p-6 max-w-4xl">
         <div className="space-y-6">
           <Card>

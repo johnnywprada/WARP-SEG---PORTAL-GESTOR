@@ -135,7 +135,7 @@ const handleGenerateBudget = async () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <PageHeader title="Sistema de Orçamentos - WARP" onBackToMenu={onBackToMenu} onLogout={onLogout} onViewList={onViewBudgetList} viewListText="Ver Orçamentos" />
+      <PageHeader title="Sistema de Orçamentos - WARP Sistemas Inteligentes" onBackToMenu={onBackToMenu} onLogout={onLogout} onViewList={onViewBudgetList} viewListText="Ver Orçamentos" />
       <div className="container mx-auto p-6 max-w-4xl">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-destructive mb-2">Gerar Novo Orçamento</h1>
