@@ -180,7 +180,7 @@ export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
   return (
     <div className="min-h-screen bg-background">
       <PageHeader
-        title="Exportação de Dados - WARP"
+        title="Exportação de Dados - WARP Sistemas Inteligentes"
         onBackToMenu={onBackToMenu}
         onLogout={onLogout}
       />

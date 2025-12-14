@@ -113,7 +113,7 @@ useEffect(() => {
     <div className="min-h-screen bg-background">
       <div className="bg-white border-b border-slate-200 px-4 py-3">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-lg font-semibold text-slate-800">Sistema de Gestão - WARP</h1>
+          <h1 className="text-lg font-semibold text-slate-800">Sistema de Gestão - WARP Sistemas Inteligentes</h1>
           <div className="flex items-center gap-3">
             <Button onClick={handleViewChangePassword} variant="outline" size="sm" className="text-destructive border-destructive/40 hover:bg-destructive/10 bg-transparent"><KeyRound className="h-4 w-4 mr-2" /> Alterar Senha</Button>
             <Button onClick={handleLogout} variant="outline" size="sm" className="text-destructive border-destructive/40 hover:bg-destructive/10 bg-transparent"><LogOut className="h-4 w-4 mr-2" /> Sair</Button>

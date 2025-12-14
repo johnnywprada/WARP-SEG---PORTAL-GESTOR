@@ -123,7 +123,7 @@ const handleGenerateOS = async () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <PageHeader title="Sistema de Ordem de Serviço - WARP" onBackToMenu={onBackToMenu} onLogout={onLogout} onViewList={onViewOSList} viewListText="Ver Ordens de Serviço" />
+      <PageHeader title="Sistema de Ordem de Serviço - WARP Sistemas Inteligentes" onBackToMenu={onBackToMenu} onLogout={onLogout} onViewList={onViewOSList} viewListText="Ver Ordens de Serviço" />
       <div className="container mx-auto p-6 max-w-4xl">
         <div className="mb-8 text-center"><h1 className="text-3xl font-bold text-destructive mb-2">Gerar Nova Ordem de Serviço</h1><p className="text-muted-foreground">Preencha os dados abaixo</p></div>
         <div className="space-y-6">

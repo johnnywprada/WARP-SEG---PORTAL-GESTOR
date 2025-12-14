@@ -76,7 +76,7 @@ export function ClientForm({ onBack, clientToEdit, onBackToMenu, onViewList, onL
   return (
     <div className="min-h-screen bg-background">
       <PageHeader
-        title={clientToEdit ? "Editar Cliente" : "Sistema de cadastro de clientes - WARP"}
+        title={clientToEdit ? "Editar Cliente" : "Sistema de cadastro de clientes - WARP Sistemas Inteligentes"}
         onBackToMenu={onBackToMenu}
         onViewList={onViewList}
         viewListText="Ver Clientes"
