@@ -9,7 +9,7 @@ const brandName = process.env.NEXT_PUBLIC_BRAND_NAME || "WARP Segurança Eletrô
 const brandSlogan = process.env.NEXT_PUBLIC_BRAND_SLOGAN || "Especialistas em segurança eletrônica oferecendo soluções completas para proteger o que é mais importante para você.";
 const brandPhone = process.env.NEXT_PUBLIC_BRAND_PHONE || "(11) 95990-2308";
 const brandEmail = process.env.NEXT_PUBLIC_BRAND_EMAIL || "johnnywprada@gmail.com";
-const brandWebsite = process.env.NEXT_PUBLIC_BRAND_WEBSITE || "https://warpseg.vercel.app";
+const brandWebsite = process.env.NEXT_PUBLIC_BRAND_WEBSITE || "www.warpseg.com.br";
 const brandCnpj = process.env.NEXT_PUBLIC_BRAND_CNPJ || "CNPJ: 35.550.155/0001-86";
 
 export function DocumentFooter() {
