@@ -108,7 +108,7 @@ itens_cotados.forEach((item) => {
       
       {/* Container do Conteúdo */}
       <div className="container mx-auto p-2 max-w-4xl print:p-0 print:max-w-none">
-        <Card className="print-page border-red-100 print:border-0 print:shadow-none">
+        <Card className="print-page border-blue-200 print:border-0 print:shadow-none">
           <CardContent className="p-3 print:p-4">
             
             {/* 1. Cabeçalho do Documento */}
@@ -134,7 +134,7 @@ itens_cotados.forEach((item) => {
             {/* 2. Informações Gerais da Cotação */}
             <div className="mb-3">
               <h2 className="text-base font-semibold mb-1 text-destructive border-b border-destructive/40 pb-0.5">INFORMAÇÕES GERAIS</h2>
-              <div className="bg-gray-50 border border-gray-200 p-1.5 rounded text-xs grid grid-cols-1 md:grid-cols-3 gap-2">
+              <div className="bg-gray-50 border border-blue-200 p-1.5 rounded text-xs grid grid-cols-1 md:grid-cols-3 gap-2">
                 <p><strong>Nome da Cotação:</strong> {quotation.nome_cotacao}</p>
                 <p><strong>Margem de Lucro:</strong> {quotation.porcentagem_lucro}%</p>
                 <p><strong>Última Alteração:</strong> {new Date(quotation.updated_at).toLocaleString('pt-BR')}</p>

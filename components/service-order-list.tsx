@@ -112,7 +112,7 @@ export function ServiceOrderList({ onBack, onViewServiceOrder, onAddServiceOrder
               <Card><CardContent className="text-center py-12 text-muted-foreground">Nenhuma O.S encontrada para a busca "{searchTerm}"</CardContent></Card>
             )}
             {filteredServiceOrders.map((order) => (
-              <Card key={order.id} className="border-red-100">
+              <Card key={order.id} className="border-blue-200">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div>

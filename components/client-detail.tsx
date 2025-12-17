@@ -65,7 +65,7 @@ export function ClientDetail({ client, onBack, onEdit }: ClientDetailProps) {
       </div>
 
       <div className="space-y-6">
-        <Card className="border-red-100">
+        <Card className="border-blue-200">
           <CardHeader className="bg-destructive/10"><CardTitle className="flex items-center gap-2 text-destructive"><User className="h-5 w-5" />Dados Cadastrais</CardTitle></CardHeader>
           <CardContent className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <DataField label="Nome / Razão Social" value={client.nome} />
@@ -87,7 +87,7 @@ export function ClientDetail({ client, onBack, onEdit }: ClientDetailProps) {
               <Card><CardContent className="text-center py-8 text-muted-foreground">Nenhum equipamento cadastrado para este cliente.</CardContent></Card>
             )}
             {(client.dados_equipamentos || []).map((equip: any) => (
-                <Card key={equip.id} className="border-gray-200">
+                <Card key={equip.id} className="border-blue-200">
                     <CardHeader>
                         <CardTitle className="text-base text-slate-800">{getEquipmentLabel(equip.tipo)} - {equip.modelo}</CardTitle>
                         <p className="text-xs text-muted-foreground">Local: {equip.local}</p>

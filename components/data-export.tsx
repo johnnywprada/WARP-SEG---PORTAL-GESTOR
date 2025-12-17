@@ -20,7 +20,7 @@ const brandAddress = process.env.NEXT_PUBLIC_BRAND_ADDRESS || "Rua barros cassal
 const brandCity = process.env.NEXT_PUBLIC_BRAND_CITY || "Jardim Bom Clima - Guarulhos, SP - 07196-270";
 const brandIcon = process.env.NEXT_PUBLIC_BRAND_ICON || "/images/warpicon.png";
 const brandLogo = process.env.NEXT_PUBLIC_BRAND_LOGO_URL || "/images/WARP-logo.png";
-const brandDominio = process.env.NEXT_PUBLIC_BRAND_DOMINIO || "https://warpseggestao.vercel.app"
+const brandDominio = process.env.NEXT_PUBLIC_BRAND_DOMINIO || "https://portaldefseg.vercel.app"
 
 interface DataExportProps {
   onBackToMenu: () => void
@@ -204,7 +204,7 @@ export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
             </CardContent>
           </Card>
 
-          <Card className="shadow-lg border-green-100">
+          <Card className="shadow-lg border-green-600">
             <CardHeader className="text-center">
               <div className="mx-auto bg-green-100 p-3 rounded-full w-fit mb-4"><Table className="h-8 w-8 text-green-600" /></div>
               <CardTitle className="text-xl">Exportar para CSV</CardTitle>

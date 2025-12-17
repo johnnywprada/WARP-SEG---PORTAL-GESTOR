@@ -127,7 +127,7 @@ const handleGenerateOS = async () => {
       <div className="container mx-auto p-6 max-w-4xl">
         <div className="mb-8 text-center"><h1 className="text-3xl font-bold text-destructive mb-2">Gerar Nova Ordem de Serviço</h1><p className="text-muted-foreground">Preencha os dados abaixo</p></div>
         <div className="space-y-6">
-          <Card className="border-red-100">
+          <Card className="border-blue-200">
             <CardHeader className="bg-destructive/10"><CardTitle className="flex items-center gap-2 text-destructive"><FileText className="h-5 w-5" />Dados do Cliente</CardTitle></CardHeader>
             <CardContent className="pt-6 space-y-4">
               <div>
@@ -141,7 +141,7 @@ const handleGenerateOS = async () => {
             </CardContent>
           </Card>
           
-          <Card className="border-red-100">
+          <Card className="border-blue-200">
             <CardHeader className="bg-destructive/10"><CardTitle className="flex items-center gap-2 text-destructive"><Wrench className="h-5 w-5" />Detalhes do Serviço</CardTitle></CardHeader>
             <CardContent className="pt-6 space-y-4">
               <div className="space-y-4">

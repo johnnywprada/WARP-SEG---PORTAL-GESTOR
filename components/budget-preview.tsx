@@ -54,7 +54,7 @@ export function BudgetPreview({ budgetData, onBack, }: BudgetPreviewProps) {
       </div>
 
       <div className="container mx-auto p-2 max-w-4xl print:p-0 print:max-w-none">
-        <Card className="print-page border-red-100 print:border-0 print:shadow-none"> 
+        <Card className="print-page border-blue-200 print:border-0 print:shadow-none"> 
         <CardContent className="p-4 print:p-6">
             <div className="flex items-center justify-between mb-4 print:mb-3">
               {brandLogo && (

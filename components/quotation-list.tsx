@@ -122,7 +122,7 @@ export function QuotationList({ onBack, onLogout, onAddQuotation, onEditQuotatio
             )}
             
             {filteredQuotations.map((quotation) => (
-              <Card key={quotation.id} className="border-gray-200">
+              <Card key={quotation.id} className="border-blue-200">
                 <CardContent className="p-4">
                     <div className="flex justify-between items-start mb-4">
                         <div>

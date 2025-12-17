@@ -138,7 +138,7 @@ export function BudgetList({ onBack, onViewBudget, onAddBudget  }: BudgetListPro
             )}
 
             {filteredBudgets.map((budget) => (
-              <Card key={budget.id} className="border-red-100">
+              <Card key={budget.id} className="border-blue-200">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div>

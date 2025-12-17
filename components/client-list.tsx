@@ -107,7 +107,7 @@ export function ClientList({ onBack, onViewClient, onAddClient, onLogout }: Clie
           
           {/* Mapeia a lista FILTRADA */}
           {filteredClients.map((client) => (
-            <Card key={client.id} className="border-gray-200">
+            <Card key={client.id} className="border-blue-200">
               <CardContent className="p-4 flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold text-slate-800">{client.nome}</h3>

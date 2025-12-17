@@ -126,7 +126,7 @@ useEffect(() => {
           <p className="text-muted-foreground">Escolha o módulo que deseja utilizar</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-white border border-red-100 rounded-lg p-6 shadow-sm">
+          <div className="bg-white border border-blue-200 rounded-lg p-6 shadow-sm">
             <div className="text-center mb-6">
               <div className="bg-destructive/20 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center"><FileText className="h-8 w-8 text-destructive" /></div>
               <h3 className="text-xl font-semibold text-destructive mb-2">Orçamentos</h3>
@@ -137,7 +137,7 @@ useEffect(() => {
               <Button onClick={handleViewBudgetList} variant="outline" className="w-full border-destructive/40 text-destructive hover:bg-destructive/10 bg-transparent"><List className="h-4 w-4 mr-2" /> Gerenciar Orçamentos</Button>
             </div>
           </div>
-          <div className="bg-white border border-red-100 rounded-lg p-6 shadow-sm">
+          <div className="bg-white border border-blue-200 rounded-lg p-6 shadow-sm">
             <div className="text-center mb-6">
               <div className="bg-destructive/20 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center"><Wrench className="h-8 w-8 text-destructive" /></div>
               <h3 className="text-xl font-semibold text-destructive mb-2">Ordens de Serviço</h3>
@@ -148,7 +148,7 @@ useEffect(() => {
               <Button onClick={handleViewOSList} variant="outline" className="w-full border-destructive/40 text-destructive hover:bg-destructive/10 bg-transparent"><List className="h-4 w-4 mr-2" /> Gerenciar Ordens de Serviço</Button>
             </div>
           </div>
-          <div className="bg-white border border-red-100 rounded-lg p-6 shadow-sm">
+          <div className="bg-white border border-blue-200 rounded-lg p-6 shadow-sm">
             <div className="text-center mb-6">
               <div className="bg-destructive/20 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center"><User className="h-8 w-8 text-destructive" /></div>
               <h3 className="text-xl font-semibold text-destructive mb-2">Clientes</h3>
@@ -160,7 +160,7 @@ useEffect(() => {
             </div>
           </div>
           {/* --- ADIÇÃO: NOVO CARD DE COTAÇÕES --- */}
-          <div className="bg-white border border-red-100 rounded-lg p-6 shadow-sm">
+          <div className="bg-white border border-blue-200 rounded-lg p-6 shadow-sm">
             <div className="text-center mb-6">
               <div className="bg-destructive/20 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center"><Calculator className="h-8 w-8 text-destructive" /></div>
               <h3 className="text-xl font-semibold text-destructive mb-2">Cotações</h3>
@@ -171,7 +171,7 @@ useEffect(() => {
               <Button onClick={handleViewQuotationList} variant="outline" className="w-full border-destructive/40 text-destructive hover:bg-destructive/10 bg-transparent"><List className="h-4 w-4 mr-2" /> Gerenciar Cotações</Button>
             </div>
           </div>
-          <div className="bg-white border border-red-100 rounded-lg p-6 shadow-sm">
+          <div className="bg-white border border-blue-200 rounded-lg p-6 shadow-sm">
             <div className="text-center mb-6">
               <div className="bg-destructive/20 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center"><Download className="h-8 w-8 text-destructive" /></div>
               <h3 className="text-xl font-semibold text-destructive mb-2">Exportação</h3>
@@ -181,7 +181,7 @@ useEffect(() => {
               <Button onClick={handleViewDataExport} className="w-full bg-destructive hover:bg-destructive/90"><Download className="h-4 w-4 mr-2" />Exportar Dados</Button>
             </div>
           </div>
-          <div className="bg-white border border-red-100 rounded-lg p-6 shadow-sm">
+          <div className="bg-white border border-blue-200 rounded-lg p-6 shadow-sm">
             <div className="text-center mb-6">
               <div className="bg-destructive/20 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center"><KeyRound className="h-8 w-8 text-destructive" /></div>
               <h3 className="text-xl font-semibold text-destructive mb-2">Configurações</h3>

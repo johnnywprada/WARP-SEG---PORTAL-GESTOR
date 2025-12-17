@@ -84,7 +84,7 @@ export function ClientForm({ onBack, clientToEdit, onBackToMenu, onViewList, onL
       />
       <div className="container mx-auto p-6 max-w-4xl">
         <div className="space-y-6 mt-8">
-          <Card className="border-red-100">
+          <Card className="border-blue-200">
             <CardHeader className="bg-destructive/10"><CardTitle className="flex items-center gap-2 text-destructive"><User className="h-5 w-5" />Dados Cadastrais</CardTitle></CardHeader>
             <CardContent className="pt-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -99,7 +99,7 @@ export function ClientForm({ onBack, clientToEdit, onBackToMenu, onViewList, onL
               <div><Label htmlFor="observacoes">Observações Gerais do Cliente</Label><Textarea id="observacoes" value={client.observacoes || ''} onChange={(e) => handleFieldChange("observacoes", e.target.value)} rows={3} placeholder="Informações adicionais sobre o cliente..." /></div>
             </CardContent>
           </Card>
-          <Card className="border-red-100">
+          <Card className="border-blue-200">
             <CardHeader className="bg-destructive/10"><CardTitle className="flex items-center gap-2 text-destructive"><HardDrive className="h-5 w-5" />Equipamentos e Dados Técnicos</CardTitle></CardHeader>
             <CardContent className="pt-6 space-y-4">
               {(client.dados_equipamentos || []).length === 0 && (<p className="text-sm text-center text-muted-foreground">Nenhum equipamento adicionado.</p>)}

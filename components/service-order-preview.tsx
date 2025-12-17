@@ -75,7 +75,7 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
             </div>
 
             <div className="container mx-auto p-2 max-w-4xl print:p-0 print:max-w-none">
-                <Card className="print-page border-red-100 print:border-0 print:shadow-none">
+                <Card className="print-page border-blue-200 print:border-0 print:shadow-none">
                     <CardContent className="p-3 print:p-4">
                         <div className="print-header mb-3">
                             <div className="flex justify-between items-start mb-2">
@@ -101,7 +101,7 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
 
                         <div className="mb-3">
                             <h2 className="text-base font-semibold mb-1 text-destructive border-b border-destructive/40 pb-0.5">DADOS DO CLIENTE</h2>
-                            <div className="bg-gray-50 border border-gray-200 p-1.5 rounded text-xs space-y-0.5">
+                            <div className="bg-gray-50 border border-blue-200 p-1.5 rounded text-xs space-y-0.5">
                                 <p><strong>Nome/Razão Social:</strong> {serviceOrderData.cliente_nome}</p>
                                 {serviceOrderData.cliente_documento && (<p><strong>CPF/CNPJ:</strong> {serviceOrderData.cliente_documento}</p>)}
                                 {serviceOrderData.cliente_endereco && (<p><strong>Endereço:</strong> {serviceOrderData.cliente_endereco}</p>)}
@@ -111,7 +111,7 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
 
                         <div className="mb-3">
                             <h2 className="text-base font-semibold mb-1 text-destructive border-b border-destructive/40 pb-0.5">DETALHES DO SERVIÇO</h2>
-                            <div className="bg-gray-50 border border-gray-200 p-1.5 rounded text-xs space-y-1">
+                            <div className="bg-gray-50 border border-blue-200 p-1.5 rounded text-xs space-y-1">
                                 <p><strong>Tipo de Serviço:</strong> {formatStructuredService(serviceOrderData.servicetype)}</p>
                                 {serviceOrderData.description && (<div><p><strong>Descrição:</strong></p><p className="mt-0.5 text-xs leading-tight bg-white p-1.5 rounded border">{serviceOrderData.description}</p></div>)}
                                 {serviceOrderData.observations && (<div><p><strong>Observações:</strong></p><p className="mt-0.5 text-xs leading-tight bg-white p-1.5 rounded border">{serviceOrderData.observations}</p></div>)}
