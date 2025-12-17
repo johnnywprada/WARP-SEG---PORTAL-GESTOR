@@ -204,7 +204,7 @@ export function DataExport({ onBackToMenu, onLogout }: DataExportProps) {
             </CardContent>
           </Card>
 
-          <Card className="shadow-lg border-green-100">
+          <Card className="shadow-lg border-green-200">
             <CardHeader className="text-center">
               <div className="mx-auto bg-green-100 p-3 rounded-full w-fit mb-4"><Table className="h-8 w-8 text-green-600" /></div>
               <CardTitle className="text-xl">Exportar para CSV</CardTitle>
