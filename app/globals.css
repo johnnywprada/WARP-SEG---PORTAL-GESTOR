@@ -125,16 +125,34 @@
   }
 }
 
-/* ======== ESTILOS PARA IMPRESSÃO ======== */
+/* ======== ESTILOS PARA IMPRESSÃO (CTRL + P) ======== */
 
 @media print {
-  /* Define o tamanho da página e bordas seguras */
+  /* 1. CONFIGURAÇÃO DA FOLHA */
   @page {
-    size: A4 portrait; /* A4 em modo retrato */
-    margin: 1cm;       /* margem segura — evita corte da impressora */
+    size: A4 portrait;
+    margin: 1cm; /* Margem física da impressora */
   }
 
-  /* Estilos principais do conteúdo que será impresso */
+  /* 2. FORÇAR MODO DESKTOP NO CELULAR (IMPORTANTE) */
+  /* Isso engana o navegador do celular para ele achar que a página é larga */
+  body {
+    min-width: 1024px !important;
+    width: 1024px !important;
+    max-width: none !important;
+    overflow: visible !important;
+  }
+
+  /* Garante que o container central não tenha limite de largura */
+  .container {
+    min-width: 100% !important;
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* 3. ESTILOS DO DOCUMENTO */
   .print-page {
     margin: 0 auto !important;
     padding: 1cm 1cm 1cm 1cm !important; /* espaço interno (top, right, bottom, left) */
@@ -142,49 +160,50 @@
     box-shadow: none !important;
     width: 100% !important;
     box-sizing: border-box;
-
-    /* Ajuste de escala para caber na folha */
-    transform: scale(0.95); /* reduz levemente o tamanho total */
-    transform-origin: top center; /* mantém centralizado ao reduzir */
-
+    max-width: none !important;
+    
+    /* Removemos o scale fixo para deixar o 'Shrink to Fit' do navegador trabalhar */
+    transform: none !important;
+    
     /* Garante que o conteúdo não quebre feio */
     page-break-inside: avoid;
   }
 
-  /* Oculta elementos não necessários na impressão */
+  /* Oculta elementos desnecessários */
   .no-print,
-  [data-no-print="true"] {
+  [data-no-print="true"],
+  button, 
+  nav, 
+  header {
     display: none !important;
   }
 
   /* Ajusta o rodapé fixo */
   .print-footer {
     position: fixed;
-    bottom: 1cm; /* distância da borda inferior da página */
-    left: 0;
-    right: 0;
+    bottom: 1cm;
+    left: 1cm;
+    right: 1cm;
     width: 100%;
     opacity: 0.85;
+    background: white;
   }
 }
 
-/* ======== VISUAL NA TELA NORMAL ======== */
+/* ======== VISUAL NA TELA NORMAL (PREVIEW) ======== */
 .print-page {
   margin: 0 auto;
   padding: 2rem;
   background: white;
   box-sizing: border-box;
 
-  /* Força o navegador a imprimir cores de fundo e texto */
-  * {
-    -webkit-print-color-adjust: exact !important;
-    color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
+  /* Força cores exatas (Chrome/Safari) */
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
 
-  /* Define a cor de fundo do cabeçalho/rodapé da tabela para vermelho-claro */
+  /* Cores de fundo específicas para tabelas */
   .table-print-header,
   .table-print-footer {
-    background-color: #fee2e2 !important; /* Cor exata do red-100 */
+    background-color: #fee2e2 !important;
   }
 }
