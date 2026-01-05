@@ -125,85 +125,77 @@
   }
 }
 
-/* ======== ESTILOS PARA IMPRESSÃO (CTRL + P) ======== */
-
+/* ======== CORREÇÃO DE IMPRESSÃO MULTIPÁGINA ======== */
 @media print {
   /* 1. CONFIGURAÇÃO DA FOLHA */
   @page {
     size: A4 portrait;
-    margin: 1cm; /* Margem física da impressora */
+    margin: 10mm; /* Damos margem para o cabeçalho/rodapé não serem cortados */
   }
 
-  /* 2. FORÇAR MODO DESKTOP NO CELULAR (IMPORTANTE) */
-  /* Isso engana o navegador do celular para ele achar que a página é larga */
-  body {
-    min-width: 1024px !important;
-    width: 1024px !important;
-    max-width: none !important;
-    overflow: visible !important;
-  }
-
-  /* Garante que o container central não tenha limite de largura */
-  .container {
-    min-width: 100% !important;
-    width: 100% !important;
-    max-width: none !important;
-    padding: 0 !important;
+  /* 2. DESTRAVAR ALTURA (CRUCIAL PARA CRIAR NOVAS FOLHAS) */
+  html, body {
+    width: 210mm !important;
+    height: auto !important; /* Deixa crescer infinitamente */
+    min-height: 0 !important;
+    
     margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important; /* Permite vazamento para nova página */
+    
+    background: white !important;
+    font-size: 12pt !important;
+    line-height: 1.3 !important;
   }
 
-  /* 3. ESTILOS DO DOCUMENTO */
-  .print-page {
-    margin: 0 auto !important;
-    padding: 1cm 1cm 1cm 1cm !important; /* espaço interno (top, right, bottom, left) */
-    border: none !important;
-    box-shadow: none !important;
+  /* 3. LIMPEZA DOS CONTAINERS */
+  .container, .max-w-4xl, .card, .print-page, #documento-visualizacao {
     width: 100% !important;
-    box-sizing: border-box;
     max-width: none !important;
+    height: auto !important; /* Remove travas de altura */
     
-    /* Removemos o scale fixo para deixar o 'Shrink to Fit' do navegador trabalhar */
-    transform: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
     
-    /* Garante que o conteúdo não quebre feio */
+    /* REMOVE A BORDA EXTERNA NA IMPRESSÃO */
+    /* Isso evita que a borda fique "aberta" no final da página 1 */
+    border: none !important; 
+    box-shadow: none !important;
+    display: block !important; /* Flexbox as vezes buga quebra de página, block é mais seguro */
+  }
+
+  /* 4. CONTROLE DE QUEBRA DE PÁGINA (INTELIGÊNCIA) */
+  
+  /* Blocos que NÃO devem ser cortados ao meio (Ex: Assinaturas) */
+  .break-inside-avoid, 
+  .card-content > div { /* Tenta manter cada seção inteira */
+    break-inside: avoid; 
     page-break-inside: avoid;
   }
 
-  /* Oculta elementos desnecessários */
-  .no-print,
-  [data-no-print="true"],
-  button, 
-  nav, 
-  header {
-    display: none !important;
+  /* Classe para FORÇAR nova página (Use se quiser separar seções) */
+  .quebra-pagina {
+    break-before: page;
+    page-break-before: always;
+    margin-top: 2rem;
+    display: block;
   }
 
-  /* Ajusta o rodapé fixo */
-  .print-footer {
-    position: fixed;
-    bottom: 1cm;
-    left: 1cm;
-    right: 1cm;
-    width: 100%;
-    opacity: 0.85;
-    background: white;
+  /* 5. AUMENTO DE FONTES (Mantido do anterior) */
+  .text-\[9px\], .text-\[10px\], .text-xs { font-size: 9pt !important; }
+  .text-sm, .text-\[11px\], .text-\[12px\] { font-size: 11pt !important; }
+  h1, h2, h3, .text-lg, .text-xl, .text-3xl { font-size: 14pt !important; font-weight: bold !important; color: #000 !important; }
+  
+  /* 6. CORREÇÃO DO RODAPÉ (Para não encavalar) */
+  .grid, .flex { width: 100% !important; }
+  .grid-cols-3 { display: grid !important; grid-template-columns: 1fr 1fr 1fr !important; }
+  
+  /* 7. REMOVE FUNDOS */
+  .bg-gray-50, .bg-muted, .bg-destructive\/5 {
+    background-color: transparent !important;
+    border: 1px solid #ccc !important;
   }
-}
 
-/* ======== VISUAL NA TELA NORMAL (PREVIEW) ======== */
-.print-page {
-  margin: 0 auto;
-  padding: 2rem;
-  background: white;
-  box-sizing: border-box;
-
-  /* Força cores exatas (Chrome/Safari) */
-  -webkit-print-color-adjust: exact !important;
-  print-color-adjust: exact !important;
-
-  /* Cores de fundo específicas para tabelas */
-  .table-print-header,
-  .table-print-footer {
-    background-color: #fee2e2 !important;
-  }
+  /* 8. ESCONDE INTERFACE */
+  .no-print, header, nav, button { display: none !important; }
 }

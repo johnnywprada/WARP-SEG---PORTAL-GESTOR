@@ -2,15 +2,15 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { ArrowLeft } from "lucide-react" // Removemos Printer e Share2 daqui
+import { ArrowLeft } from "lucide-react"
 import Image from "next/image"
 import { formatStructuredService } from "@/lib/serviceUtils"
 import { type ServiceOrderData } from "@/lib/types"
 import { DocumentFooter } from "./DocumentFooter"
 import { Separator } from "@/components/ui/separator"
-import { DocumentActions } from "./share-image-button" // <--- Importamos o novo componente
+import { DocumentActions } from "./share-image-button"
 
-// --- Constantes (mantive igual) ---
+// --- Constantes ---
 const brandName = process.env.NEXT_PUBLIC_BRAND_NAME || "WARP Segurança Eletrônica";
 const brandCnpj = process.env.NEXT_PUBLIC_BRAND_CNPJ || "CNPJ: 35.550.155/0001-86";
 const brandAddress = process.env.NEXT_PUBLIC_BRAND_ADDRESS || "Rua barros cassal, 35";
@@ -24,10 +24,8 @@ interface ServiceOrderPreviewProps {
 }
 
 export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPreviewProps) {
-    // Variáveis simples
     const osNumber = serviceOrderData.osnumber || 'N/A'
     
-    // Datas
     const created_at_date = new Date(serviceOrderData.created_at);
     const currentDate = !isNaN(created_at_date.getTime())
         ? created_at_date.toLocaleDateString("pt-BR")
@@ -46,14 +44,14 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
     }
 
     return (
-        <div className="min-h-screen bg-background">
-            {/* BARRA SUPERIOR (Ações) */}
-            <div className="no-print sticky top-0 bg-background border-b p-4 flex justify-between items-center print:hidden z-10 shadow-sm">
+        <div className="min-h-screen bg-ring-100 flex flex-col items-center py-8 print:p-0 print:bg-white print:block">
+            
+            {/* BARRA SUPERIOR */}
+            <div className="no-print w-full max-w-[210mm] mb-4 flex justify-between items-center bg-white p-3 rounded shadow-sm border border-ring-200">
                 <Button variant="outline" onClick={onBack} className="gap-2 text-destructive border-destructive/40 hover:bg-destructive/10">
                     <ArrowLeft className="h-4 w-4" /> Voltar
                 </Button>
 
-                {/* AQUI ESTÁ A MÁGICA: Uma linha resolve tudo */}
                 <DocumentActions 
                     targetId="documento-visualizacao"
                     fileName={`WARP ${osNumber}`}
@@ -63,89 +61,134 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
             </div>
 
             {/* DOCUMENTO A4 */}
-            <div className="container mx-auto p-2 max-w-4xl print:p-0 print:max-w-none">
-                <Card id="documento-visualizacao" className="print-page border-red-100 print:border-0 print:shadow-none bg-white">
-                    <CardContent className="p-3 print:p-4">
-                        <div className="print-header mb-3">
-                            <div className="flex justify-between items-start mb-2">
+            <div className="w-[210mm] print:w-full">
+                <Card id="documento-visualizacao" className="bg-white text-ring-900 leading-snug shadow-lg print:shadow-none">
+                    <CardContent className="p-8 print:p-0">
+                        
+                        {/* CABEÇALHO */}
+                        <div className="mb-6 break-inside-avoid">
+                            <div className="flex justify-between items-start mb-4">
                                 {brandLogo && (
-                                    <Image src={brandLogo} alt="Logo" width={708} height={256} quality={100} className="h-16 w-auto" unoptimized /> )} 
+                                    <Image src={brandLogo} alt="Logo" width={708} height={256} quality={100} className="h-20 w-auto object-contain" unoptimized /> 
+                                )} 
                                 <div className="text-right">
-                                    <div className="text-xl font-bold text-destructive mb-1 print:text-2xl">ORDEM DE SERVIÇO</div>
-                                    <div className="text-xs space-y-0">
+                                    <div className="text-3xl font-bold text-destructive mb-2 uppercase">ORDEM DE SERVIÇO</div>
+                                    <div className="text-sm space-y-1 text-ring-700">
                                         <p><strong>Nº:</strong> {osNumber}</p>
-                                        <p><strong>Data de Emissão:</strong> {currentDate}</p>
-                                        {scheduledDateTime !== "Não agendado" && (<p><strong>Agendado para:</strong> {scheduledDateTime}</p>)}
+                                        <p><strong>Emissão:</strong> {currentDate}</p>
+                                        {scheduledDateTime !== "Não agendado" && (<p><strong>Agendado:</strong> {scheduledDateTime}</p>)}
                                     </div>
                                 </div>
                             </div>
-                            <Separator className="mb-4 print:mb-3" />
-                            <div className="bg-destructive/10 p-3 rounded-lg mb-4 print:mb-3 print:p-2">
-                                {/* print:grid-cols-2 garante o layout correto */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 print:grid-cols-2 gap-2 text-xs print:text-xs">
-                                    <div><p className="font-semibold text-destructive">{brandName}</p><p>{brandCnpj}</p></div>
-                                    <div><p>{brandAddress}</p><p>{brandCity}</p></div>
+                            
+                            <Separator className="mb-4 bg-ring-300" />
+                            
+                            <div className="bg-destructive/5 p-4 rounded-lg border border-destructive/10">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                    <div><p className="font-bold text-destructive text-base">{brandName}</p><p>{brandCnpj}</p></div>
+                                    <div className="text-right md:text-left"><p>{brandAddress}</p><p>{brandCity}</p></div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="mb-3">
-                            <h2 className="text-base font-semibold mb-1 text-destructive border-b border-destructive/40 pb-0.5">DADOS DO CLIENTE</h2>
-                            <div className="bg-gray-50 border border-gray-200 p-1.5 rounded text-xs space-y-0.5">
-                                <p><strong>Nome/Razão Social:</strong> {serviceOrderData.cliente_nome}</p>
+                        {/* DADOS DO CLIENTE */}
+                        <div className="mb-6 break-inside-avoid">
+                            <h2 className="text-lg font-bold mb-2 text-destructive border-b-2 border-destructive/40 pb-1 uppercase">DADOS DO CLIENTE</h2>
+                            <div className="bg-ring-50 border border-ring-200 p-3 rounded text-sm space-y-1">
+                                <p><strong className="text-ring-900">Nome/Razão Social:</strong> {serviceOrderData.cliente_nome}</p>
                                 {serviceOrderData.cliente_documento && (<p><strong>CPF/CNPJ:</strong> {serviceOrderData.cliente_documento}</p>)}
                                 {serviceOrderData.cliente_endereco && (<p><strong>Endereço:</strong> {serviceOrderData.cliente_endereco}</p>)}
-                                <div className="flex gap-4">{serviceOrderData.cliente_telefone && (<span><strong>Tel:</strong> {serviceOrderData.cliente_telefone}</span>)}{serviceOrderData.cliente_email && (<span><strong>E-mail:</strong> {serviceOrderData.cliente_email}</span>)}</div>
+                                <div className="flex gap-6 mt-1">{serviceOrderData.cliente_telefone && (<span><strong>Tel:</strong> {serviceOrderData.cliente_telefone}</span>)}{serviceOrderData.cliente_email && (<span><strong>E-mail:</strong> {serviceOrderData.cliente_email}</span>)}</div>
                             </div>
                         </div>
 
-                        <div className="mb-3">
-                            <h2 className="text-base font-semibold mb-1 text-destructive border-b border-destructive/40 pb-0.5">DETALHES DO SERVIÇO</h2>
-                            <div className="bg-gray-50 border border-gray-200 p-1.5 rounded text-xs space-y-1">
-                                <p><strong>Tipo de Serviço:</strong> {formatStructuredService(serviceOrderData.servicetype)}</p>
-                                {serviceOrderData.description && (<div><p><strong>Descrição:</strong></p><p className="mt-0.5 text-xs leading-tight bg-white p-1.5 rounded border">{serviceOrderData.description}</p></div>)}
-                                {serviceOrderData.observations && (<div><p><strong>Observações:</strong></p><p className="mt-0.5 text-xs leading-tight bg-white p-1.5 rounded border">{serviceOrderData.observations}</p></div>)}
+                        {/* DETALHES DO SERVIÇO */}
+                        <div className="mb-6 break-inside-avoid">
+                            <h2 className="text-lg font-bold mb-2 text-destructive border-b-2 border-destructive/40 pb-1 uppercase">DETALHES DO SERVIÇO</h2>
+                            <div className="bg-ring-50 border border-ring-200 p-3 rounded text-sm space-y-3">
+                                <p><strong className="text-ring-900">Tipo de Serviço:</strong> {formatStructuredService(serviceOrderData.servicetype)}</p>
+                                
+                                {serviceOrderData.description && (
+                                    <div>
+                                        <p className="font-bold text-destructive mb-1">Descrição:</p>
+                                        <div className="bg-white p-3 rounded border border-ring-300 text-justify whitespace-pre-wrap leading-relaxed text-ring-800">
+                                            {serviceOrderData.description}
+                                        </div>
+                                    </div>
+                                )}
+                                
+                                {serviceOrderData.observations && (
+                                    <div>
+                                        <p className="font-bold text-destructive mb-1">Observações:</p>
+                                        <div className="bg-white p-3 rounded border border-ring-300 whitespace-pre-wrap leading-relaxed text-ring-800">
+                                            {serviceOrderData.observations}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
-                        <div className="mb-3">
-                            <h2 className="text-base font-semibold mb-1 text-destructive border-b border-destructive/40 pb-0.5">EXECUÇÃO DO SERVIÇO</h2>
-                            <div className="border border-destructive/40 rounded p-2 space-y-2">
-                                <div className="grid grid-cols-2 gap-4 text-xs">
-                                    <div><p><strong>Técnico Responsável:</strong></p><div className="border-b border-gray-400 h-4 mt-1"></div></div>
-                                    <div><p><strong>Data de Execução:</strong></p><div className="border-b border-gray-400 h-4 mt-1"></div></div>
+                        {/* EXECUÇÃO DO SERVIÇO */}
+                        <div className="mb-6 break-inside-avoid">
+                            <h2 className="text-lg font-bold mb-2 text-destructive border-b-2 border-destructive/40 pb-1 uppercase">EXECUÇÃO DO SERVIÇO</h2>
+                            <div className="border border-destructive/40 rounded p-3 space-y-4">
+                                <div className="grid grid-cols-2 gap-8 text-sm">
+                                    <div>
+                                        <p className="font-bold mb-1">Técnico Responsável:</p>
+                                        <div className="border-b border-ring-400 h-6"></div>
+                                    </div>
+                                    <div>
+                                        <p className="font-bold mb-1">Data de Execução:</p>
+                                        <div className="border-b border-ring-400 h-6"></div>
+                                    </div>
                                 </div>
                                 <div>
-                                    <p className="text-xs"><strong>Relatório de Execução:</strong></p>
-                                    {serviceOrderData.relatorio_tecnico ? (
-                                        <p className="mt-1 text-xs leading-tight bg-white p-1.5 rounded border whitespace-pre-wrap">{serviceOrderData.relatorio_tecnico}</p>
-                                    ) : (
-                                        <div className="space-y-1 mt-1"><div className="border-b border-gray-400 h-3"></div><div className="border-b border-gray-400 h-3"></div><div className="border-b border-gray-400 h-3"></div><div className="border-b border-gray-400 h-3"></div></div>
-                                    )}
+                                    <p className="font-bold text-sm mb-1">Relatório de Execução:</p>
+                                    <div className="text-sm leading-relaxed bg-white p-3 rounded border border-ring-300 whitespace-pre-wrap min-h-[80px]">
+                                        {serviceOrderData.relatorio_tecnico || " "}
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="space-y-3 print:space-y-2">
-                            <div className="bg-destructive/10 border border-destructive/40 p-3 rounded print:p-2">
-                                <p className="text-xs font-semibold text-destructive mb-1">IMPORTANTE:</p>
-                                <p className="text-xs text-destructive">Esta Ordem de Serviço é válida somente mediante assinatura. Documentos não assinados não possuem validade comercial.</p>
+                        {/* ASSINATURAS + ÍCONE + DATA */}
+                        <div className="mt-auto break-inside-avoid">
+                            <div className="bg-destructive/10 border border-destructive/40 p-3 rounded mb-4 text-center">
+                                <p className="text-sm font-bold text-destructive">IMPORTANTE:</p>
+                                <p className="text-xs text-destructive font-medium">Esta Ordem de Serviço é válida somente mediante assinatura. Documentos não assinados não possuem validade comercial.</p>
                             </div>
-                            <div className="grid grid-cols-2 gap-4 print:gap-2">
-                                <div className="border border-destructive/40 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">ASSINATURA (TÉCNICO):</p><div className="h-12 print:h-8"></div><div className="border-t border-destructive/40 pt-1"><p className="text-xs text-center">{brandName}</p></div></div>
-                                <div className="border border-destructive/40 p-3 rounded print:p-2"><p className="text-xs font-medium mb-2">ASSINATURA DO CLIENTE:</p><div className="h-12 print:h-8"></div><div className="border-t border-destructive/40 pt-1"><p className="text-xs text-center">CLIENTE</p></div></div>
+                            
+                            <div className="grid grid-cols-2 gap-8 mb-4">
+                                <div className="border border-destructive/40 p-3 rounded h-24 relative">
+                                    <p className="text-xs font-bold text-ring-500 absolute top-2 left-3 uppercase">Assinatura (Técnico)</p>
+                                    <div className="absolute bottom-8 left-4 right-4 border-b border-ring-800"></div>
+                                    <p className="text-xs font-bold text-center w-full absolute bottom-2 text-ring-700">{brandName}</p>
+                                </div>
+                                <div className="border border-destructive/40 p-3 rounded h-24 relative">
+                                    <p className="text-xs font-bold text-ring-500 absolute top-2 left-3 uppercase">Assinatura do Cliente</p>
+                                    <div className="absolute bottom-8 left-4 right-4 border-b border-ring-800"></div>
+                                    <p className="text-xs font-bold text-center w-full absolute bottom-2 text-ring-700">CLIENTE</p>
+                                </div>
+                            </div>
+                            
+                            {/* ÍCONE W E DATA SEPARADOS */}
+                            <div className="grid grid-cols-3 items-end mb-4">
+                                <div className="col-span-1"></div>
+                                <div className="col-span-1 flex justify-center">
+                                    {brandIcon && (<Image alt="Icon" width={50} height={50} className="w-auto h-8 object-contain" src={brandIcon} unoptimized /> )}
+                                </div>
+                                <div className="col-span-1 text-right">
+                                    <p className="text-xs font-bold text-ring-500">DATA: _____ / _____ / _______</p>
+                                </div>
+                            </div>
+
+                            {/* RODAPÉ FULL WIDTH - AGORA FORA DO GRID */}
+                            <div className="border-t border-ring-300 pt-4 w-full">
+                                <DocumentFooter />
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-3 items-center mt-8 print:mt-4">
-                            <div></div>
-                            <div className="flex justify-center">
-                                {brandIcon && (<Image alt="Icon" width={375} height={463} quality={100} className="w-auto h-15 opacity-100 print:h-8 object-contain" src={brandIcon} unoptimized /> )}
-                            </div>
-                            <div className="flex justify-end"><p className="text-xs font-medium mb-2">DATA: ___ / ___ / ___</p></div>
-                        </div>
                     </CardContent>
-                    <div><DocumentFooter /> </div>
                 </Card>
             </div>
         </div>
