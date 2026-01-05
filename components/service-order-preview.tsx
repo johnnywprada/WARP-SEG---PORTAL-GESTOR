@@ -94,7 +94,7 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
                         {/* DADOS DO CLIENTE */}
                         <div className="mb-6 break-inside-avoid">
                             <h2 className="text-lg font-bold mb-2 text-destructive border-b-2 border-destructive/40 pb-1 uppercase">DADOS DO CLIENTE</h2>
-                            <div className="bg-gray-50 border border-gray-200 p-3 rounded text-sm space-y-1">
+                            <div className="bg-destructive/5 border border-gray-200 p-3 rounded text-sm space-y-1">
                                 <p><strong className="text-gray-900">Nome/Razão Social:</strong> {serviceOrderData.cliente_nome}</p>
                                 {serviceOrderData.cliente_documento && (<p><strong>CPF/CNPJ:</strong> {serviceOrderData.cliente_documento}</p>)}
                                 {serviceOrderData.cliente_endereco && (<p><strong>Endereço:</strong> {serviceOrderData.cliente_endereco}</p>)}
@@ -105,7 +105,7 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
                         {/* DETALHES DO SERVIÇO */}
                         <div className="mb-6 break-inside-avoid">
                             <h2 className="text-lg font-bold mb-2 text-destructive border-b-2 border-destructive/40 pb-1 uppercase">DETALHES DO SERVIÇO</h2>
-                            <div className="bg-gray-50 border border-gray-200 p-3 rounded text-sm space-y-3">
+                            <div className="bg-destructive/5 border border-gray-200 p-3 rounded text-sm space-y-3">
                                 <p><strong className="text-gray-900">Tipo de Serviço:</strong> {formatStructuredService(serviceOrderData.servicetype)}</p>
                                 
                                 {serviceOrderData.description && (
