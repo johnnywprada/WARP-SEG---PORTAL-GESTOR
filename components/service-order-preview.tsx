@@ -44,10 +44,10 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
     }
 
     return (
-        <div className="min-h-screen bg-ring-100 flex flex-col items-center py-8 print:p-0 print:bg-white print:block">
+        <div className="min-h-screen bg-gray-100 flex flex-col items-center py-8 print:p-0 print:bg-white print:block">
             
             {/* BARRA SUPERIOR */}
-            <div className="no-print w-full max-w-[210mm] mb-4 flex justify-between items-center bg-white p-3 rounded shadow-sm border border-ring-200">
+            <div className="no-print w-full max-w-[210mm] mb-4 flex justify-between items-center bg-white p-3 rounded shadow-sm border border-gray-200">
                 <Button variant="outline" onClick={onBack} className="gap-2 text-destructive border-destructive/40 hover:bg-destructive/10">
                     <ArrowLeft className="h-4 w-4" /> Voltar
                 </Button>
@@ -62,7 +62,7 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
 
             {/* DOCUMENTO A4 */}
             <div className="w-[210mm] print:w-full">
-                <Card id="documento-visualizacao" className="bg-white text-ring-900 leading-snug shadow-lg print:shadow-none">
+                <Card id="documento-visualizacao" className="bg-white text-gray-900 leading-snug shadow-lg print:shadow-none">
                     <CardContent className="p-8 print:p-0">
                         
                         {/* CABEÇALHO */}
@@ -73,7 +73,7 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
                                 )} 
                                 <div className="text-right">
                                     <div className="text-3xl font-bold text-destructive mb-2 uppercase">ORDEM DE SERVIÇO</div>
-                                    <div className="text-sm space-y-1 text-ring-700">
+                                    <div className="text-sm space-y-1 text-gray-700">
                                         <p><strong>Nº:</strong> {osNumber}</p>
                                         <p><strong>Emissão:</strong> {currentDate}</p>
                                         {scheduledDateTime !== "Não agendado" && (<p><strong>Agendado:</strong> {scheduledDateTime}</p>)}
@@ -81,7 +81,7 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
                                 </div>
                             </div>
                             
-                            <Separator className="mb-4 bg-ring-300" />
+                            <Separator className="mb-4 bg-gray-300" />
                             
                             <div className="bg-destructive/5 p-4 rounded-lg border border-destructive/10">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -94,8 +94,8 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
                         {/* DADOS DO CLIENTE */}
                         <div className="mb-6 break-inside-avoid">
                             <h2 className="text-lg font-bold mb-2 text-destructive border-b-2 border-destructive/40 pb-1 uppercase">DADOS DO CLIENTE</h2>
-                            <div className="bg-ring-50 border border-ring-200 p-3 rounded text-sm space-y-1">
-                                <p><strong className="text-ring-900">Nome/Razão Social:</strong> {serviceOrderData.cliente_nome}</p>
+                            <div className="bg-gray-50 border border-gray-200 p-3 rounded text-sm space-y-1">
+                                <p><strong className="text-gray-900">Nome/Razão Social:</strong> {serviceOrderData.cliente_nome}</p>
                                 {serviceOrderData.cliente_documento && (<p><strong>CPF/CNPJ:</strong> {serviceOrderData.cliente_documento}</p>)}
                                 {serviceOrderData.cliente_endereco && (<p><strong>Endereço:</strong> {serviceOrderData.cliente_endereco}</p>)}
                                 <div className="flex gap-6 mt-1">{serviceOrderData.cliente_telefone && (<span><strong>Tel:</strong> {serviceOrderData.cliente_telefone}</span>)}{serviceOrderData.cliente_email && (<span><strong>E-mail:</strong> {serviceOrderData.cliente_email}</span>)}</div>
@@ -105,13 +105,13 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
                         {/* DETALHES DO SERVIÇO */}
                         <div className="mb-6 break-inside-avoid">
                             <h2 className="text-lg font-bold mb-2 text-destructive border-b-2 border-destructive/40 pb-1 uppercase">DETALHES DO SERVIÇO</h2>
-                            <div className="bg-ring-50 border border-ring-200 p-3 rounded text-sm space-y-3">
-                                <p><strong className="text-ring-900">Tipo de Serviço:</strong> {formatStructuredService(serviceOrderData.servicetype)}</p>
+                            <div className="bg-gray-50 border border-gray-200 p-3 rounded text-sm space-y-3">
+                                <p><strong className="text-gray-900">Tipo de Serviço:</strong> {formatStructuredService(serviceOrderData.servicetype)}</p>
                                 
                                 {serviceOrderData.description && (
                                     <div>
                                         <p className="font-bold text-destructive mb-1">Descrição:</p>
-                                        <div className="bg-white p-3 rounded border border-ring-300 text-justify whitespace-pre-wrap leading-relaxed text-ring-800">
+                                        <div className="bg-white p-3 rounded border border-gray-300 text-justify whitespace-pre-wrap leading-relaxed text-gray-800">
                                             {serviceOrderData.description}
                                         </div>
                                     </div>
@@ -120,7 +120,7 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
                                 {serviceOrderData.observations && (
                                     <div>
                                         <p className="font-bold text-destructive mb-1">Observações:</p>
-                                        <div className="bg-white p-3 rounded border border-ring-300 whitespace-pre-wrap leading-relaxed text-ring-800">
+                                        <div className="bg-white p-3 rounded border border-gray-300 whitespace-pre-wrap leading-relaxed text-gray-800">
                                             {serviceOrderData.observations}
                                         </div>
                                     </div>
@@ -135,16 +135,16 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
                                 <div className="grid grid-cols-2 gap-8 text-sm">
                                     <div>
                                         <p className="font-bold mb-1">Técnico Responsável:</p>
-                                        <div className="border-b border-ring-400 h-6"></div>
+                                        <div className="border-b border-gray-400 h-6"></div>
                                     </div>
                                     <div>
                                         <p className="font-bold mb-1">Data de Execução:</p>
-                                        <div className="border-b border-ring-400 h-6"></div>
+                                        <div className="border-b border-gray-400 h-6"></div>
                                     </div>
                                 </div>
                                 <div>
                                     <p className="font-bold text-sm mb-1">Relatório de Execução:</p>
-                                    <div className="text-sm leading-relaxed bg-white p-3 rounded border border-ring-300 whitespace-pre-wrap min-h-[80px]">
+                                    <div className="text-sm leading-relaxed bg-white p-3 rounded border border-gray-300 whitespace-pre-wrap min-h-[80px]">
                                         {serviceOrderData.relatorio_tecnico || " "}
                                     </div>
                                 </div>
@@ -160,14 +160,14 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
                             
                             <div className="grid grid-cols-2 gap-8 mb-4">
                                 <div className="border border-destructive/40 p-3 rounded h-24 relative">
-                                    <p className="text-xs font-bold text-ring-500 absolute top-2 left-3 uppercase">Assinatura (Técnico)</p>
-                                    <div className="absolute bottom-8 left-4 right-4 border-b border-ring-800"></div>
-                                    <p className="text-xs font-bold text-center w-full absolute bottom-2 text-ring-700">{brandName}</p>
+                                    <p className="text-xs font-bold text-gray-500 absolute top-2 left-3 uppercase">Assinatura (Técnico)</p>
+                                    <div className="absolute bottom-8 left-4 right-4 border-b border-gray-800"></div>
+                                    <p className="text-xs font-bold text-center w-full absolute bottom-2 text-gray-700">{brandName}</p>
                                 </div>
                                 <div className="border border-destructive/40 p-3 rounded h-24 relative">
-                                    <p className="text-xs font-bold text-ring-500 absolute top-2 left-3 uppercase">Assinatura do Cliente</p>
-                                    <div className="absolute bottom-8 left-4 right-4 border-b border-ring-800"></div>
-                                    <p className="text-xs font-bold text-center w-full absolute bottom-2 text-ring-700">CLIENTE</p>
+                                    <p className="text-xs font-bold text-gray-500 absolute top-2 left-3 uppercase">Assinatura do Cliente</p>
+                                    <div className="absolute bottom-8 left-4 right-4 border-b border-gray-800"></div>
+                                    <p className="text-xs font-bold text-center w-full absolute bottom-2 text-gray-700">CLIENTE</p>
                                 </div>
                             </div>
                             
@@ -178,12 +178,12 @@ export function ServiceOrderPreview({ serviceOrderData, onBack }: ServiceOrderPr
                                     {brandIcon && (<Image alt="Icon" width={50} height={50} className="w-auto h-8 object-contain" src={brandIcon} unoptimized /> )}
                                 </div>
                                 <div className="col-span-1 text-right">
-                                    <p className="text-xs font-bold text-ring-500">DATA: _____ / _____ / _______</p>
+                                    <p className="text-xs font-bold text-gray-500">DATA: _____ / _____ / _______</p>
                                 </div>
                             </div>
 
                             {/* RODAPÉ FULL WIDTH - AGORA FORA DO GRID */}
-                            <div className="border-t border-ring-300 pt-4 w-full">
+                            <div className="border-t border-gray-300 pt-4 w-full">
                                 <DocumentFooter />
                             </div>
                         </div>
