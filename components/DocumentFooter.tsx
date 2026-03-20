@@ -3,7 +3,6 @@
 import Image from "next/image"
 import { Phone, Mail, Globe } from "lucide-react"
 
-// Lemos as variáveis de ambiente. Elas começarão com NEXT_PUBLIC_ para serem acessíveis no navegador.
 const brandMascot = process.env.NEXT_PUBLIC_BRAND_MASCOT_URL || "/images/warp-mascot.png";
 const brandName = process.env.NEXT_PUBLIC_BRAND_NAME || "WARP Segurança Eletrônica";
 const brandSlogan = process.env.NEXT_PUBLIC_BRAND_SLOGAN || "Especialistas em segurança eletrônica oferecendo soluções completas para proteger o que é mais importante para você.";
@@ -14,61 +13,53 @@ const brandCnpj = process.env.NEXT_PUBLIC_BRAND_CNPJ || "CNPJ: 35.550.155/0001-8
 
 export function DocumentFooter() {
   return (
-  // 1. 'hidden' - Oculto na tela
-    // 2. 'print:block' - Visível APENAS na impressão
-    // 3. 'print:fixed print:bottom-[1cm] print:left-0 print:right-0' - Fixado a 1cm do fundo na impressão
-    // 4. 'print:opacity-20' - 80% transparente na impressão
-    
-    <div className="mt-8 print:mt-4 print:fixed print:bottom-1 print:left-0 print:right-0 print:w-full print:opacity-85" >
+    <div className="mt-8 pt-4 border-t print:mt-8 print:block print:relative w-full print:opacity-100 break-inside-avoid" style={{ borderTopColor: "rgba(220, 38, 38, 0.2)" }}>
       
-      {/* Container para alinhar com as margens da página (presumindo 1.5cm de padding da página) */}
-      <div className="px-[0.3cm]">
+      {/* Container 100% width para não espremer */}
+      <div className="w-full">
         
-        {/* Usamos flex para alinhar mascote, slogan e contatos */}
-        <div className="flex flex-row items-center gap-0">
+        {/* Usando Grid 3 colunas ao invés de Flex para garantir o alinhamento estrito na esquerda e direita */}
+        <div className="grid grid-cols-[100px_1fr_auto] gap-4 items-center w-full">
           
-          {/* Coluna 1: Mascote (Menor) */}
-          <div className="flex-shrink-0">
+          {/* Coluna 1: Mascote */}
+          <div className="flex justify-start">
             <Image
               src={brandMascot}
               alt="Mascote"
-              width={1120}     // <-- Largura real em pixels
-              height={928}     // <-- Altura real em pixels
-              quality={100}    // Opcional, para nitidez máxima
-              className="w-auto h-25" // Agora vai redimensionar na proporção correta
+              width={1120}
+              height={928}
+              quality={100}
+              className="w-auto h-20 print:h-16 object-contain"
             />
           </div>
 
-          {/* Coluna 2: Bloco de Texto (com 'flex-grow' para ocupar o espaço) */}
-          <div className="flex-grow grid grid-cols-2 gap-4 items-center">
-            
-            {/* Sub-coluna 1: Slogan (Menor) */}
-            <div className="text-left">
-              <h4 className="font-bold text-base">{brandName}</h4> {/* Corrigido de 'text-g' e reduzido de 'text-lg' */}
-              <p className="text-[10px] text-gray-700"> {/* Reduzido de 'text-xs' */}
-                {brandSlogan}
-              </p>
+          {/* Coluna 2: Slogan */}
+          <div className="text-left">
+            <h4 className="font-bold text-sm" style={{ color: "#dc2626" }}>{brandName}</h4>
+            <p className="text-[10px] text-gray-700 leading-tight mt-1 max-w-[300px]">
+              {brandSlogan}
+            </p>
+          </div>
+          
+          {/* Coluna 3: Contatos */}
+          <div className="text-right text-[10px] space-y-1 text-gray-800 flex flex-col items-end">
+            <div className="flex items-center gap-1.5">
+              <Phone className="h-3 w-3" style={{ color: "#dc2626" }} />
+              <span>{brandPhone}</span>
             </div>
-            
-            {/* Sub-coluna 2: Contatos (Menor e alinhado à direita) */}
-            <div className="text-right text-[10px] space-y-0.5"> {/* Reduzido de 'text-xs' */}
-              <div className="flex items-center justify-end gap-1.5">
-                <Phone className="h-2.5 w-2.5 text-destructive" />
-                <span>{brandPhone}</span>
-              </div>
-              <div className="flex items-center justify-end gap-1.5">
-                <Mail className="h-2.5 w-2.5 text-destructive" />
-                <span>{brandEmail}</span>
-              </div>
-              <div className="flex items-center justify-end gap-1.5">
-                <Globe className="h-2.5 w-2.5 text-destructive" />
-                <span>{brandWebsite}</span>
-              </div>
-              <div className="pt-1">
-                <span className="text-[10px] text-gray-700">{brandCnpj}</span>
-              </div>
+            <div className="flex items-center gap-1.5">
+              <Mail className="h-3 w-3" style={{ color: "#dc2626" }} />
+              <span>{brandEmail}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Globe className="h-3 w-3" style={{ color: "#dc2626" }} />
+              <span>{brandWebsite}</span>
+            </div>
+            <div className="pt-1 mt-1 border-t w-full text-right" style={{ borderTopColor: "rgba(0, 0, 0, 0.1)" }}>
+              <span className="text-[9px] text-gray-500 font-medium">{brandCnpj}</span>
             </div>
           </div>
+
         </div>
       </div>
     </div>

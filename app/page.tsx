@@ -6,7 +6,7 @@ import { BudgetList } from "@/components/budget-list"
 import { SavedBudgetPreview } from "@/components/saved-budget-preview"
 import { ServiceOrderGenerator } from "@/components/service-order-generator"
 import { ServiceOrderList } from "@/components/service-order-list"
-import { ServiceOrderPreview } from "@/components/service-order-preview"
+import { SavedServiceOrderPreview } from "@/components/saved-service-order-preview"
 import { DataExport } from "@/components/data-export"
 import { LoginForm } from "@/components/login-form"
 import { ChangePassword } from "@/components/change-password"
@@ -99,7 +99,7 @@ useEffect(() => {
   if (currentView === "budget-preview" && selectedBudget) { return <SavedBudgetPreview budget={selectedBudget} onBack={handleBackToBudgetList} onViewBudgetList={handleViewBudgetList} /> }
   if (currentView === "os-generator") { return <ServiceOrderGenerator onBackToMenu={handleBackToMenu} onViewOSList={handleViewOSList} onLogout={handleLogout} /> }
   if (currentView === "os-list") { return <ServiceOrderList onBack={handleBackToMenu} onViewServiceOrder={handleViewServiceOrder} onAddServiceOrder={handleViewOSGenerator} /> }
-  if (currentView === "os-preview" && selectedServiceOrder) { return <ServiceOrderPreview serviceOrderData={selectedServiceOrder as any} onBack={handleBackToOSList} /> }
+  if (currentView === "os-preview" && selectedServiceOrder) {return (<SavedServiceOrderPreview serviceOrder={selectedServiceOrder} onBack={handleBackToOSList} /> ) }
   if (currentView === "data-export") { return <DataExport onBackToMenu={handleBackToMenu} onLogout={handleLogout} /> }
   if (currentView === "change-password") { return <ChangePassword onBack={handleBackToMenu} /> }
   if (currentView === "client-list") { return <ClientList onBack={handleBackToMenu} onViewClient={handleViewClient} onAddClient={handleViewClientForm} onLogout={handleLogout} /> }
