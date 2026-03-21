@@ -52,9 +52,9 @@ export interface SavedServiceOrder {
     cliente_email: string | null
     cliente_documento: string | null
     servicetype: StructuredServiceData
-    description: string | null
-    scheduleddate: string
-    observations: string | null
+    description?: string | null;
+    scheduleddate?: string | null;
+    observations?: string | null;
     osnumber: string
     created_at: string
     status: "agendado" | "em-andamento" | "concluido" | "cancelado";

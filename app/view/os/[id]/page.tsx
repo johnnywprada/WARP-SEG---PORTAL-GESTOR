@@ -11,19 +11,32 @@ export default function PublicOSView({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     async function fetchOS() {
-      const { data, error } = await supabase
-        .rpc('get_os_publica', { p_id: params.id })
-        .single()
+      try {
+        const { data, error } = await supabase
+          .rpc('get_os_publica', { p_id: params.id })
+          .single()
 
-      if (!error && data) 
-        setOs(data as SavedServiceOrder) 
+        if (error) {
+          console.error("Erro ao buscar OS pública:", error)
+          return
         }
+        
+        if (data) {
+          setOs(data as SavedServiceOrder) 
+        }
+      } catch (error) {
+        console.error("Exceção inesperada ao buscar OS:", error)
+      } finally {
+        // A regra de ouro: independentemente de sucesso ou falha, o loading PRECISA acabar.
+        setIsLoading(false)
+      }
+    }
         
     fetchOS()
   }, [params.id])
 
-  if (isLoading) return <div className="p-10 text-center">Carregando Ordem de Serviço...</div>
-  if (!os) return <div className="p-10 text-center text-red-500">Ordem de Serviço não encontrada.</div>
+  if (isLoading) return <div className="p-10 text-center font-bold text-gray-600">Carregando Ordem de Serviço...</div>
+  if (!os) return <div className="p-10 text-center font-bold text-destructive">Ordem de Serviço não encontrada ou indisponível.</div>
 
   return (
     <div className="public-os-wrapper">

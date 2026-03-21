@@ -85,6 +85,7 @@ useEffect(() => {
   const handleViewClient = (client: SavedClient) => { setSelectedClient(client); navigateTo("client-detail") }
   const handleBackToClientList = () => { navigateTo("client-list"); setSelectedClient(null) }
   const handleViewClientEdit = () => { if (selectedClient) { navigateTo("client-form"); } };
+  const handleEditClient = (client: SavedClient) => { setSelectedClient(client); navigateTo("client-form"); };
   const handleViewQuotationList = () => { navigateTo("quotation-list") }
   const handleViewQuotationForm = () => { setSelectedQuotation(null); navigateTo("quotation-form") }
   const handleViewQuotationEdit = (quotation: Quotation) => { setSelectedQuotation(quotation); navigateTo("quotation-form"); }
@@ -102,7 +103,7 @@ useEffect(() => {
   if (currentView === "os-preview" && selectedServiceOrder) {return (<SavedServiceOrderPreview serviceOrder={selectedServiceOrder} onBack={handleBackToOSList} /> ) }
   if (currentView === "data-export") { return <DataExport onBackToMenu={handleBackToMenu} onLogout={handleLogout} /> }
   if (currentView === "change-password") { return <ChangePassword onBack={handleBackToMenu} /> }
-  if (currentView === "client-list") { return <ClientList onBack={handleBackToMenu} onViewClient={handleViewClient} onAddClient={handleViewClientForm} onLogout={handleLogout} /> }
+  if (currentView === "client-list") { return <ClientList onBack={handleBackToMenu} onViewClient={handleViewClient} onEditClient={handleEditClient} onAddClient={handleViewClientForm} onLogout={handleLogout} /> }
   if (currentView === "quotation-list") { return <QuotationList onBack={handleBackToMenu} onLogout={handleLogout} onAddQuotation={handleViewQuotationForm} onEditQuotation={handleViewQuotationEdit} onViewQuotation={handleViewQuotationDetail} /> }
   if (currentView === "quotation-form") { return <QuotationForm onBack={handleBackToMenu} onLogout={handleLogout} quotationToEdit={selectedQuotation} onConvertToBudget={handleConvertToBudget} onViewQuotationList={handleViewQuotationList} /> }
   if (currentView === "client-form") { return <ClientForm onBack={selectedClient ? () => handleViewClient(selectedClient) : handleBackToClientList} clientToEdit={selectedClient} onBackToMenu={handleBackToMenu} onViewList={handleViewClientList} onLogout={handleLogout} />  }
